@@ -1,5 +1,4 @@
 var request = require("request");
-var xml2js = require('xml2js').parseString;
 
 module.exports = {
      main: function(bot, msg, settings) {
@@ -7,19 +6,18 @@ module.exports = {
         args.splice(0, 2);
         args = args.join(' ');
         console.log(args);
-        bot.sendMessage(msg, "`Searching...`", function(err, message){
-            url = "http://services.aonaware.com//dictservice/dictservice.asmx/DefineInDict?dictId=wn&word="+args;
-            request(url, function (error, response, body) {
+        bot.sendMessage(msg, "`Opening Dictionary...`", function(err, message){
+            url = "https://wordsapiv1.p.mashape.com/words/"+args;
+            var headers = {'X-Mashape-Key': settings.config.wordsApi, 'Accept': 'application/json'}
+            request({url: url, headers: headers}, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    var response;
-                    xml2js(body, function (err, result) {response = result;});
+                    var response = JSON.parse(body);
+                    var final = "";
                     try {
-                        try {
-                            bot.updateMessage(message, "```\n"+response['WordDefinition']['Definitions'][0]['Definition'][0]['WordDefinition']+"\n```");
-                        } catch (err) {
-                            console.log(err);
-                            bot.updateMessage(message, "```\n"+response['WordDefinition']['Definitions'][0]['Definition']['WordDefinition']+"\n```");
+                        for (var item in response.results) {
+                            final += (parseInt(item)+1) + ": "+response.results[item].definition + "\n"
                         }
+                        bot.updateMessage(message, "```xl\nDefinitions for "+args+":\n"+final+"\n```");
                     } catch (err) {
                         bot.updateMessage(message, "`No results found!`");
                     }
