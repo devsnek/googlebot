@@ -1,5 +1,7 @@
 ## Google for Discord
 
+![](https://google.guscaplan.me/badge)
+
 People have been asking for the source. How could I say no?
 
 

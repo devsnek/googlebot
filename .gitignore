@@ -9,3 +9,4 @@ beta-commands
 .DS_Store
 servers.json
 stats.json
+servers.svg
