@@ -254,3 +254,13 @@ bots[1].on("serverCreated", function(server){
 
 bots[0].loginWithToken(settings.config.token);
 bots[1].loginWithToken(settings.config.token);
+
+function exitHandler() {
+    for (let bot in bots) {
+        bots[bot].destroy();
+    }
+}
+process.on('exit', exitHandler.bind(null))
+  .on('SIGINT', exitHandler.bind(null))
+  .on('uncaughtException', exitHandler.bind(null))
+  .stdin.resume();
