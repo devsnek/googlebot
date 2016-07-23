@@ -4,9 +4,7 @@
 module.exports = {
      main: function(bot, msg, settings, bots) {
         if (msg.author.id == settings.OWNERID) {
-            args = msg.content.split(' ');
-            args.splice(0, 2);
-            args = args.join(' ');
+            args = msg.content;
             console.log(args);
             try {
                 //var res = _eval('('+args+')');

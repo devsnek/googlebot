@@ -2,9 +2,7 @@ var request = require("request");
 
 module.exports = {
      main: function(bot, msg, settings) {
-        var args = msg.content.split(' ');
-        args.splice(0, 2);
-        args = args.join(' ');
+        var args = msg.content;
         console.log(args);
         bot.sendMessage(msg, "`Opening Dictionary...`", function(err, message){
             url = "https://wordsapiv1.p.mashape.com/words/"+args;

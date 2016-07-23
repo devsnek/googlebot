@@ -5,9 +5,8 @@ var request = require('request');
 
 module.exports = {
     main: function(bot, msg, settings) {
-        var args = msg.content.split(' ');
-        args.splice(0, 2);
-        var url = "https://g.1536.cf/user/id/"+args[0]+"/"+settings.config.internalkey;
+        var args = msg.content;
+        var url = "https://g.1536.cf/user/id/"+args+"/"+settings.config.internalkey;
         request(url, function (error, response, body) {
           if (!error && response.statusCode == 200) {
               var user = JSON.parse(body);

@@ -2,11 +2,7 @@ var request = require('request');
 
 module.exports = {
     main: function(bot, msg, settings) {
-        args = msg.content.split(' ');
-        args.splice(0, 2);
-        args = args.join(' ');
-        var request = require('request');
-
+        args = msg.content;
 var options = {
     headers: {'user-agent': 'Mozilla/5.0'},
     url: 'http://api.openweathermap.org/data/2.5/weather?apikey="+settings.config.owm+"&q='+args,

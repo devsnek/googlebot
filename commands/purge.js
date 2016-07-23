@@ -2,9 +2,7 @@
 
 module.exports = {
     main: function(bot, msg) {
-        var args = msg.content.split(' ');
-        args.splice(0, 2);
-        args = args.join(' ');
+        var args = msg.content;
         let messagecount = parseInt(args);
         bot.getChannelLogs(msg.channel, 100, (err, messages) => {
             if(err) console.log(err);

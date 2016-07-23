@@ -2,9 +2,7 @@ var request = require('request');
 
 module.exports = {
     main: function(bot, msg, settings) {
-        args = msg.content.split(' ');
-        args.splice(0, 2);
-        args = args.join(' ').replace(/"/g, '');
+        args = msg.content.replace(/"/g, '');
         tolang = args.split(' ')[args.split(' ').length - 1];
         args = args.replace((" " + args.split(' ')[args.split(' ').length - 1]), '')
         yurl = "https://translate.yandex.net/api/v1.5/tr.json/detect?key="+settings.config.yandex+"&text="+args;

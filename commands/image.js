@@ -2,9 +2,7 @@ request = require("request");
 
 module.exports = {
      main: function(bot, msg, settings) {
-        var args = msg.content.split(' ');
-        args.splice(0, 2);
-        args = args.join(' ');
+        var args = msg.content;
         safe_map = {1: "off", 2: "medium", 3: "high"};
         bot.sendMessage(msg, "`Searching...`", function(err, message){
             var key = settings.KEYS[Math.floor(Math.random() * settings.KEYS.length)];

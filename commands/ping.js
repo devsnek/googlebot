@@ -1,8 +1,6 @@
 module.exports = {
     main: function(bot, msg, settings) {
-        args = msg.content.split(' ');
-        args.splice(0, 2);
-        args = args.join(' ');
+        args = msg.content;
         if (args == '') {
             var start = process.hrtime();
             bot.sendMessage(msg, "pong", function(err, message){

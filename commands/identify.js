@@ -2,9 +2,7 @@ var request = require('request');
 
 module.exports = {
     main: function(bot, msg) {
-        args = msg.content.split(' ');
-        args.splice(0, 2);
-        args = args.join(' ');
+        args = msg.content;
 
         var options = {
             uri: 'https://www.captionbot.ai/api/message',

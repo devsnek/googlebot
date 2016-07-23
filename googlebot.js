@@ -145,8 +145,10 @@ var checkCommand = function(msg, length, bot) {
         if(typeof msg.content.split(' ')[length] === 'undefined') {
             
         } else {
-            msg.content = msg.content.substr(msg.content.indexOf(" ") + settings.PREFIX.split(' ').length);
-            commands[msg.content.split(' ')[length-1]].main(bot, msg, settings, bots);
+            msg.content = msg.content.substr(msg.content.indexOf(" ", settings.PREFIX.length));
+            var command = msg.content.split(' ')[length-1];
+            msg.content = msg.content.split(' ').splice(2, msg.content.split(' ').length).join(' ');
+            commands[command].main(bot, msg, settings, bots);
         }
     }
     catch(err) {
@@ -262,5 +264,5 @@ function exitHandler() {
 }
 process.on('exit', exitHandler.bind(null))
   .on('SIGINT', exitHandler.bind(null))
-  .on('uncaughtException', exitHandler.bind(null))
+//  .on('uncaughtException', exitHandler.bind(null))
   .stdin.resume();
