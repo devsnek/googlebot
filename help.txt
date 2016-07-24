@@ -12,7 +12,6 @@ General Stuff:
   define <word>                 Get a word definition.
   translate <sentence> <lang>   Instantly translate text between over 50 languages
   weather <location>            Search for weather on the web
-  identify <image url>          Identify the content of an image!
 
 Other Stuff:
   help                          Shows this message.

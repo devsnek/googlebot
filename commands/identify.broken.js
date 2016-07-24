@@ -2,7 +2,8 @@ var request = require('request');
 
 module.exports = {
     main: function(bot, msg) {
-        args = msg.content;
+        args = msg.content.split(' ');
+        console.log("IDENTIFY", msg.server.name, msg.server.id, args);
 
         var options = {
             uri: 'https://www.captionbot.ai/api/message',
@@ -10,7 +11,7 @@ module.exports = {
             json: {
                 "conversationId":"4WDK7tprQkA",
                 "waterMark":"",
-                "userMessage":args
+                "userMessage":args[0]
             }
         };
 
