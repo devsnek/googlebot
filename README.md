@@ -4,6 +4,7 @@
 
 People have been asking for the source. How could I say no?
 
+The modular command system that this is based off of is available [here](https://gist.github.com/GusCaplan/f9823dc4649b53282cea61043af66f19).
 
 Note: this code is optomized for running on many server, and so it uses sharding. If you are going to be setting this up for like you and your friends server, you may want to disable that.
 

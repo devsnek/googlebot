@@ -258,8 +258,8 @@ function exitHandler() {
     for (let bot in bots) {
         bots[bot].destroy();
     }
-    process.exit(1); // i should have added this a long time ago
 }
+
 process.on('exit', exitHandler.bind(null))
   .on('SIGINT', exitHandler.bind(null))
 //  .on('uncaughtException', exitHandler.bind(null))
