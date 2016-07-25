@@ -2,10 +2,6 @@
 
 String.prototype.padRight = function(l,c) {return this+Array(l-this.length+1).join(c||" ")} // i would never use a nodejs package for this ;)
 
-function getPosition(str, m, i) {
-   return str.split(m, i).join(m).length;
-}
-
 var Discord = require("discord.js");
 var fs = require('fs');
 var JsonDB = require('node-json-db');
@@ -112,7 +108,7 @@ commands.reload.main = function(bot, msg) {
         var args = msg.content.split(' ')[2];
         try {
             delete commands[args];
-            delete require.cache[__dirname+'/commands/'+args+'.js'];
+            delete require.cache[__dirname+'/commands/'+args+'.js']; // this is the important part here, since require caches files, reloading would do nothing if we didn't clear it
             commands[args] = require(__dirname+'/commands/'+args+'.js');
             bot.sendMessage(msg, 'Reloaded '+args);
         }
@@ -135,13 +131,10 @@ var loadCommands = function() {
     var files = fs.readdirSync(__dirname+'/commands');
     for (let file of files) {
         if (file.endsWith('.js')) {
-            //console.log("loading " + file.slice(0, -3));
             commands[file.slice(0, -3)] = require(__dirname+'/commands/'+file);
-            //console.log(file + " loaded!");
         }
     }
     console.log("———— All Commands Loaded! ————");
-    //console.log(require.cache);
 }
 
 var checkCommand = function(msg, length, bot) {
@@ -149,7 +142,7 @@ var checkCommand = function(msg, length, bot) {
         if(typeof msg.content.split(' ')[length] === 'undefined') {
             
         } else {
-            msg.content = msg.content.substr(getPosition(msg.content, " ", length));
+            msg.content = msg.content.substr(msg.content.split(" ", length).join(" ").length);
             var command = msg.content.split(' ')[1]; // friggin space at the beginning >:(
             msg.content = msg.content.split(' ').splice(2, msg.content.split(' ').length).join(' ');
             commands[command].main(bot, msg, settings, bots);
@@ -265,6 +258,7 @@ function exitHandler() {
     for (let bot in bots) {
         bots[bot].destroy();
     }
+    process.exit(1); // i should have added this a long time ago
 }
 process.on('exit', exitHandler.bind(null))
   .on('SIGINT', exitHandler.bind(null))
