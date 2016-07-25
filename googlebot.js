@@ -12,14 +12,14 @@ bots[0] = new Discord.Client({
     autoReconnect: true,
     shardCount: 2,
     shardId: 0, 
-    maxCachedMessages: 2
+    maxCachedMessages: 1
 });
 
 bots[1] = new Discord.Client({
     autoReconnect: true,
     shardCount: 2,
     shardId: 1,
-    maxCachedMessages: 2
+    maxCachedMessages: 1
 });
 
 var settings = {};
@@ -69,7 +69,7 @@ commands.load.help = '';
 commands.load.hide = true;
 commands.load.main = function(bot, msg) {
     if (msg.author.id == settings.OWNERID){
-    var args = msg.content.split(' ')[2];
+    var args = msg;
     try {
         delete commands[args];
         delete require.cache[__dirname+'/commands/'+args+'.js'];
@@ -87,7 +87,7 @@ commands.unload.help = '';
 commands.unload.hide = true;
 commands.unload.main = function(bot, msg) {
     if (msg.author.id == settings.OWNERID){
-        var args = msg.content.split(' ')[2];
+        var args = msg;
         try {
             delete commands[args];
             delete require.cache[__dirname+'/commands/'+args+'.js'];
@@ -105,7 +105,7 @@ commands.reload.help = '';
 commands.reload.hide = true;
 commands.reload.main = function(bot, msg) {
     if (msg.author.id == settings.OWNERID){
-        var args = msg.content.split(' ')[2];
+        var args = msg;
         try {
             delete commands[args];
             delete require.cache[__dirname+'/commands/'+args+'.js']; // this is the important part here, since require caches files, reloading would do nothing if we didn't clear it
