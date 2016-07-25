@@ -2,6 +2,10 @@
 
 String.prototype.padRight = function(l,c) {return this+Array(l-this.length+1).join(c||" ")} // i would never use a nodejs package for this ;)
 
+function getPosition(str, m, i) {
+   return str.split(m, i).join(m).length;
+}
+
 var Discord = require("discord.js");
 var fs = require('fs');
 var JsonDB = require('node-json-db');
@@ -145,8 +149,8 @@ var checkCommand = function(msg, length, bot) {
         if(typeof msg.content.split(' ')[length] === 'undefined') {
             
         } else {
-            msg.content = msg.content.substr(msg.content.indexOf(" ", settings.PREFIX.length));
-            var command = msg.content.split(' ')[length-1];
+            msg.content = msg.content.substr(getPosition(msg.content, " ", length));
+            var command = msg.content.split(' ')[1]; // friggin space at the beginning >:(
             msg.content = msg.content.split(' ').splice(2, msg.content.split(' ').length).join(' ');
             commands[command].main(bot, msg, settings, bots);
         }
