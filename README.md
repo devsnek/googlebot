@@ -1,6 +1,6 @@
 ## Google for Discord
 
-![](https://google.guscaplan.me/badge)
+![](https://google.guscaplan.me/badge) <- this badge is usually wrong due to github caching >:(
 
 People have been asking for the source. How could I say no?
 
