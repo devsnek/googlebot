@@ -1,6 +1,0 @@
-module.exports = {
-    main: function(bot, msg) {
-        args = msg.content;
-    },
-    help: 'template'
-};
