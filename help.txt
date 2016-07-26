@@ -12,6 +12,7 @@ General Stuff:
   define <word>                 Get a word definition.
   translate <sentence> <lang>   Instantly translate text between over 50 languages
   weather <location>            Search for weather on the web
+  identify <url>                Identify an image
   lmgtfy <query>                When someone is being an idiot
 
 Other Stuff:

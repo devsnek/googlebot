@@ -9,7 +9,6 @@ module.exports = {
         var method = args[0];
         args.shift();
         args = args.join(' ');
-        console.log(args);
         var url = "https://g.1536.cf/user/"+method+"/"+args+"/"+settings.config.internalkey;
         request(url, function (error, response, body) {
           if (!error && response.statusCode == 200) {
