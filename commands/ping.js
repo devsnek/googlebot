@@ -6,7 +6,6 @@ module.exports = {
             bot.sendMessage(msg, "pong", function(err, message){
                 var diff = Math.round(process.hrtime(start)[1]/1000000);
                 bot.updateMessage(message, "pong `"+diff+"ms`");
-                //settings.dping.set(diff);
             });
         } else {
             require('child_process').exec("ping -c 4 "+args, function(error, stdout, stderr) {

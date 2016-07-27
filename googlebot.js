@@ -26,6 +26,8 @@ var settings = {};
 
 settings.config = require('./config.json');
 
+settings.banned = require('./banned.json').banned;
+
 settings.stats = new JsonDB("stats", true, true);
 
 settings.pushSearch = function() {
@@ -155,16 +157,18 @@ var checkCommand = function(msg, length, bot) {
 
 
 var onReady = function(bot) {
-	console.log(`Shard ${bot.options.shardId} is ready to begin! Serving in ${bot.channels.length} channels`);
+    console.log(`Shard ${bot.options.shardId} is ready to begin! Serving in ${bot.channels.length} channels`);
     bot.setStatus("online", "ok google, help");
     loadCommands();
 }
 
 var onMessage = function(msg, bot) {
-	if (msg.content.startsWith('<@'+bot.user.id+'>') || msg.content.startsWith('<@!'+bot.user.id+'>')) {
-        checkCommand(msg, 1, bot);
-    } else if (msg.content.toLowerCase().startsWith(settings.PREFIX)) {
-        checkCommand(msg, settings.PREFIX.split(' ').length, bot);
+    if (!settings.banned.indexOf(msg.author.id) > -1) { // there is a better way to do this
+        if (msg.content.startsWith('<@'+bot.user.id+'>') || msg.content.startsWith('<@!'+bot.user.id+'>')) {
+            checkCommand(msg, 1, bot);
+        } else if (msg.content.toLowerCase().startsWith(settings.PREFIX)) {
+            checkCommand(msg, settings.PREFIX.split(' ').length, bot);
+        }
     }
 }
 
