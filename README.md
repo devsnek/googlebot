@@ -1,7 +1,5 @@
 ## Google for Discord
 
-![](https://google.guscaplan.me/badge) <- this badge is usually wrong due to github caching >:(
-
 People have been asking for the source. How could I say no?
 
 The modular command system that this is based off of is available [here](https://gist.github.com/GusCaplan/f9823dc4649b53282cea61043af66f19).
