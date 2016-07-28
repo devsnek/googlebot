@@ -209,12 +209,16 @@ bots[1].on("ready", () => {
 
 //when the bot receives a message
 bots[0].on("message", msg => {
-	onMessage(msg, bots[0]);
+    if (!settings.banned.indexOf(msg.author.id) > -1) {
+        onMessage(msg, bots[0]);
+    }
 });
 
 //when the bot receives a message
 bots[1].on("message", msg => {
-    onMessage(msg, bots[1]);
+    if (!settings.banned.indexOf(msg.author.id) > -1) {
+        onMessage(msg, bots[1]);
+    }
 });
 
 
