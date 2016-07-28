@@ -5,8 +5,14 @@ String.prototype.padRight = function(l,c) {return this+Array(l-this.length+1).jo
 var Discord = require("discord.js");
 var fs = require('fs');
 var JsonDB = require('node-json-db');
+var Ratelimits = require('./ratelimits');
 
 var bots = {};
+
+var rl = {};
+
+rl[0] = new Ratelimits();
+rl[1] = new Ratelimits();
 
 bots[0] = new Discord.Client({
     autoReconnect: true,
@@ -160,14 +166,17 @@ var onReady = function(bot) {
     console.log(`Shard ${bot.options.shardId} is ready to begin! Serving in ${bot.channels.length} channels`);
     bot.setStatus("online", "ok google, help");
     loadCommands();
+    rl[bot.options.shardId].onReady();
 }
 
 var onMessage = function(msg, bot) {
     if (!settings.banned.indexOf(msg.author.id) > -1) { // there is a better way to do this
         if (msg.content.startsWith('<@'+bot.user.id+'>') || msg.content.startsWith('<@!'+bot.user.id+'>')) {
-            checkCommand(msg, 1, bot);
+            if (rl[bot.options.shardId].changeCommand(msg, true))
+                checkCommand(msg, 1, bot);
         } else if (msg.content.toLowerCase().startsWith(settings.PREFIX)) {
-            checkCommand(msg, settings.PREFIX.split(' ').length, bot);
+            if (rl[bot.options.shardId].changeCommand(msg, true))
+                checkCommand(msg, settings.PREFIX.split(' ').length, bot);
         }
     }
 }
@@ -179,8 +188,9 @@ var onError = function(err, bot) {
 }
 
 var onDisconnect = function(bot) {
-	//alert the console
-	console.log("Disconnected!");
+    //alert the console
+    console.log("Disconnected!");
+    rl[bot.options.shardId].onDisconnect();
 }
 
 var serverCreated = function(server, bot) {
@@ -235,12 +245,12 @@ bots[1].on('error', (err) => {
 
 //when the bot disconnects
 bots[0].on("disconnected", () => {
-	onDisconnect(bots[0]);
+    onDisconnect(bots[0]);
 });
 
 //when the bot disconnects
 bots[1].on("disconnected", () => {
-	onDisconnect(bots[1]);
+    onDisconnect(bots[1]);
 });
 
 bots[0].on("serverDeleted", function(server){
