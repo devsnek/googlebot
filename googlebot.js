@@ -36,16 +36,6 @@ settings.banned = require('./banned.json').banned;
 
 settings.stats = new JsonDB("stats", true, true);
 
-settings.pushSearch = function() {
-    var searches = 0;
-    try {
-        searches = settings.stats.getData('/searches');
-    } catch(err) {
-        settings.stats.push('/searches', 0);
-    }
-    settings.stats.push('/searches', searches+1);
-}
-
 settings.OWNERID = '173547401905176585';
 settings.PREFIX = 'ok google';
 

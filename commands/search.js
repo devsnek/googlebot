@@ -24,7 +24,6 @@ module.exports = {
                             } catch (err) {
                                 bot.updateMessage(message, "`No results found!`");
                             }
-                            settings.pushSearch();
                         }
                     });
                 });

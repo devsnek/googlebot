@@ -16,11 +16,12 @@ module.exports = {
                     }
                     var safe = (msg.channel.name.includes("nsfw") ? "off" : safe_setting);
                     console.log("Image: ", msg.server.name, msg.server.id, "|", args, "|", safe);
-                    var url = "https://www.googleapis.com/customsearch/v1?key="+key+"&cx="+settings.config.cx+"&safe="+safe+"&q="+encodeURI(args);
+                    var url = "https://www.googleapis.com/customsearch/v1?key="+key+"&cx="+settings.config.cxImg+"&safe="+safe+"&q="+encodeURI(args)+"&searchType=image";
                     request(url, function (error, response, body) {
                         if (!error && response.statusCode == 200) {
                             try {
-                                bot.updateMessage(message, JSON.parse(body)['items'][0]['pagemap']['cse_image'][0]['src']);
+                                console.log(body);
+                                bot.updateMessage(message, JSON.parse(body)['items'][0]['link']);
                             } catch (err) {
                                 bot.updateMessage(message, "`No results found!`");
                             }
