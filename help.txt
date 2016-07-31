@@ -14,7 +14,7 @@ General Stuff:
   weather <location>            Search for weather on the web
   identify <url>                Identify an image
   lmgtfy <query>                When someone is being an idiot
-
+  time <location>               Get time of location
 Other Stuff:
   help                          Shows this message.
   ping [ip/domain]              ping the server or an optional url/ip
