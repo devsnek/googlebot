@@ -9,11 +9,6 @@ var Ratelimits = require('./ratelimits');
 
 var bots = {};
 
-var rl = {};
-
-rl[0] = new Ratelimits();
-rl[1] = new Ratelimits();
-
 bots[0] = new Discord.Client({
     autoReconnect: true,
     shardCount: 2,
@@ -28,11 +23,15 @@ bots[1] = new Discord.Client({
     maxCachedMessages: 1
 });
 
+var rl = {};
+
+for (var i in bots) {
+  rl[i] = new Ratelimits();
+}
+
 var settings = {};
 
 settings.config = require('./config.json');
-
-settings.banned = require('./banned.json').banned;
 
 settings.stats = new JsonDB("stats", true, true);
 
@@ -137,13 +136,15 @@ var loadCommands = function() {
 
 var checkCommand = function(msg, length, bot) {
     try {
-        if(typeof msg.content.split(' ')[length] === 'undefined') {
+        if (rl[bot.options.shardId].changeCommand(msg, true)) {
+            if(typeof msg.content.split(' ')[length] === 'undefined') {
             
-        } else {
-            msg.content = msg.content.substr(msg.content.split(" ", length).join(" ").length);
-            var command = msg.content.split(' ')[1]; // friggin space at the beginning >:(
-            msg.content = msg.content.split(' ').splice(2, msg.content.split(' ').length).join(' ');
-            commands[command].main(bot, msg, settings, bots);
+            } else {
+                msg.content = msg.content.substr(msg.content.split(" ", length).join(" ").length);
+                var command = msg.content.split(' ')[1]; // friggin space at the beginning >:(
+                msg.content = msg.content.split(' ').splice(2, msg.content.split(' ').length).join(' ');
+                commands[command].main(bot, msg, settings, bots);
+            }
         }
     }
     catch(err) {
@@ -160,14 +161,10 @@ var onReady = function(bot) {
 }
 
 var onMessage = function(msg, bot) {
-    if (!settings.banned.indexOf(msg.author.id) > -1) { // there is a better way to do this
-        if (msg.content.startsWith('<@'+bot.user.id+'>') || msg.content.startsWith('<@!'+bot.user.id+'>')) {
-            if (rl[bot.options.shardId].changeCommand(msg, true))
-                checkCommand(msg, 1, bot);
-        } else if (msg.content.toLowerCase().startsWith(settings.PREFIX)) {
-            if (rl[bot.options.shardId].changeCommand(msg, true))
-                checkCommand(msg, settings.PREFIX.split(' ').length, bot);
-        }
+    if (msg.content.startsWith('<@'+bot.user.id+'>') || msg.content.startsWith('<@!'+bot.user.id+'>')) {
+        checkCommand(msg, 1, bot);
+    } else if (msg.content.toLowerCase().startsWith(settings.PREFIX)) {
+        checkCommand(msg, settings.PREFIX.split(' ').length, bot);
     }
 }
 
