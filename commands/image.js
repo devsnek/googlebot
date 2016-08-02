@@ -7,7 +7,7 @@ module.exports = {
         safe_map = {1: "off", 2: "medium", 3: "high"};
         bot.sendMessage(msg, "`Searching...`", function(err, message){
             var key = settings.KEYS[Math.floor(Math.random() * settings.KEYS.length)];
-            r.db('google').table('servers').get(msg.server.id).run(conn, function(err, thing){
+            r.db('google').table('servers').get(msg.server.id).run(settings.dbconn, function(err, thing){
                 if (thing === null) {
                     safe_setting = 'medium';
                 } else {
