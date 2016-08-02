@@ -6,6 +6,7 @@ var Discord = require("discord.js");
 var fs = require('fs');
 var JsonDB = require('node-json-db');
 var Ratelimits = require('./ratelimits');
+var r = require('rethinkdb');
 
 var bots = {};
 
@@ -32,6 +33,11 @@ for (var i in bots) {
 var settings = {};
 
 settings.config = require('./config.json');
+
+r.connect({ host: settings.config.rethink, port: 28015}, (err, conn) => {
+    if (err) console.error("DB ERROR:", err);
+    settings.dbconn = conn;
+});
 
 settings.stats = new JsonDB("stats", true, true);
 

@@ -23,10 +23,10 @@ Other Stuff:
   purge                         deletes messages from channel, default 15
   user <id>                     get all sorts of juicy info about a user
 
-Help server: guscaplan.me/discord
+Help server: https://guscaplan.me/discord
 
 Change all sorts of cool settings from the Web Control Panel!
-Just go to http://google.guscaplan.me/login
+Just go to http://google.guscaplan.me/panel
 
 Servers ain't cheap, donate and get a cookie! https://www.patreon.com/guscaplan 🍪
 ```
