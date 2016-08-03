@@ -34,7 +34,7 @@ var settings = {};
 
 settings.config = require('./config.json');
 
-r.connect({ host: settings.config.rethink, port: 28015}, (err, conn) => {
+r.connect({ host: settings.config.rethink, port: settings.config.rethinkport}, (err, conn) => {
     if (err) console.error("DB ERROR:", err);
     settings.dbconn = conn;
 });
@@ -47,6 +47,9 @@ settings.PREFIX = 'ok google';
 settings.startuptime = new Date() / 1000;
 
 settings.KEYS = fs.readFileSync('keys.txt').toString().split("\n");
+settings.KEYS.splice(-1, 1);
+
+settings.lastKey = 0;
 
 settings.commands = {}
 
