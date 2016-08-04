@@ -15,6 +15,7 @@ General Stuff:
   identify <url>                Identify an image
   lmgtfy <query>                When someone is being an idiot
   time <location>               Get time of location
+  shorten <url>                 Shorten a url using goo.gl
 
 Other Stuff:
   help                          Shows this message.

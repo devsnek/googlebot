@@ -28,7 +28,7 @@ module.exports = {
                     }
                 });
                 settings.lastKey += 1;
-                if (settings.lastKey-1 >= settings.KEYS.length) settings.lastKey = 0;
+                if (settings.lastKey+1 >= settings.KEYS.length) settings.lastKey = 0;
             });
          });
      },
