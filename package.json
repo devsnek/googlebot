@@ -12,6 +12,7 @@
     "node-json-db": "^0.7.2",
     "request": "^2.73.0",
     "rethinkdb": "^2.3.2",
+    "sherlockjs": "0.0.9",
     "unirest": "^0.5.0"
   }
 }

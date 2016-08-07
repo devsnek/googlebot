@@ -14,14 +14,16 @@ bots[0] = new Discord.Client({
     autoReconnect: true,
     shardCount: 2,
     shardId: 0, 
-    maxCachedMessages: 1
+    maxCachedMessages: 1,
+    disableEveryone: true
 });
 
 bots[1] = new Discord.Client({
     autoReconnect: true,
     shardCount: 2,
     shardId: 1,
-    maxCachedMessages: 1
+    maxCachedMessages: 1,
+    disableEveryone: true
 });
 
 var rl = {};
@@ -117,8 +119,7 @@ commands.reload.main = function(bot, msg) {
             delete require.cache[__dirname+'/commands/'+args+'.js']; // this is the important part here, since require caches files, reloading would do nothing if we didn't clear it
             commands[args] = require(__dirname+'/commands/'+args+'.js');
             bot.sendMessage(msg, 'Reloaded '+args);
-        }
-        catch(err){
+        } catch(err) {
             bot.sendMessage(msg, "Command not found");
         }
     }
@@ -150,9 +151,17 @@ var checkCommand = function(msg, length, bot) {
             
             } else {
                 msg.content = msg.content.substr(msg.content.split(" ", length).join(" ").length);
+                var original = msg.content;
                 var command = msg.content.split(' ')[1]; // friggin space at the beginning >:(
                 msg.content = msg.content.split(' ').splice(2, msg.content.split(' ').length).join(' ');
-                commands[command].main(bot, msg, settings, bots);
+                try {
+                    commands[command].main(bot, msg, settings, bots);
+                } catch (err) {
+                    if (original.split(' ').length > 1) {
+                        msg.content = original;
+                        commands['search'].main(bot, msg, settings, bots);
+                    }
+                }
             }
         }
     }
