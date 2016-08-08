@@ -10,7 +10,7 @@ General Stuff:
   search <query>                Search billions of web pages
   image <query>                 Search for images on the web
   define <word>                 Get a word definition.
-  translate <sentence> <lang>   Instantly translate text between over 50 languages
+  translate <sentence> <lang>   Translate text.
   weather <location>            Search for weather on the web
   identify <url>                Identify an image
   lmgtfy <query>                When someone is being an idiot

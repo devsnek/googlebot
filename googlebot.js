@@ -1,6 +1,7 @@
 "use strict";
 
 String.prototype.padRight = function(l,c) {return this+Array(l-this.length+1).join(c||" ")} // i would never use a nodejs package for this ;)
+function shuffle(a){for(var c,d,b=a.length;b;)d=Math.floor(Math.random()*b--),c=a[b],a[b]=a[d],a[d]=c;return a}
 
 var Discord = require("discord.js");
 var fs = require('fs');
@@ -50,6 +51,8 @@ settings.startuptime = new Date() / 1000;
 
 settings.KEYS = fs.readFileSync('keys.txt').toString().split("\n");
 settings.KEYS.splice(-1, 1);
+
+settings.KEYS = shuffle(settings.KEYS);
 
 settings.lastKey = 0;
 
