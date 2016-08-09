@@ -204,11 +204,16 @@ var onDisconnect = function(bot) {
 }
 
 var serverCreated = function(server, bot) {
-    fs.readFile('./welcome.txt', 'utf8', function (err,data) {
-        if (err) {
-            return console.log(err);
+    r.db('google').table('servers').get(server.id).run(settings.dbconn, function(err, res) {
+        if (res === null) {
+            fs.readFile('./welcome.txt', 'utf8', function (err,data) {
+                if (err) {
+                    return console.log(err);
+                }
+                bot.sendMessage(server.defaultChannel, server.owner.mention() + " " + data);
+                r.db('google').table('servers').insert({id: server.id, name: server.name, nsfw: '2', nick: 'Google'}).run(settings.dbconn);
+            });
         }
-        bot.sendMessage(server.defaultChannel, server.owner.mention() + " " + data);
     });
 }
 
