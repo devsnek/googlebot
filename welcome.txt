@@ -1,4 +1,4 @@
 **Type `ok google, help` for command help**
 
 Note: by default, safe search is set to medium, except in channels with "nsfw" in their name.
-To change the server-wide safe search settings, go to http://google.guscaplan.me/panel
+**To change the server-wide safe search settings, go to http://google.guscaplan.me/panel**
