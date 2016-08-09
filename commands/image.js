@@ -21,13 +21,14 @@ module.exports = {
                 console.log("Image: ", msg.server.name, msg.server.id, "|", args, "|", safe, "|", bot.options.shardId, "|", key, settings.lastKey + 1);
                 r.db('google').table('images').get(args).run(settings.dbconn, function(err, result) {
                     switch (result) {
-                        default: try {
-                            if (new Date().getTime() - parseInt(result.time) < settings.cacheTime)
-                                bot.updateMessage(message, result.result)
-                            break;
-                        } catch (err) {}
-                        case null:
-                                var url = "https://www.googleapis.com/customsearch/v1?key=" + key + "&cx=" + settings.config.cxImg + "&safe=" + safe + "&searchType=image&q=" + encodeURI(args);
+                        case (result !== null): try {
+                                if (new Date().getTime() - parseInt(result.time) < settings.cacheTime) {
+                                    bot.updateMessage(message, result.result)
+                                    break;
+                                }
+                            } catch (err) {}
+                        default:
+                            var url = "https://www.googleapis.com/customsearch/v1?key=" + key + "&cx=" + settings.config.cxImg + "&safe=" + safe + "&searchType=image&q=" + encodeURI(args);
                             request(url, function(error, response, body) {
                                 if (!error && response.statusCode == 200) {
                                     try {
