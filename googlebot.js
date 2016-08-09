@@ -56,6 +56,8 @@ settings.KEYS = shuffle(settings.KEYS);
 
 settings.lastKey = 0;
 
+settings.cacheTime = 21600000;
+
 settings.commands = {}
 
 var commands = settings.commands;
