@@ -204,6 +204,7 @@ var onDisconnect = function(bot) {
 }
 
 var serverCreated = function(server, bot) {
+    console.log('SERVER GET:', server.name, server.id, bot.options.shardId);
     r.db('google').table('servers').get(server.id).run(settings.dbconn, function(err, res) {
         if (res === null) {
             fs.readFile('./welcome.txt', 'utf8', function (err,data) {
@@ -218,6 +219,7 @@ var serverCreated = function(server, bot) {
 }
 
 var serverDeleted = function(server, bot) {
+    console.log('SERVER LOST:', server.name, server.id, bot.options.shardId);
 }
 
 // this shit here makes me sad, but i'm too lazy to make it nicer

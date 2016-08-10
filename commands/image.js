@@ -1,5 +1,7 @@
 request = require("request");
 var r = require('rethinkdb');
+var cheerio = require('cheerio');
+var querystring = require('querystring');
 
 module.exports = {
     main: function(bot, msg, settings) {
@@ -19,37 +21,27 @@ module.exports = {
                 }
                 var safe = (msg.channel.name.includes("nsfw") ? "off" : safe_setting);
                 console.log("Image: ", msg.server.name, msg.server.id, "|", args, "|", safe, "|", bot.options.shardId, "|", key, settings.lastKey + 1);
-                r.db('google').table('images').get(args).run(settings.dbconn, function(err, result) {
-                    switch (result) {
-                        case (result !== null): try {
-                                if (new Date().getTime() - parseInt(result.time) < settings.cacheTime) {
-                                    bot.updateMessage(message, result.result)
-                                    break;
-                                }
-                            } catch (err) {}
-                        default:
-                            var url = "https://www.googleapis.com/customsearch/v1?key=" + key + "&cx=" + settings.config.cxImg + "&safe=" + safe + "&searchType=image&q=" + encodeURI(args);
-                            request(url, function(error, response, body) {
-                                if (!error && response.statusCode == 200) {
-                                    try {
-                                        bot.updateMessage(message, JSON.parse(body)['items'][0]['link']);
-                                        r.db('google').table('images').insert({
-                                            id: args,
-                                            result: JSON.parse(body)['items'][0]['link'],
-                                            time: new Date().getTime()
-                                        }).run(settings.dbconn);
-                                    } catch (err) {
-                                        bot.updateMessage(message, "`No results found!`");
-                                    }
-                                } else {
-                                    bot.updateMessage(message, "`Internal API Error, Please try again.`");
-                                }
+                var url = "https://www.googleapis.com/customsearch/v1?key=" + key + "&cx=" + settings.config.cxImg + "&safe=" + safe + "&searchType=image&q=" + encodeURI(args);
+                try {
+                    request(url, function(error, response, body) {
+                        try {
+                            bot.updateMessage(message, JSON.parse(body)['items'][0]['link']);
+                        } catch (err) {
+                            request('https://www.google.com/search?tbm=isch&gs_l=img&q=hwhat', function (error, response, body) {
+                              if (!error && response.statusCode == 200) {
+                                $ = cheerio.load(body);
+                                var href = $('.images_table').find('a').first().attr('href')
+                                var res = Object.keys(querystring.parse(href.substr(7, href.length)))[0];
+                                bot.updateMessage(message, res);
+                              }
                             });
-                            settings.lastKey += 1;
-                            if (settings.lastKey + 1 >= settings.KEYS.length) settings.lastKey = 0;
-                            break;
-                    }
-                });
+                        }
+                    });
+                } catch (err) {
+                    bot.updateMessage(message, "`No results found!`");
+                }
+                settings.lastKey += 1;
+                if (settings.lastKey + 1 >= settings.KEYS.length) settings.lastKey = 0;
             });
         });
     },

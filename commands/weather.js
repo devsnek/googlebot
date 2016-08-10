@@ -12,22 +12,26 @@ module.exports = {
         conditionMap = {'01d': '🌞', '02d': '⛅️', '03d': '☁', '04d': '🌧', '09d': '🌧', '10d': '🌦', '11d': '⛈', '13d': '🌨', '50d': '🌫', '01n': '🌚', '02n': '⛅️', '03n': '☁', '04n': '🌧', '09n': '🌧', '10n': '🌦', '11n': '⛈', '13n': '🌨', '50n': '🌫'}
 
 
-        unirest.get('http://api.openweathermap.org/data/2.5/weather?apikey='+settings.config.owm+'&q='+args) 
+        unirest.get('http://api.openweathermap.org/data/2.5/weather?apikey='+settings.config.owm+'&q='+args)
         .end(res => {
-            body_json = res.body;
-            var desc = body_json['weather'][0]['description'],
-                icon = conditionMap[body_json['weather'][0]['icon']],
-                temp = Math.round(body_json['main']['temp']-273.15),
-                humidity = body_json['main']['humidity'],
-                wind = body_json['wind']['speed'],
-                clouds = body_json['clouds']['all'],
-                location = body_json['name'];
-                var final = `${icon}__**${location}**__
+            try {
+                body_json = res.body;
+                var desc = body_json['weather'][0]['description'],
+                  icon = conditionMap[body_json['weather'][0]['icon']],
+                  temp = Math.round(body_json['main']['temp']-273.15),
+                  humidity = body_json['main']['humidity'],
+                  wind = body_json['wind']['speed'],
+                  clouds = body_json['clouds']['all'],
+                  location = body_json['name'];
+                  var final = `${icon}__**${location}**__
 **Conditions**: ${desc}
 **Temp**: ${temp} °C
 **Humidity**: ${humidity}%
 **Cloudiness**: ${clouds}%`
                 bot.sendMessage(msg, final);
+            } catch (err) {
+                bot.sendMessage(msg, '`Could not find location!`');
+            }
         });
     },
     help: 'Search for weather on the web',
