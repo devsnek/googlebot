@@ -8,7 +8,6 @@ module.exports = {
         bot.sendMessage(msg, "`Identifying...`", (err, message) => {
         unirest.get("https://www.captionbot.ai/api/init")
         .end(res => {
-            console.log("BODY:", res.body);
             var options = {
                 uri: 'https://www.captionbot.ai/api/message',
                 json: {
@@ -22,15 +21,17 @@ module.exports = {
             .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
             .send(options.json)
             .end(res => {
-              console.log(res.body);
               unirest.get("https://www.captionbot.ai/api/message?waterMark=&conversationId="+options.json.conversationId)
               .end(res => {
-                console.log(JSON.parse(res.body).BotMessages[1]);
-                bot.updateMessage(message, "**"+JSON.parse(res.body).BotMessages[1]+"**");
+                console.log("Identify: ", msg.server.name, msg.server.id, "|", args, "|", bot.options.shardId, "|", options.json.conversationId);
+                try {
+                  bot.updateMessage(message, "**"+JSON.parse(res.body).BotMessages[1]+"**");
+                } catch (err) {
+                  bot.updateMessage(message, '**Could not identify image!**');
+                }
               });
             });
         });
         });
-    },
-    help: 'template'
+    }
 };

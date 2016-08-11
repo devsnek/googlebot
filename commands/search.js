@@ -1,6 +1,7 @@
 request = require("request");
 var r = require('rethinkdb');
 var cheerio = require('cheerio');
+var querystring = require('querystring');
 
 module.exports = {
     main: function(bot, msg, settings) {
@@ -33,8 +34,9 @@ module.exports = {
                                 } else {
                                     $ = cheerio.load(body);
                                     try {
-                                        var result = $('.r').first().find('a').first().attr('href');
-                                        bot.updateMessage(message, result);
+                                        var href = $('.r').first().find('a').first().attr('href');
+                                        var res = Object.keys(querystring.parse(href.substr(7, href.length)))[0];
+                                        bot.updateMessage(message, res);
                                     } catch (err) {
                                         console.log(err);
                                         bot.updateMessage(message, '`No results found`');

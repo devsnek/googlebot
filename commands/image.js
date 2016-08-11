@@ -27,12 +27,13 @@ module.exports = {
                         try {
                             bot.updateMessage(message, JSON.parse(body)['items'][0]['link']);
                         } catch (err) {
-                            request('https://www.google.com/search?tbm=isch&gs_l=img&q=hwhat', function (error, response, body) {
+                            request('https://www.google.com/search?tbm=isch&gs_l=img&q='+encodeURI(args), function (error, response, body) {
                               if (!error && response.statusCode == 200) {
                                 $ = cheerio.load(body);
-                                var href = $('.images_table').find('a').first().attr('href')
-                                var res = Object.keys(querystring.parse(href.substr(7, href.length)))[0];
-                                bot.updateMessage(message, res);
+                                var src = $('.images_table').find('img').first().attr('src');
+                                bot.updateMessage(message, src);
+                              } else {
+                                bot.updateMessage(message, "`No results found!`");
                               }
                             });
                         }
