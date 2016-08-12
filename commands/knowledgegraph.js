@@ -1,7 +1,4 @@
 request = require("request");
-var r = require('rethinkdb');
-var cheerio = require('cheerio');
-var querystring = require('querystring');
 
 module.exports = {
     main: function(bot, msg, settings) {
