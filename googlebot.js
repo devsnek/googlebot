@@ -164,7 +164,7 @@ var checkCommand = function(msg, length, bot) {
                 } catch (err) {
                     if (original.split(' ').length > 1) {
                         msg.content = original;
-                        commands['search'].main(bot, msg, settings, bots);
+                        commands['knowledgegraph'].main(bot, msg, settings, bots);
                     }
                 }
             }
