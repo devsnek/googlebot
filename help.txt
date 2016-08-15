@@ -22,14 +22,14 @@ Other Stuff:
   ping [ip/domain]              ping the server or an optional url/ip
   invite                        Shows the invite url to add this bot to your server
   purge                         deletes messages from channel, default 15
-  user <id>                     get all sorts of juicy info about a user
+  user <method> <query>         get all sorts of juicy info about a user
 
 Help server: https://guscaplan.me/discord
 
 Change all sorts of cool settings from the Web Control Panel!
 Just go to http://google.guscaplan.me/panel
 
-Hey Guys! we just hit 3000 servers, but I really can't run this myself. Please consider donating.
+Hey Guys! we just hit 3500 servers, but I really can't run this myself. Please consider donating.
 
 Servers ain't cheap, donate and get a cookie! https://www.patreon.com/guscaplan 🍪
 ```
