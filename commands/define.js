@@ -3,7 +3,7 @@ var request = require("request");
 module.exports = {
      main: function(bot, msg, settings) {
         var args = msg.content;
-        console.log(args);
+        bot.log("DEFINE", args);
         bot.sendMessage(msg, "`Opening Dictionary...`", function(err, message){
             url = "https://wordsapiv1.p.mashape.com/words/"+args;
             var headers = {'X-Mashape-Key': settings.config.wordsApi, 'Accept': 'application/json'}

@@ -3,7 +3,7 @@ var unirest = require('unirest');
 module.exports = {
     main: function(bot, msg) {
         args = msg.content;
-        console.log("IDENTIFY", msg.server.name, msg.server.id, args);
+        bot.log("IDENTIFY", msg.server.name, msg.server.id, args);
 
         bot.sendMessage(msg, "`Identifying...`", (err, message) => {
         unirest.get("https://www.captionbot.ai/api/init")
@@ -23,7 +23,7 @@ module.exports = {
             .end(res => {
               unirest.get("https://www.captionbot.ai/api/message?waterMark=&conversationId="+options.json.conversationId)
               .end(res => {
-                console.log("Identify: ", msg.server.name, msg.server.id, "|", args, "|", options.json.conversationId);
+                bot.log("Identify: ", msg.server.name, msg.server.id, "|", args, "|", options.json.conversationId);
                 try {
                   bot.updateMessage(message, "**"+JSON.parse(res.body).BotMessages[1]+"**");
                 } catch (err) {

@@ -5,7 +5,7 @@ var querystring = require('querystring');
 
 module.exports = {
     main: function(bot, msg, settings) {
-        var args = msg.content;
+        var args = msg.content.trimLeft();
         safe_map = {
             1: "off",
             2: "medium",
@@ -20,7 +20,7 @@ module.exports = {
                     safe_setting = safe_map[parseInt(thing.nsfw)];
                 }
                 var safe = (msg.channel.name.includes("nsfw") ? "off" : safe_setting);
-                console.log("Search: ", msg.server.name, msg.server.id, "|", args, "|", safe, "|", key, settings.lastKey + 1);
+                bot.log("Search:", msg.server.name, msg.server.id, "|", args, "|", safe, "|", key, settings.lastKey + 1);
                 var url = "https://www.googleapis.com/customsearch/v1?key=" + key + "&cx=" + settings.config.cx + "&safe=" + safe + "&q=" + encodeURI(args);
                 try {
                     request(url, function(error, response, body) {
@@ -29,7 +29,7 @@ module.exports = {
                         } catch (err) {
                             request('https://www.google.com/search?safe='+safe+'&q='+encodeURI(args), function(err, res, body) {
                                 if (res.statusCode !== 200) {
-                                    console.log('STATUS:', res.statusCode, 'BODY:', body);
+                                    bot.error('STATUS:', res.statusCode, 'BODY:', body);
                                     bot.updateMessage(message, "`No results found!`");
                                 } else {
                                     $ = cheerio.load(body);
@@ -42,7 +42,7 @@ module.exports = {
                                           bot.updateMessage(message, res);
                                         }
                                     } catch (err) {
-                                        console.log(err);
+                                        bot.error(err);
                                         bot.updateMessage(message, '`No results found`');
                                     }
                                 }

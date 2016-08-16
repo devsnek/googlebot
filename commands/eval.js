@@ -1,15 +1,10 @@
-//var _eval = require('eval');
-//var safeEval = require('safe-eval');
-
 module.exports = {
      main: function(bot, msg, settings, bots) {
         if (msg.author.id == settings.OWNERID) {
             args = msg.content;
-            console.log('EVAL WAS RUN!');
+            bot.log('EVAL WAS RUN!');
             try {
-                //var res = _eval('('+args+')');
                 var res = eval(args);
-                //var res = safeEval(args);
                 if (typeof res != 'string') {
                     res = require("util").inspect(res);
                 }

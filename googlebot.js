@@ -65,12 +65,12 @@ if (cluster.isMaster) {
         process.send({type: t, id: bot.options.shardId, content: c});
     };
 
-    bot.log = function(c) {
-        console.log(chalk.green(`SHARD ${bot.options.shardId}:`), c);
+    bot.log = function() {
+        console.log.apply(this, [chalk.green(`SHARD ${bot.options.shardId}:`)].concat(Object.keys(arguments).map(k => arguments[k])));
     };
 
-    bot.error = function(c) {
-        console.log(chalk.bgRed.white(`SHARD ${bot.options.shardId}:`), c)
+    bot.error = function() {
+        console.log.apply(this, [chalk.bgRed.white(`SHARD ${bot.options.shardId}:`)].concat(Object.keys(arguments).map(k => arguments[k])));
     }
 
     var rl = new Ratelimits();
