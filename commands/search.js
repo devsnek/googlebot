@@ -20,7 +20,7 @@ module.exports = {
                     safe_setting = safe_map[parseInt(thing.nsfw)];
                 }
                 var safe = (msg.channel.name.includes("nsfw") ? "off" : safe_setting);
-                console.log("Search: ", msg.server.name, msg.server.id, "|", args, "|", safe, "|", bot.options.shardId, "|", key, settings.lastKey + 1);
+                console.log("Search: ", msg.server.name, msg.server.id, "|", args, "|", safe, "|", key, settings.lastKey + 1);
                 var url = "https://www.googleapis.com/customsearch/v1?key=" + key + "&cx=" + settings.config.cx + "&safe=" + safe + "&q=" + encodeURI(args);
                 try {
                     request(url, function(error, response, body) {
@@ -36,7 +36,11 @@ module.exports = {
                                     try {
                                         var href = $('.r').first().find('a').first().attr('href');
                                         var res = Object.keys(querystring.parse(href.substr(7, href.length)))[0];
-                                        bot.updateMessage(message, res);
+                                        if (res == '?q') {
+                                          bot.updateMessage(message, '`No results found`');
+                                        } else {
+                                          bot.updateMessage(message, res);
+                                        }
                                     } catch (err) {
                                         console.log(err);
                                         bot.updateMessage(message, '`No results found`');

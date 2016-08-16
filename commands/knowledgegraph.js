@@ -5,7 +5,7 @@ module.exports = {
         var args = msg.content;
         args = args.replace(/(who|what|when|where) (was|is|were|are) /gi, '');
         bot.sendMessage(msg, "`Searching...`", function(err, message) {
-            console.log("KG: ", msg.server.name, msg.server.id, "|", args, "|", bot.options.shardId);
+            console.log("KG: ", msg.server.name, msg.server.id, "|", args);
             var url = `https://kgsearch.googleapis.com/v1/entities:search?key=${settings.config.kgKey}&limit=1&indent=True&query=${args.split(' ').join('+')}`;
             try {
                 request(url, function(error, response, body) {

@@ -1,297 +1,260 @@
-"use strict";
+'use strict';
 
-String.prototype.padRight = function(l,c) {return this+Array(l-this.length+1).join(c||" ")} // i would never use a nodejs package for this ;)
+/* jshint esversion: 6 */
+/* jshint node: true */
+
+String.prototype.padRight = function(l,c) {return this+Array(l-this.length+1).join(c||" ");}; // i would never use a nodejs package for this ;)
 function shuffle(a){for(var c,d,b=a.length;b;)d=Math.floor(Math.random()*b--),c=a[b],a[b]=a[d],a[d]=c;return a}
 
-var Discord = require("discord.js");
-var fs = require('fs');
-var JsonDB = require('node-json-db');
-var Ratelimits = require('./ratelimits');
-var r = require('rethinkdb');
+const Discord = require("discord.js");
+const fs = require('fs');
+const Ratelimits = require('./ratelimits');
+const r = require('rethinkdb');
+const os = require('os');
+const cluster = require('cluster');
+const sleep = require('sleep').sleep;
+const chalk = require('chalk');
 
-var bots = {};
+const wantedShards = 2; // or you could do `os.cpus().length` ¯\_(ツ)_/¯
 
-bots[0] = new Discord.Client({
-    autoReconnect: true,
-    shardCount: 2,
-    shardId: 0, 
-    maxCachedMessages: 1,
-    disableEveryone: true
-});
+if (cluster.isMaster) {
 
-bots[1] = new Discord.Client({
-    autoReconnect: true,
-    shardCount: 2,
-    shardId: 1,
-    maxCachedMessages: 1,
-    disableEveryone: true
-});
+  for (let i = 0; i < wantedShards; i++) {
+    cluster.fork({ shardId: i, shardCount: wantedShards });
+    sleep(5);
+  }
 
-var rl = {};
+  var serverCount = {};
 
-for (var i in bots) {
-  rl[i] = new Ratelimits();
-}
-
-var settings = {};
-
-settings.config = require('./config.json');
-
-r.connect({ host: settings.config.rethink, port: settings.config.rethinkport}, (err, conn) => {
-    if (err) console.error("DB ERROR:", err);
-    settings.dbconn = conn;
-});
-
-settings.stats = new JsonDB("stats", true, true);
-
-settings.OWNERID = '173547401905176585';
-settings.PREFIX = 'ok google';
-
-settings.startuptime = new Date() / 1000;
-
-settings.KEYS = fs.readFileSync('keys.txt').toString().split("\n");
-settings.KEYS.splice(-1, 1);
-
-settings.KEYS = shuffle(settings.KEYS);
-
-settings.lastKey = 0;
-
-settings.cacheTime = 21600000;
-
-settings.commands = {}
-
-var commands = settings.commands;
-
-// this command makes help
-commands.help = {};
-commands.help.args = '';
-commands.help.help = "view this message";
-commands.help.main = function(bot, msg) {
-    fs.readFile('./help.txt', 'utf8', function (err,data) {
-        if (err) {
-            return console.log(err);
-        }
-        bot.sendMessage(msg.author, data);
-        bot.sendMessage(msg, 'Help has been sent!');
+  cluster.on('fork', function(shard) {
+    console.log(chalk.yellow('MASTER'), 'New shard!');
+    shard.on('message', msg => {
+      //bot.log(`Master received message from shard ${msg.id}: ${msg.content}`);
+      if (msg.type == 'serverCount') {
+        serverCount[msg.id] = msg.content;
+        let total = 0;
+        Object.keys(serverCount).forEach(function(k) {
+          total += serverCount[k];
+        });
+        Object.keys(cluster.workers).forEach(function(id) {
+          cluster.workers[id].send({ type: 'serverCount', content: total});
+        })
+      }
     });
-}
+  })
 
-commands.load = {};
-commands.load.args = '<command>';
-commands.load.help = '';
-commands.load.hide = true;
-commands.load.main = function(bot, msg) {
-    if (msg.author.id == settings.OWNERID){
-    var args = msg;
-    try {
-        delete commands[args];
-        delete require.cache[__dirname+'/commands/'+args+'.js'];
-        commands[args] = require(__dirname+'/commands/'+args+'.js');
-        bot.sendMessage(msg, 'Loaded '+args);
-    } catch(err) { 
-        bot.sendMessage(msg, "Command not found or error loading\n`"+err.message+"`");
-    }
-    }
-}
+  var messageRelay = function(msg) {
+      Object.keys(cluster.workers).forEach(function(id) {
+          cluster.workers[id].send(msg);
+      })
+  };
 
-commands.unload = {};
-commands.unload.args = '<command>';
-commands.unload.help = '';
-commands.unload.hide = true;
-commands.unload.main = function(bot, msg) {
-    if (msg.author.id == settings.OWNERID){
+} else {
+
+    var bot = new Discord.Client({
+        autoReconnect: true,
+        shardCount: parseInt(process.env.shardCount),
+        shardId: parseInt(process.env.shardId),
+        maxCachedMessages: 1,
+        disableEveryone: true
+    });
+
+    // there are those that would say extending the client like this is bad. those people are 100% correct.
+
+    bot.sendIpc = function(t, c) {
+        process.send({type: t, id: bot.options.shardId, content: c});
+    };
+
+    bot.log = function(c) {
+        console.log(chalk.green(`SHARD ${bot.options.shardId}:`), c);
+    };
+
+    bot.error = function(c) {
+        console.log(chalk.bgRed.white(`SHARD ${bot.options.shardId}:`), c)
+    }
+
+    var rl = new Ratelimits();
+
+    var settings = {};
+
+    process.on('message', function(msg) {
+        if (msg.type == 'serverCount') {
+            settings.serverCount = msg.content;
+        }
+    });
+
+    settings.config = require('./config.json');
+
+    r.connect({ host: settings.config.rethink, port: settings.config.rethinkport}, (err, conn) => {
+        if (err) console.error("DB ERROR:", err);
+        settings.dbconn = conn;
+    });
+
+    settings.OWNERID = '173547401905176585';
+    settings.PREFIX = 'ok google';
+
+    settings.startuptime = new Date() / 1000;
+
+    settings.KEYS = fs.readFileSync('keys.txt').toString().split("\n");
+    settings.KEYS.splice(-1, 1);
+
+    settings.KEYS = shuffle(settings.KEYS);
+
+    settings.lastKey = 0;
+
+    settings.cacheTime = 21600000;
+
+    settings.commands = {};
+
+    var commands = settings.commands;
+
+    // this command makes help
+    commands.help = {};
+    commands.help.main = function(bot, msg) {
+        fs.readFile('./help.txt', 'utf8', function (err,data) {
+            if (err) {
+                return bot.error(err);
+            }
+            bot.sendMessage(msg.author, data);
+            bot.sendMessage(msg, 'Help has been sent!');
+        });
+    };
+
+    commands.load = {};
+    commands.load.main = function(bot, msg) {
+        if (msg.author.id == settings.OWNERID){
         var args = msg;
         try {
             delete commands[args];
             delete require.cache[__dirname+'/commands/'+args+'.js'];
-            bot.sendMessage(msg, 'Unloaded '+args);
-        }
-        catch(err){
-            bot.sendMessage(msg, "Command not found");
-        }
-    }
-}
-
-commands.reload = {};
-commands.reload.args = '';
-commands.reload.help = '';
-commands.reload.hide = true;
-commands.reload.main = function(bot, msg) {
-    if (msg.author.id == settings.OWNERID){
-        var args = msg;
-        try {
-            delete commands[args];
-            delete require.cache[__dirname+'/commands/'+args+'.js']; // this is the important part here, since require caches files, reloading would do nothing if we didn't clear it
             commands[args] = require(__dirname+'/commands/'+args+'.js');
-            bot.sendMessage(msg, 'Reloaded '+args);
+            bot.sendMessage(msg, 'Loaded '+args);
         } catch(err) {
-            bot.sendMessage(msg, "Command not found");
+            bot.sendMessage(msg, "Command not found or error loading\n`"+err.message+"`");
+        }
         }
     }
-}
 
-commands.servers = {};
-commands.servers.main = function(bot, msg, settings) {
-    var servers = 0;
-    for (var i in bots) {
-        servers += bots[i].servers.length;
-    }
-    bot.sendMessage(msg, servers);
-}
-
-var loadCommands = function() {
-    var files = fs.readdirSync(__dirname+'/commands');
-    for (let file of files) {
-        if (file.endsWith('.js')) {
-            commands[file.slice(0, -3)] = require(__dirname+'/commands/'+file);
+    commands.unload = {};
+    commands.unload.main = function(bot, msg) {
+        if (msg.author.id == settings.OWNERID){
+            var args = msg;
+            try {
+                delete commands[args];
+                delete require.cache[__dirname+'/commands/'+args+'.js'];
+                bot.sendMessage(msg, 'Unloaded '+args);
+            }
+            catch(err){
+                bot.sendMessage(msg, "Command not found");
+            }
         }
     }
-    console.log("———— All Commands Loaded! ————");
-}
 
-var checkCommand = function(msg, length, bot) {
-    try {
-        if (rl[bot.options.shardId].changeCommand(msg, true)) {
-            if(typeof msg.content.split(' ')[length] === 'undefined') {
-            
-            } else {
-                msg.content = msg.content.substr(msg.content.split(" ", length).join(" ").length);
-                var original = msg.content;
-                var command = msg.content.split(' ')[1]; // friggin space at the beginning >:(
-                msg.content = msg.content.split(' ').splice(2, msg.content.split(' ').length).join(' ');
-                try {
-                    commands[command].main(bot, msg, settings, bots);
-                } catch (err) {
-                    if (original.split(' ').length > 1) {
-                        msg.content = original;
-                        commands['knowledgegraph'].main(bot, msg, settings, bots);
+    commands.reload = {};
+    commands.reload.main = function(bot, msg) {
+        if (msg.author.id == settings.OWNERID){
+            var args = msg;
+            try {
+                delete commands[args];
+                delete require.cache[__dirname+'/commands/'+args+'.js']; // this is the important part here, since require caches files, reloading would do nothing if we didn't clear it
+                commands[args] = require(__dirname+'/commands/'+args+'.js');
+                bot.sendMessage(msg, 'Reloaded '+args);
+            } catch(err) {
+                bot.sendMessage(msg, "Command not found");
+            }
+        }
+    }
+
+    commands.servers = {};
+    commands.servers.main = function(bot, msg, settings) {
+        bot.sendMessage(msg, settings.serverCount);
+    }
+
+    var loadCommands = function() {
+        var files = fs.readdirSync(__dirname+'/commands');
+        for (let file of files) {
+            if (file.endsWith('.js')) {
+                commands[file.slice(0, -3)] = require(__dirname+'/commands/'+file);
+            }
+        }
+        bot.log("———— All Commands Loaded! ————");
+    }
+
+    var checkCommand = function(msg, length, bot) {
+        try {
+            if (rl.changeCommand(msg, true)) {
+                if(typeof msg.content.split(' ')[length] === 'undefined') {
+
+                } else {
+                    msg.content = msg.content.substr(msg.content.split(" ", length).join(" ").length);
+                    var original = msg.content;
+                    var command = msg.content.split(' ')[1]; // friggin space at the beginning >:(
+                    msg.content = msg.content.split(' ').splice(2, msg.content.split(' ').length).join(' ');
+                    try {
+                        commands[command].main(bot, msg, settings);
+                    } catch (err) {
+                        if (original.split(' ').length > 1) {
+                            msg.content = original;
+                            commands['search'].main(bot, msg, settings);
+                        }
                     }
                 }
             }
         }
+        catch(err) {
+            bot.error(err.message);
+        }
     }
-    catch(err) {
-        console.log(err.message);
-    }
-}
 
 
-var onReady = function(bot) {
-    console.log(`Shard ${bot.options.shardId} is ready to begin! Serving in ${bot.channels.length} channels`);
-    bot.setStatus("online", "ok google, help");
-    loadCommands();
-    rl[bot.options.shardId].onReady();
-}
+    bot.on('ready', function() {
+        bot.log(`READY! Serving in ${bot.channels.length} channels and ${bot.servers.length} servers`);
+        bot.setStatus("online", "ok google, help");
+        loadCommands();
+        rl.onReady();
+        bot.sendIpc('serverCount', bot.servers.length);
+    });
 
-var onMessage = function(msg, bot) {
-    if (msg.content.startsWith('<@'+bot.user.id+'>') || msg.content.startsWith('<@!'+bot.user.id+'>')) {
-        checkCommand(msg, 1, bot);
-    } else if (msg.content.toLowerCase().startsWith(settings.PREFIX)) {
-        checkCommand(msg, settings.PREFIX.split(' ').length, bot);
-    }
-}
-
-var onError = function(err, bot) {
-    console.log(`————— BIG ERROR (Shard ${bot.options.shardId}) —————`);
-    console.log(err);
-    console.log("——— END BIG ERROR ———");
-}
-
-var onDisconnect = function(bot) {
-    //alert the console
-    console.log("Disconnected!");
-    rl[bot.options.shardId].onDisconnect();
-}
-
-var serverCreated = function(server, bot) {
-    console.log('SERVER GET:', server.name, server.id, bot.options.shardId);
-    r.db('google').table('servers').get(server.id).run(settings.dbconn, function(err, res) {
-        if (res === null) {
-            fs.readFile('./welcome.txt', 'utf8', function (err,data) {
-                if (err) {
-                    return console.log(err);
-                }
-                bot.sendMessage(server.defaultChannel, server.owner.mention() + " " + data);
-                r.db('google').table('servers').insert({id: server.id, name: server.name, nsfw: '2', nick: 'Google'}).run(settings.dbconn);
-            });
+    bot.on('message', function(msg) {
+        if (msg.content.startsWith('<@'+bot.user.id+'>') || msg.content.startsWith('<@!'+bot.user.id+'>')) {
+            checkCommand(msg, 1, bot);
+        } else if (msg.content.toLowerCase().startsWith(settings.PREFIX)) {
+            checkCommand(msg, settings.PREFIX.split(' ').length, bot);
         }
     });
+
+    bot.on('error', function(err) {
+        bot.error(`————— BIG ERROR —————`);
+        bot.error(err);
+        bot.error("——— END BIG ERROR ———");
+    });
+
+    bot.on('disconnect', function(bot) {
+        //alert the console
+        bot.log("Disconnected!");
+        rl.onDisconnect();
+    });
+
+    bot.on('serverCreated', function(server) {
+        bot.log('SERVER GET:', server.name, server.id, bot.options.shardId);
+        r.db('google').table('servers').get(server.id).run(settings.dbconn, function(err, res) {
+            if (res === null) {
+                fs.readFile('./welcome.txt', 'utf8', function (err,data) {
+                    if (err) {
+                        return bot.log(err);
+                    }
+                    bot.sendMessage(server.defaultChannel, server.owner.mention() + " " + data);
+                    r.db('google').table('servers').insert({id: server.id, name: server.name, nsfw: '2', nick: 'Google'}).run(settings.dbconn);
+                });
+            }
+        });
+        bot.sendIpc('serverCount', bot.servers.length);
+    });
+
+    bot.on('serverDeleted', function(server) {
+        bot.log('SERVER LOST:', server.name, server.id, bot.options.shardId);
+        bot.sendIpc('serverCount', bot.servers.length);
+    });
+
+    bot.loginWithToken(settings.config.token);
 }
-
-var serverDeleted = function(server, bot) {
-    console.log('SERVER LOST:', server.name, server.id, bot.options.shardId);
-}
-
-// this shit here makes me sad, but i'm too lazy to make it nicer
-
-//when bot is ready load commands
-bots[0].on("ready", () => {
-    onReady(bots[0]);
-});
-
-//when bot is ready load commands
-bots[1].on("ready", () => {
-    onReady(bots[1]);
-});
-
-//when the bot receives a message
-bots[0].on("message", msg => {
-    onMessage(msg, bots[0]);
-});
-
-//when the bot receives a message
-bots[1].on("message", msg => {
-    onMessage(msg, bots[1]);
-});
-
-
-// when things break
-bots[0].on('error', (err) => {
-    onError(err, bots[0]);
-});
-
-// when things break
-bots[1].on('error', (err) => {
-    onError(err, bots[1]);
-});
-
-
-//when the bot disconnects
-bots[0].on("disconnected", () => {
-    onDisconnect(bots[0]);
-});
-
-//when the bot disconnects
-bots[1].on("disconnected", () => {
-    onDisconnect(bots[1]);
-});
-
-bots[0].on("serverDeleted", function(server){
-    serverDeleted(server, bots[0]);
-});
-
-bots[1].on("serverDeleted", function(server){
-    serverDeleted(server, bots[1]);
-});
-
-bots[0].on("serverCreated", function(server){
-    serverCreated(server, bots[0]);
-});
-
-bots[1].on("serverCreated", function(server){
-    serverCreated(server, bots[1]);
-});
-
-bots[0].loginWithToken(settings.config.token);
-bots[1].loginWithToken(settings.config.token);
-
-function exitHandler() {
-    for (let bot in bots) {
-        bots[bot].destroy();
-    }
-}
-
-process.on('exit', exitHandler.bind(null))
-  .on('SIGINT', exitHandler.bind(null))
-//  .on('uncaughtException', exitHandler.bind(null))
-  .stdin.resume();

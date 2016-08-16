@@ -13,9 +13,13 @@ module.exports = {
                 fromlang = JSON.parse(body)['lang'];
                 gurl = "https://translate.googleapis.com/translate_a/single?client=gtx&sl="+fromlang+"&tl="+tolang+"&dt=t&q="+args;
                 request(gurl, function(error, response, body) {
-                    translated = body.match(/^\[\[\[".+?",/)[0];
-                    translated = translated.substring(4, translated.length-2);
-                    bot.sendMessage(msg, "```\nTranslated:\n" + translated + "\n```");
+                    try {
+                        translated = body.match(/^\[\[\[".+?",/)[0];
+                        translated = translated.substring(4, translated.length-2);
+                        bot.sendMessage(msg, "```\nTranslated:\n" + translated + "\n```");
+                    } catch (err) {
+                        bot.sendMessage(msg, "`Input was invalid`");
+                    }
                 });
             }
         });

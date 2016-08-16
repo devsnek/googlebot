@@ -1,13 +1,12 @@
 {
   "name": "googlebot_discord",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "author": "Gus Caplan <me@guscaplan.me>",
   "description": "Google’s mission is to organize the world’s information and make it universally accessible and useful.",
   "dependencies": {
     "cheerio": "^0.20.0",
     "discord.js": "github:hydrabolt/discord.js#indev",
-    "discordie": "github:qeled/discordie#dev",
     "googlebot-base": "github:guscaplan/googlebot#master",
     "iso-639-1": "github:guscaplan/iso-639-1",
     "node-json-db": "^0.7.2",

@@ -5,7 +5,7 @@ module.exports = {
      main: function(bot, msg, settings, bots) {
         if (msg.author.id == settings.OWNERID) {
             args = msg.content;
-            console.log(args);
+            console.log('EVAL WAS RUN!');
             try {
                 //var res = _eval('('+args+')');
                 var res = eval(args);

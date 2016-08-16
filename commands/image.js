@@ -20,7 +20,7 @@ module.exports = {
                     safe_setting = safe_map[parseInt(thing.nsfw)];
                 }
                 var safe = (msg.channel.name.includes("nsfw") ? "off" : safe_setting);
-                console.log("Image: ", msg.server.name, msg.server.id, "|", args, "|", safe, "|", bot.options.shardId, "|", key, settings.lastKey + 1);
+                console.log("Image: ", msg.server.name, msg.server.id, "|", args, "|", safe, "|", key, settings.lastKey + 1);
                 var url = "https://www.googleapis.com/customsearch/v1?key=" + key + "&cx=" + settings.config.cxImg + "&safe=" + safe + "&searchType=image&q=" + encodeURI(args);
                 try {
                     request(url, function(error, response, body) {

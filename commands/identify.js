@@ -23,7 +23,7 @@ module.exports = {
             .end(res => {
               unirest.get("https://www.captionbot.ai/api/message?waterMark=&conversationId="+options.json.conversationId)
               .end(res => {
-                console.log("Identify: ", msg.server.name, msg.server.id, "|", args, "|", bot.options.shardId, "|", options.json.conversationId);
+                console.log("Identify: ", msg.server.name, msg.server.id, "|", args, "|", options.json.conversationId);
                 try {
                   bot.updateMessage(message, "**"+JSON.parse(res.body).BotMessages[1]+"**");
                 } catch (err) {
