@@ -66,11 +66,11 @@ if (cluster.isMaster) {
     };
 
     bot.log = function() {
-        console.log.apply(this, [chalk.green(`SHARD ${bot.options.shardId}:`)].concat(Object.keys(arguments).map(k => arguments[k])));
+        console.log(chalk.green(`SHARD ${bot.options.shardId}:`), ...arguments);
     };
 
     bot.error = function() {
-        console.log.apply(this, [chalk.bgRed.white(`SHARD ${bot.options.shardId}:`)].concat(Object.keys(arguments).map(k => arguments[k])));
+        console.log(chalk.bgRed.white(`SHARD ${bot.options.shardId}:`), ...arguments);
     }
 
     var rl = new Ratelimits();
