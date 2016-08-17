@@ -19,6 +19,8 @@ const wantedShards = 2; // or you could do `os.cpus().length` ¯\_(ツ)_/¯
 
 if (cluster.isMaster) {
 
+  var running = {};
+
   for (let i = 0; i < wantedShards; i++) {
     cluster.fork({ shardId: i, shardCount: wantedShards });
     sleep(5);
@@ -26,8 +28,11 @@ if (cluster.isMaster) {
 
   var serverCount = {};
 
+  var log = function() {
+    console.log('⚠️ ', chalk.yellow('MASTER'), ...arguments);
+  }
+
   cluster.on('fork', function(shard) {
-    console.log(chalk.yellow('MASTER'), 'New shard!');
     shard.on('message', msg => {
       //bot.log(`Master received message from shard ${msg.id}: ${msg.content}`);
       if (msg.type == 'serverCount') {
@@ -39,15 +44,17 @@ if (cluster.isMaster) {
         Object.keys(cluster.workers).forEach(function(id) {
           cluster.workers[id].send({ type: 'serverCount', content: total});
         })
+      } else if (msg.type == 'alive') {
+        log('New shard! pid:', shard.process.pid, 'id:', msg.id);
+        running[shard.process.pid] = msg.id;
       }
     });
-  })
 
-  var messageRelay = function(msg) {
-      Object.keys(cluster.workers).forEach(function(id) {
-          cluster.workers[id].send(msg);
-      })
-  };
+    shard.on('exit', (code, signal) => {
+      log('Shard Died! pid:', shard.process.pid, 'id:', running[shard.process.pid]);
+      cluster.fork({ shardId: running[shard.process.pid], shardCount: wantedShards });
+    });
+  });
 
 } else {
 
@@ -59,6 +66,8 @@ if (cluster.isMaster) {
         disableEveryone: true
     });
 
+    process.send({type: 'alive', id: bot.options.shardId, content: bot.options.shardId});
+
     // there are those that would say extending the client like this is bad. those people are 100% correct.
 
     bot.sendIpc = function(t, c) {
@@ -66,11 +75,11 @@ if (cluster.isMaster) {
     };
 
     bot.log = function() {
-        console.log(chalk.green(`SHARD ${bot.options.shardId}:`), ...arguments);
+        console.log(chalk.green(`⚙  SHARD ${bot.options.shardId}:`), ...arguments);
     };
 
     bot.error = function() {
-        console.log(chalk.bgRed.white(`SHARD ${bot.options.shardId}:`), ...arguments);
+        console.log(chalk.bgRed.white(`🔥  SHARD ${bot.options.shardId}:`), ...arguments);
     }
 
     var rl = new Ratelimits();
@@ -145,7 +154,7 @@ if (cluster.isMaster) {
                 bot.sendMessage(msg, 'Unloaded '+args);
             }
             catch(err){
-                bot.sendMessage(msg, "Command not found");
+                bot.sendMessage(msg, "Command not found or error unloading\n`"+err.message+"`");
             }
         }
     }
@@ -160,7 +169,7 @@ if (cluster.isMaster) {
                 commands[args] = require(__dirname+'/commands/'+args+'.js');
                 bot.sendMessage(msg, 'Reloaded '+args);
             } catch(err) {
-                bot.sendMessage(msg, "Command not found");
+                bot.sendMessage(msg, "Command not found or error reloading\n`"+err.message+"`");
             }
         }
     }
