@@ -14,10 +14,37 @@ const os = require('os');
 const cluster = require('cluster');
 const sleep = require('sleep').sleep;
 const chalk = require('chalk');
+const unirest = require('unirest');
 
 const wantedShards = 2; // or you could do `os.cpus().length` ¯\_(ツ)_/¯
 
+const config = require('./config.json')
+
 if (cluster.isMaster) {
+
+  var updateCarbon = function(count){
+    console.log("updating carbon");
+    unirest.post('https://www.carbonitex.net/discord/data/botdata.php')
+    .headers({'Content-Type': 'multipart/form-data', 'cache-control': 'no-cache'})
+    .field('key', config.carbon)
+    .field('servercount', count)
+    .end(res => {
+      console.log(res.body);
+    });
+  };
+
+  var updateAbal = function(count){
+    console.log("updating abal");
+    unirest.post('https://bots.discord.pw/api/bots/187406062989606912/stats')
+    .headers({
+      'Content-Type': 'application/json',
+      'Authorization': config.abal
+    })
+    .send({'server_count': count})
+    .end(res => {
+        console.log(res.body);
+    })
+  };
 
   var running = {};
 
@@ -41,6 +68,8 @@ if (cluster.isMaster) {
         Object.keys(serverCount).forEach(function(k) {
           total += serverCount[k];
         });
+        updateAbal(total);
+        updateCarbon(total);
         Object.keys(cluster.workers).forEach(function(id) {
           cluster.workers[id].send({ type: 'serverCount', content: total});
         })
@@ -192,9 +221,7 @@ if (cluster.isMaster) {
     var checkCommand = function(msg, length, bot) {
         try {
             if (rl.changeCommand(msg, true)) {
-                if(typeof msg.content.split(' ')[length] === 'undefined') {
-
-                } else {
+                if(typeof msg.content.split(' ')[length] !== 'undefined') {
                     msg.content = msg.content.substr(msg.content.split(" ", length).join(" ").length);
                     var original = msg.content;
                     var command = msg.content.split(' ')[1]; // friggin space at the beginning >:(

@@ -31,7 +31,11 @@ module.exports = {
                               if (!error && response.statusCode == 200) {
                                 $ = cheerio.load(body);
                                 var src = $('.images_table').find('img').first().attr('src');
-                                bot.updateMessage(message, src);
+                                if (src) {
+                                  bot.updateMessage(message, src);
+                                } else {
+                                  bot.updateMessage(message, "`No results found!`");
+                                }
                               } else {
                                 bot.updateMessage(message, "`No results found!`");
                               }
