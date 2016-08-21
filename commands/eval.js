@@ -24,12 +24,12 @@ module.exports = {
         } else {
           try {
             let script = new vm.Script(args);
-            let res = script.runInContext(context);
+            var res = script.runInContext(context);
             if (typeof res != 'string') {
               res = util.inspect(res);
             }
           } catch (err) {
-            res = err.message;
+            var res = err.message;
           }
           bot.sendMessage(msg, "```js\n"+res+"\n```");
         }

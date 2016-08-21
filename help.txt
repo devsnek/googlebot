@@ -23,6 +23,7 @@ Other Stuff:
   invite                        Shows the invite url to add this bot to your server
   purge                         deletes messages from channel, default 15
   user <method> <query>         get all sorts of juicy info about a user
+  eval <javascript here>        run javascript in a sandbox
 
 Help server: https://guscaplan.me/discord
 
