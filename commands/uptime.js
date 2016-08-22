@@ -12,7 +12,7 @@ var toHHMMSS = function (seconds) {
 
 module.exports = {
     main: function(bot, msg, settings) {
-        bot.sendMessage(msg, "Uptime: "+toHHMMSS((new Date() / 1000)-settings.startuptime));
+        msg.channel.sendMessage("Uptime: "+toHHMMSS((new Date() / 1000)-settings.startuptime));
     },
     help: 'template'
 };

@@ -4,7 +4,7 @@ module.exports = {
      main: function(bot, msg, settings) {
         var args = msg.content;
         bot.log("DEFINE", args);
-        bot.sendMessage(msg, "`Opening Dictionary...`", function(err, message){
+        msg.channel.sendMessage("`Opening Dictionary...`").then(message => {
             url = "https://wordsapiv1.p.mashape.com/words/"+args;
             var headers = {'X-Mashape-Key': settings.config.wordsApi, 'Accept': 'application/json'}
             request({url: url, headers: headers}, function (error, response, body) {
@@ -15,9 +15,9 @@ module.exports = {
                         for (var item in response.results) {
                             final += (parseInt(item)+1) + ": "+response.results[item].definition + "\n"
                         }
-                        bot.updateMessage(message, "```xl\nDefinitions for "+args+":\n"+final+"\n```");
+                        message.edit("```xl\nDefinitions for "+args+":\n"+final+"\n```");
                     } catch (err) {
-                        bot.updateMessage(message, "`No results found!`");
+                        message.edit("`No results found!`");
                     }
                 }
             });

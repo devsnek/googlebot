@@ -12,7 +12,7 @@ module.exports = {
             catch (err) {
                 var res = err.message;
             }
-            bot.sendMessage(msg, "```js\n"+res+"\n```");
+            msg.channel.sendMessage("```js\n"+res+"\n```");
         }
      },
      args: '',

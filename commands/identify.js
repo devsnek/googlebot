@@ -1,11 +1,11 @@
-var unirest = require('unirest');
+const unirest = require('unirest');
 
 module.exports = {
     main: function(bot, msg) {
         args = msg.content;
         bot.log("IDENTIFY", msg.server.name, msg.server.id, args);
 
-        bot.sendMessage(msg, "`Identifying...`", (err, message) => {
+        msg.channel.sendMessage("`Identifying...`").then(message => {
         unirest.get("https://www.captionbot.ai/api/init")
         .end(res => {
             var options = {
@@ -25,9 +25,9 @@ module.exports = {
               .end(res => {
                 bot.log("Identify: ", msg.server.name, msg.server.id, "|", args, "|", options.json.conversationId);
                 try {
-                  bot.updateMessage(message, "**"+JSON.parse(res.body).BotMessages[1]+"**");
+                  message.edit("**"+JSON.parse(res.body).BotMessages[1]+"**");
                 } catch (err) {
-                  bot.updateMessage(message, '**Could not identify image!**');
+                  message.edit('**Could not identify image!**');
                 }
               });
             });

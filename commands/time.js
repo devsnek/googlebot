@@ -9,7 +9,7 @@ module.exports = {
         unirest.get("http://time.is/"+msg.content.replace(/^in/, ''))
         .end(res => {
             let $ = cheerio.load(res.body);
-            bot.sendMessage(msg, `${$('#msgdiv > h1').text()} is ${$('#dd').text()}, ${$('#twd').text()}`);
+            msg.channel.sendMessage(`${$('#msgdiv > h1').text()} is ${$('#dd').text()}, ${$('#twd').text()}`);
         });
     }
 }

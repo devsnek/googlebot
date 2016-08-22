@@ -1,7 +1,5 @@
 "use strict";
-var http = require('http');
-var fs = require('fs');
-var request = require('request');
+const request = require('request');
 
 module.exports = {
     main: function(bot, msg, settings) {
@@ -23,9 +21,9 @@ Username: ${user.username}
      Bot: ${user.bot}
     Game: ${user.game.name} (Streaming: ${user.game.type})
 \`\`\``
-              bot.sendMessage(msg, final);
+              msg.channel.sendMessage(final);
           } else {
-              bot.sendMessage(msg, "Error: "+error);
+              msg.channel.sendMessage("Error: "+error);
           }
         });
     },

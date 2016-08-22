@@ -1,8 +1,5 @@
 'use strict';
 
-/* jshint esversion: 6 */
-/* jshint node: true */
-
 String.prototype.padRight = function(l,c) {return this+Array(l-this.length+1).join(c||" ");}; // i would never use a nodejs package for this ;)
 function shuffle(a){for(var c,d,b=a.length;b;)d=Math.floor(Math.random()*b--),c=a[b],a[b]=a[d],a[d]=c;return a}
 
@@ -49,7 +46,7 @@ if (cluster.isMaster) {
   var running = {};
 
   for (let i = 0; i < wantedShards; i++) {
-    cluster.fork({ shardId: i, shardCount: wantedShards });
+    cluster.fork({ shard_id: i, shard_count: wantedShards });
     sleep(5);
   }
 
@@ -81,7 +78,7 @@ if (cluster.isMaster) {
 
     shard.on('exit', (code, signal) => {
       log('Shard Died! pid:', shard.process.pid, 'id:', running[shard.process.pid]);
-      cluster.fork({ shardId: running[shard.process.pid], shardCount: wantedShards });
+      cluster.fork({ shard_id: running[shard.process.pid], shard_count: wantedShards });
     });
   });
 
@@ -89,26 +86,25 @@ if (cluster.isMaster) {
 
     var bot = new Discord.Client({
         autoReconnect: true,
-        shardCount: parseInt(process.env.shardCount),
-        shardId: parseInt(process.env.shardId),
-        maxCachedMessages: 1,
-        disableEveryone: true
+        shard_count: parseInt(process.env.shard_count),
+        shard_id: parseInt(process.env.shard_id),
+        maxCachedMessages: 1
     });
 
-    process.send({type: 'alive', id: bot.options.shardId, content: bot.options.shardId});
+    process.send({type: 'alive', id: bot.options.shard_id, content: bot.options.shard_id});
 
     // there are those that would say extending the client like this is bad. those people are 100% correct.
 
     bot.sendIpc = function(t, c) {
-        process.send({type: t, id: bot.options.shardId, content: c});
+        process.send({type: t, id: bot.options.shard_id, content: c});
     };
 
     bot.log = function() {
-        console.log(chalk.green(`⚙  SHARD ${bot.options.shardId}:`), ...arguments);
+        console.log(chalk.green(`⚙  SHARD ${bot.options.shard_id}:`), ...arguments);
     };
 
     bot.error = function() {
-        console.log(chalk.bgRed.white(`🔥  SHARD ${bot.options.shardId}:`), ...arguments);
+        console.log(chalk.bgRed.white(`🔥  SHARD ${bot.options.shard_id}:`), ...arguments);
     }
 
     var rl = new Ratelimits();
@@ -153,8 +149,8 @@ if (cluster.isMaster) {
             if (err) {
                 return bot.error(err);
             }
-            bot.sendMessage(msg.author, data);
-            bot.sendMessage(msg, 'Help has been sent!');
+            msg.author.sendMessage(data);
+            msg.channel.sendMessage('Help has been sent!');
         });
     };
 
@@ -166,9 +162,9 @@ if (cluster.isMaster) {
             delete commands[args];
             delete require.cache[__dirname+'/commands/'+args+'.js'];
             commands[args] = require(__dirname+'/commands/'+args+'.js');
-            bot.sendMessage(msg, 'Loaded '+args);
+            msg.channel.sendMessage('Loaded '+args);
         } catch(err) {
-            bot.sendMessage(msg, "Command not found or error loading\n`"+err.message+"`");
+            msg.channel.sendMessage("Command not found or error loading\n`"+err.message+"`");
         }
         }
     }
@@ -180,10 +176,10 @@ if (cluster.isMaster) {
             try {
                 delete commands[args];
                 delete require.cache[__dirname+'/commands/'+args+'.js'];
-                bot.sendMessage(msg, 'Unloaded '+args);
+                msg.channel.sendMessage('Unloaded '+args);
             }
             catch(err){
-                bot.sendMessage(msg, "Command not found or error unloading\n`"+err.message+"`");
+                msg.channel.sendMessage("Command not found or error unloading\n`"+err.message+"`");
             }
         }
     }
@@ -196,16 +192,16 @@ if (cluster.isMaster) {
                 delete commands[args];
                 delete require.cache[__dirname+'/commands/'+args+'.js']; // this is the important part here, since require caches files, reloading would do nothing if we didn't clear it
                 commands[args] = require(__dirname+'/commands/'+args+'.js');
-                bot.sendMessage(msg, 'Reloaded '+args);
+                msg.channel.sendMessage('Reloaded '+args);
             } catch(err) {
-                bot.sendMessage(msg, "Command not found or error reloading\n`"+err.message+"`");
+                msg.channel.sendMessage("Command not found or error reloading\n`"+err.message+"`");
             }
         }
     }
 
     commands.servers = {};
     commands.servers.main = function(bot, msg, settings) {
-        bot.sendMessage(msg, settings.serverCount);
+        msg.channel.sendMessage(settings.serverCount);
     }
 
     var loadCommands = function() {
@@ -244,11 +240,11 @@ if (cluster.isMaster) {
 
 
     bot.on('ready', function() {
-        bot.log(`READY! Serving in ${bot.channels.length} channels and ${bot.servers.length} servers`);
-        bot.setStatus("online", "ok google, help");
+        bot.log(`READY! Serving in ${bot.channels.size} channels and ${bot.guilds.size} servers`);
+        bot.user.setStatus("online", {name: "ok google, help"});
         loadCommands();
         rl.onReady();
-        bot.sendIpc('serverCount', bot.servers.length);
+        bot.sendIpc('serverCount', bot.guilds.size);
     });
 
     bot.on('message', function(msg) {
@@ -271,26 +267,26 @@ if (cluster.isMaster) {
         rl.onDisconnect();
     });
 
-    bot.on('serverCreated', function(server) {
-        bot.log('SERVER GET:', server.name, server.id, bot.options.shardId);
+    bot.on('guildCreate', function(server) {
+        bot.log('SERVER GET:', server.name, server.id, bot.options.shard_id);
         r.db('google').table('servers').get(server.id).run(settings.dbconn, function(err, res) {
             if (res === null) {
                 fs.readFile('./welcome.txt', 'utf8', function (err,data) {
                     if (err) {
                         return bot.log(err);
                     }
-                    bot.sendMessage(server.defaultChannel, server.owner.mention() + " " + data);
+                    server.embedChannel.sendMessage(server.owner.toString() + " " + data);
                     r.db('google').table('servers').insert({id: server.id, name: server.name, nsfw: '2', nick: 'Google'}).run(settings.dbconn);
                 });
             }
         });
-        bot.sendIpc('serverCount', bot.servers.length);
+        bot.sendIpc('serverCount', bot.guilds.size);
     });
 
-    bot.on('serverDeleted', function(server) {
-        bot.log('SERVER LOST:', server.name, server.id, bot.options.shardId);
-        bot.sendIpc('serverCount', bot.servers.length);
+    bot.on('guildDelete', function(server) {
+        bot.log('SERVER LOST:', server.name, server.id, bot.options.shard_id);
+        bot.sendIpc('serverCount', bot.guilds.size);
     });
 
-    bot.loginWithToken(settings.config.token);
+    bot.login(settings.config.token);
 }

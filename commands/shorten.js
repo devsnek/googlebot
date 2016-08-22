@@ -9,7 +9,7 @@ module.exports = {
           .set('Content-Type', 'application/json')
           .send({"longUrl": msg.content})
           .end(res => {
-              bot.sendMessage(msg, res.body.id);
+              msg.channel.sendMessage(res.body.id);
           });
     }
 }

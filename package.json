@@ -8,7 +8,7 @@
     "chalk": "^1.1.3",
     "cheerio": "^0.20.0",
     "colors": "^1.1.2",
-    "discord.js": "github:hydrabolt/discord.js#indev",
+    "discord.js": "github:hydrabolt/discord.js#indev-rewrite",
     "googlebot-base": "github:guscaplan/googlebot#master",
     "iso-639-1": "github:guscaplan/iso-639-1",
     "node-json-db": "^0.7.2",
