@@ -19,6 +19,8 @@ module.exports = {
                     } catch (err) {
                         message.edit("`No results found!`");
                     }
+                } else {
+                    message.edit("`No results found!`");
                 }
             });
         });
