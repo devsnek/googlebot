@@ -9,16 +9,18 @@ module.exports = {
             var headers = {'X-Mashape-Key': settings.config.wordsApi, 'Accept': 'application/json'}
             request({url: url, headers: headers}, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    var response = JSON.parse(body);
-                    var final = "";
-                    try {
-                        for (var item in response.results) {
-                            final += (parseInt(item)+1) + ": "+response.results[item].definition + "\n"
-                        }
-                        message.edit("```xl\nDefinitions for "+args+":\n"+final+"\n```");
-                    } catch (err) {
-                        message.edit("`No results found!`");
+                  var response = JSON.parse(body);
+                  var final = "";
+                  try {
+                    for (var item in response.results) {
+                      final += (parseInt(item)+1) + ": "+response.results[item].definition + "\n"
                     }
+                    message.edit("```xl\nDefinitions for "+args+":\n"+final+"\n```");
+                  } catch (err) {
+                    message.edit("`No results found!`");
+                  }
+                } else {
+                  message.edit("`No results found!`");
                 }
             });
         });

@@ -149,7 +149,7 @@ if (cluster.isMaster) {
             if (err) {
                 return bot.error(err);
             }
-            msg.author.sendMessage(data);
+            msg.author.sendMessage(data).catch(err => bot.error(err));
             msg.channel.sendMessage('Help has been sent!');
         });
     };
@@ -248,6 +248,7 @@ if (cluster.isMaster) {
     });
 
     bot.on('message', function(msg) {
+        if (msg.guild === undefined) return;
         if (msg.content.startsWith('<@'+bot.user.id+'>') || msg.content.startsWith('<@!'+bot.user.id+'>')) {
             checkCommand(msg, 1, bot);
         } else if (msg.content.toLowerCase().startsWith(settings.PREFIX)) {
@@ -275,7 +276,7 @@ if (cluster.isMaster) {
                     if (err) {
                         return bot.log(err);
                     }
-                    server.embedChannel.sendMessage(server.owner.toString() + " " + data);
+                    server.channels.get(server.id).sendMessage("<@" + server.owner.id + "> " + data);
                     r.db('google').table('servers').insert({id: server.id, name: server.name, nsfw: '2', nick: 'Google'}).run(settings.dbconn);
                 });
             }
