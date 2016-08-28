@@ -172,7 +172,7 @@ if (cluster.isMaster) {
     commands.unload = {};
     commands.unload.main = function(bot, msg) {
         if (msg.author.id == settings.OWNERID){
-            var args = msg;
+            var args = msg.content;
             try {
                 delete commands[args];
                 delete require.cache[__dirname+'/commands/'+args+'.js'];
@@ -187,7 +187,7 @@ if (cluster.isMaster) {
     commands.reload = {};
     commands.reload.main = function(bot, msg) {
         if (msg.author.id == settings.OWNERID){
-            var args = msg;
+            var args = msg.content;
             try {
                 delete commands[args];
                 delete require.cache[__dirname+'/commands/'+args+'.js']; // this is the important part here, since require caches files, reloading would do nothing if we didn't clear it
