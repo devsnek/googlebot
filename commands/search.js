@@ -52,6 +52,7 @@ module.exports = {
                 } catch (err) {
                     message.edit('`No results found`');
                 }
+                settings.toBeDeleted.set(msg.id, message.id);
                 settings.lastKey += 1;
                 if (settings.lastKey + 1 >= settings.KEYS.length) settings.lastKey = 0;
             });

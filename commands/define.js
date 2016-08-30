@@ -22,6 +22,7 @@ module.exports = {
                 } else {
                   message.edit("`No results found!`");
                 }
+                settings.toBeDeleted.set(msg.id, message.id);
             });
         });
      },

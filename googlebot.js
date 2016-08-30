@@ -140,6 +140,8 @@ if (cluster.isMaster) {
 
     settings.commands = {};
 
+    settings.toBeDeleted = new Map();
+
     var commands = settings.commands;
 
     // this command makes help
@@ -254,6 +256,14 @@ if (cluster.isMaster) {
         } else if (msg.content.toLowerCase().startsWith(settings.PREFIX)) {
             checkCommand(msg, settings.PREFIX.split(' ').length, bot);
         }
+    });
+
+    bot.on('messageDelete', msg => {
+      if (settings.toBeDeleted.get(msg.id)) {
+        msg.channel.messages.get(settings.toBeDeleted.get(msg.id)).delete().then(() => {
+          settings.toBeDeleted.delete(msg.id);
+        });
+      }
     });
 
     bot.on('error', function(err) {
