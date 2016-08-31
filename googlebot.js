@@ -159,7 +159,7 @@ if (cluster.isMaster) {
     commands.load = {};
     commands.load.main = function(bot, msg) {
         if (msg.author.id == settings.OWNERID){
-        var args = msg;
+        var args = msg.content;
         try {
             delete commands[args];
             delete require.cache[__dirname+'/commands/'+args+'.js'];
