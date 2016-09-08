@@ -180,6 +180,7 @@ bot.on('ready', function() {
 
 bot.on('message', function(msg) {
   if (msg.guild === undefined) return;
+  if (msg.author.bot) return;
   if (msg.content.startsWith('<@'+bot.user.id+'>') || msg.content.startsWith('<@!'+bot.user.id+'>')) {
     checkCommand(msg, 1, bot);
   } else if (msg.content.toLowerCase().startsWith(settings.PREFIX)) {
@@ -188,10 +189,14 @@ bot.on('message', function(msg) {
 });
 
 bot.on('messageDelete', msg => {
-  if (settings.toBeDeleted.get(msg.id)) {
-    msg.channel.messages.get(settings.toBeDeleted.get(msg.id)).delete().then(() => {
-      settings.toBeDeleted.delete(msg.id);
-    });
+  try {
+    if (settings.toBeDeleted.get(msg.id)) {
+      msg.channel.messages.get(settings.toBeDeleted.get(msg.id)).delete().then(() => {
+        settings.toBeDeleted.delete(msg.id);
+      });
+    }
+  } catch (err) {
+    bot.error(err);
   }
 });
 
