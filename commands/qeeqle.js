@@ -1,13 +1,11 @@
 const unirest = require('unirest');
 
-function shortenTitle (string) {
-  return string.length > 40 ? string.substring(0, 40) + '...' : string;
-}
+const shortenTitle = string => string.length > 40 ? string.substring(0, 40) + '...' : string;
 
 module.exports = {
-  main: function(bot, msg, settings) {
+  main: (bot, msg, settings) => {
     unirest.post('https://qeeqle.guscaplan.me')
-    .send(JSON.stringify({"query": msg.content}))
+    .send(JSON.stringify({'query': msg.content}))
     .end(res => {
       if (res.body.errorMessage) {
         msg.channel.sendMessage(`No results found!`)
@@ -20,5 +18,8 @@ module.exports = {
         msg.channel.sendMessage('```xl\n' + final + '\n```');
       }
     });
-  }
+  },
+  help: 'Find anime from the internet',
+  args: '<query>',
+  catagory: 'general'
 }
