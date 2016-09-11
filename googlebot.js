@@ -1,6 +1,4 @@
-'use strict';
-
-String.prototype.padRight = function(l,c) {return this+Array(l-this.length+1).join(c||" ");}; // eslint-disable-line
+const rightpad = (v, n, c = '0') => String(v).length >= n ? '' + v : String(v) + String(c).repeat(n - String(v).length);
 const shuffle = (a) => {for(var c,d,b=a.length;b;)d=Math.floor(Math.random()*b--),c=a[b],a[b]=a[d],a[d]=c;return a} // eslint-disable-line
 
 const Discord = require('discord.js');
@@ -79,6 +77,18 @@ commands.help.main = (bot, msg) => {
     msg.author.sendMessage(data).catch(err => bot.error(err));
     msg.channel.sendMessage('Help has been sent!');
   });
+//   let help = {};
+//   commands.forEach(c => {
+//     if (c.hide) return;
+//     if (!help[c.catagory]) help[c.catagory] === {};
+//     help[c.catagory][c] = {help: c.help, args: c.args};
+//   });
+//   var final = '';
+//   Object.keys(help).forEach(k => {
+//     final += `${k}:
+// ${help[k].map(o => `${o} ${o.args}${rightpad(o.help, 15, ' ')}`).join('\n')}`;
+//   })
+//   console.log(final);
 };
 
 commands.load = {};

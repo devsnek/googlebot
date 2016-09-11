@@ -1,0 +1,21 @@
+```xl
+Google’s mission is to organize the world’s information and make it universally accessible and useful.
+
+PREFIX: "ok google"
+
+[optional parameter]
+<required parameter>
+
+{{help_text}}
+
+Help server: https://guscaplan.me/discord
+
+Change all sorts of cool settings from the Web Control Panel!
+Just go to http://google.guscaplan.me/panel
+
+Hey Guys! we just hit 🌟 6000🌟  servers, and keeping this running is becoming rather expensive. Please consider donating.
+
+https://patreon.com/guscaplan 🍪
+https://paypal.me/guscaplan
+1DCHccteivtBgWfcd2HUpRDNtBAVXSEYhW
+```
