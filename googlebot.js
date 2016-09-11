@@ -70,71 +70,72 @@ settings.toBeDeleted = new Map();
 var commands = settings.commands;
 
 // this command makes help
-commands.help = {};
-commands.help.main = (bot, msg) => {
-  fs.readFile('./help.txt', 'utf8', function (err, data) {
-    if (err) return bot.error(err);
-    msg.author.sendMessage(data).catch(err => bot.error(err));
-    msg.channel.sendMessage('Help has been sent!');
-  });
-//   let help = {};
-//   commands.forEach(c => {
-//     if (c.hide) return;
-//     if (!help[c.catagory]) help[c.catagory] === {};
-//     help[c.catagory][c] = {help: c.help, args: c.args};
-//   });
-//   var final = '';
-//   Object.keys(help).forEach(k => {
-//     final += `${k}:
-// ${help[k].map(o => `${o} ${o.args}${rightpad(o.help, 15, ' ')}`).join('\n')}`;
-//   })
-//   console.log(final);
+commands.help = {
+  main: (bot, msg) => {
+    fs.readFile('./help.txt', 'utf8', function (err, data) {
+      if (err) return bot.error(err);
+      msg.author.sendMessage(data).catch(err => bot.error(err));
+      msg.channel.sendMessage('Help has been sent!');
+    });
+  },
+  help: 'Shows this message.',
+  args: '',
+  catagory: 'util',
+  hide: true
 };
 
-commands.load = {};
-commands.load.main = (bot, msg) => {
-  if (msg.author.id !== settings.OWNERID) return;
-  var args = msg.content;
-  try {
-    delete commands[args];
-    delete require.cache[path.join(__dirname, 'commands', args + '.js')];
-    commands[args] = require(path.join(__dirname, 'commands', args + '.js'));
-    msg.channel.sendMessage('Loaded', args);
-  } catch (err) {
-    msg.channel.sendMessage('Command not found or error loading\n`' + err.message + '`');
-  }
+commands.load = {
+  main: (bot, msg) => {
+    if (msg.author.id !== settings.OWNERID) return;
+    var args = msg.content;
+    try {
+      delete commands[args];
+      delete require.cache[path.join(__dirname, 'commands', args + '.js')];
+      commands[args] = require(path.join(__dirname, 'commands', args + '.js'));
+      msg.channel.sendMessage('Loaded', args);
+    } catch (err) {
+      msg.channel.sendMessage('Command not found or error loading\n`' + err.message + '`');
+    }
+  },
+  hide: true
 }
 
-commands.unload = {};
-commands.unload.main = (bot, msg) => {
-  if (msg.author.id !== settings.OWNERID) return;
-  var args = msg.content;
-  try {
-    delete commands[args];
-    delete require.cache[path.join(__dirname, 'commands', args + '.js')];
-    msg.channel.sendMessage('Unloaded', args);
-  } catch (err) {
-    msg.channel.sendMessage('Command not found or error unloading\n`' + err.message + '`');
-  }
+commands.unload = {
+  main: (bot, msg) => {
+    if (msg.author.id !== settings.OWNERID) return;
+    var args = msg.content;
+    try {
+      delete commands[args];
+      delete require.cache[path.join(__dirname, 'commands', args + '.js')];
+      msg.channel.sendMessage('Unloaded', args);
+    } catch (err) {
+      msg.channel.sendMessage('Command not found or error unloading\n`' + err.message + '`');
+    }
+  },
+  hide: true
 }
 
-commands.reload = {};
-commands.reload.main = (bot, msg) => {
-  if (msg.author.id !== settings.OWNERID) return;
-  var args = msg.content;
-  try {
-    delete commands[args];
-    delete require.cache[path.join(__dirname, 'commands', args + '.js')]; // this is the important part here, since require caches files, reloading would do nothing if we didn't clear it
-    commands[args] = require(path.join(__dirname, 'commands', args + '.js'));
-    msg.channel.sendMessage('Reloaded', args);
-  } catch (err) {
-    msg.channel.sendMessage('Command not found or error reloading\n`' + err.message + '`');
-  }
+commands.reload = {
+  main: (bot, msg) => {
+    if (msg.author.id !== settings.OWNERID) return;
+    var args = msg.content;
+    try {
+      delete commands[args];
+      delete require.cache[path.join(__dirname, 'commands', args + '.js')]; // this is the important part here, since require caches files, reloading would do nothing if we didn't clear it
+      commands[args] = require(path.join(__dirname, 'commands', args + '.js'));
+      msg.channel.sendMessage('Reloaded', args);
+    } catch (err) {
+      msg.channel.sendMessage('Command not found or error reloading\n`' + err.message + '`');
+    }
+  },
+  hide: true
 }
 
-commands.servers = {};
-commands.servers.main = (bot, msg, settings) => {
-  msg.channel.sendMessage(settings.serverCount);
+commands.servers = {
+  main: (bot, msg, settings) => {
+    msg.channel.sendMessage(settings.serverCount);
+  },
+  hide: true
 }
 
 const loadCommands = () => {
