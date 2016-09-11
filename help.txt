@@ -6,23 +6,7 @@ PREFIX: "ok google"
 [optional parameter]
 <required parameter>
 
-General Stuff:
-  search <query>                Search billions of web pages
-  image <query>                 Search for images on the web
-  define <word>                 Get a word definition.
-  translate <sentence> <lang>   Translate text.
-  weather <location>            Search for weather on the web
-  identify <url>                Identify an image
-  lmgtfy <query>                When someone is being an idiot
-  time <location>               Get time of location
-  shorten <url>                 Shorten a url using goo.gl
-
-Other Stuff:
-  help                          Shows this message.
-  ping                          ping the server
-  invite                        Shows the invite url to add this bot to your server
-  purge                         deletes messages from channel, default 5
-
+{{help_text}}
 Help server: https://guscaplan.me/discord
 
 Change all sorts of cool settings from the Web Control Panel!

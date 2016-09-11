@@ -71,17 +71,32 @@ var commands = settings.commands;
 
 // this command makes help
 commands.help = {
-  main: (bot, msg) => {
-    fs.readFile('./help.txt', 'utf8', function (err, data) {
-      if (err) return bot.error(err);
-      msg.author.sendMessage(data).catch(err => bot.error(err));
-      msg.channel.sendMessage('Help has been sent!');
+  main: (bot, msg, settings) => {
+    var catagories = [];
+    var final = "";
+    Object.keys(settings.commands).forEach(k => {
+      var c = settings.commands[k];
+      if (c.hide) return;
+      if (!catagories.includes(c.catagory)) catagories.push({name: c.catagory, commands: []});
+      catagories.find(catagory => catagory.name === c.catagory).commands.push({help: c.help, args: c.args, name: k})
     });
+    catagories.sort((a, b) => a.name > b.name).forEach(c => {
+      if (c.commands.length < 1) return;
+      final += ` ${c.name}:\n`;
+      c.commands.sort((a, b) => a.name > b.name).map(cmd => {
+        final += `  ${rightpad(cmd.name + ' ' + cmd.args, 30, ' ')} ${cmd.help}\n`;
+      });
+      final += '\n';
+    });
+    fs.readFile('./help.txt', 'utf8', (err, data) => {
+      if (err) return bot.error(err);
+      msg.author.sendMessage(data.replace('{{help_text}}', final)).catch(err => bot.error(err));
+      msg.channel.sendMessage('Help has been sent!');
+    })
   },
   help: 'Shows this message.',
   args: '',
-  catagory: 'util',
-  hide: true
+  catagory: 'util'
 };
 
 commands.load = {
