@@ -2,11 +2,13 @@
 
 module.exports = {
   main: function(bot, msg) {
-    let count = parseInt(msg.content);
+    let count = parseInt(msg.content) || 5;
     msg.channel.getMessages({limit: 100}).then(messages => {
       messages = messages.array().filter(m => m.author.id === bot.user.id).slice(0, count+1);
       msg.channel.bulkDelete(messages);
     });
   },
-  help: 'template'
+  help: 'deletes messages from channel, default 5',
+  args: '<count>',
+  catagory: 'util'
 };

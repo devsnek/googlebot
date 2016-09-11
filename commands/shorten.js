@@ -11,5 +11,8 @@ module.exports = {
           .end(res => {
               msg.channel.sendMessage(res.body.id);
           });
-    }
+    },
+    help: 'Shorten a url using goo.gl',
+    args: '<url>',
+    catagory: 'general'
 }

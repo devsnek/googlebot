@@ -34,5 +34,6 @@ module.exports = {
         });
     },
     help: 'Search for weather on the web',
-    args: '<location>'
+    args: '<location>',
+    catagory: 'general'
 };

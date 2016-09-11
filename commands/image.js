@@ -52,5 +52,6 @@ module.exports = {
         });
     },
     args: '<query>',
-    help: 'google things'
+    help: 'Search for images on the web',
+    catagory: 'general'
 };

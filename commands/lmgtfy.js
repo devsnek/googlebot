@@ -2,5 +2,7 @@ module.exports = {
     main: function(bot, msg) {
         msg.channel.sendMessage("<http://lmgtfy.com/?q="+msg.content.split(' ').join('+')+">");
     },
-    help: 'template'
+    help: 'When someone is being an idiot',
+    args: '<query>',
+    catagory: 'general'
 };

@@ -11,5 +11,8 @@ module.exports = {
             let $ = cheerio.load(res.body);
             msg.channel.sendMessage(`${$('#msgdiv > h1').text()} is ${$('#dd').text()}, ${$('#twd').text()}`);
         });
-    }
+    },
+    help: 'Get time of location',
+    args: '<location>',
+    catagory: 'general'
 }

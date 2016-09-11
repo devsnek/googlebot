@@ -30,5 +30,8 @@ module.exports = {
       });
       });
     });
-  }
+  },
+  help: 'Identify an image',
+  args: '<url>',
+  catagory: 'general'
 };

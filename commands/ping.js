@@ -7,5 +7,6 @@ module.exports = {
         });
     },
     help: 'ping pong ping pong',
-    args: ''
+    args: '',
+    catagory: 'util'
 };

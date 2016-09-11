@@ -19,11 +19,9 @@ General Stuff:
 
 Other Stuff:
   help                          Shows this message.
-  ping [ip/domain]              ping the server or an optional url/ip
+  ping                          ping the server
   invite                        Shows the invite url to add this bot to your server
-  purge                         deletes messages from channel, default 15
-  user <method> <query>         get all sorts of juicy info about a user
-  eval <javascript here>        run javascript in a sandbox
+  purge                         deletes messages from channel, default 5
 
 Help server: https://guscaplan.me/discord
 

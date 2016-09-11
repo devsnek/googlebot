@@ -26,6 +26,7 @@ module.exports = {
             });
         });
      },
-     args: '<query>',
-     help: 'google things'
+     args: '<word>',
+     help: 'Get a word definition.',
+     catagory: 'general'
 };

@@ -25,5 +25,7 @@ module.exports = {
             }
         });
     },
-    help: 'template'
+    help: 'Translate text.',
+    args: '<sentence> <lang>',
+    catagory: 'general'
 };

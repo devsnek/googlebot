@@ -59,5 +59,6 @@ module.exports = {
         });
     },
     args: '<query>',
-    help: 'google things'
+    help: 'Search billions of web pages',
+    catagory: 'general'
 };
