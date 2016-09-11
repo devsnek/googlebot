@@ -1,16 +1,14 @@
 'use strict';
 
-String.prototype.padRight = function(l,c) {return this+Array(l-this.length+1).join(c||" ");}; // i would never use a nodejs package for this ;)
-function shuffle(a){for(var c,d,b=a.length;b;)d=Math.floor(Math.random()*b--),c=a[b],a[b]=a[d],a[d]=c;return a}
+String.prototype.padRight = function(l,c) {return this+Array(l-this.length+1).join(c||" ");}; // eslint-disable-line
+const shuffle = (a) => {for(var c,d,b=a.length;b;)d=Math.floor(Math.random()*b--),c=a[b],a[b]=a[d],a[d]=c;return a} // eslint-disable-line
 
-const Discord = require("discord.js");
+const Discord = require('discord.js');
 const fs = require('fs');
+const path = require('path');
 const Ratelimits = require('./ratelimits');
 const r = require('rethinkdb');
-const os = require('os');
-
 const chalk = require('chalk');
-const unirest = require('unirest');
 
 var bot = new Discord.Client({
   autoReconnect: true,
@@ -23,16 +21,16 @@ process.send({type: 'alive', id: bot.options.shard_id, content: bot.options.shar
 
 // there are those that would say extending the client like this is bad. those people are 100% correct.
 
-bot.sendIpc = function(t, c) {
+bot.sendIpc = (t, c) => {
   if (!process.connected) process.exit(1);
   process.send({type: t, id: bot.options.shard_id, content: c});
 };
 
-bot.log = function() {
+bot.log = function () { // needs to be es5 function for dat ...arguments
   console.log(chalk.green(`⚙  SHARD ${bot.options.shard_id}:`), ...arguments);
 };
 
-bot.error = function() {
+bot.error = function () {
   console.log(chalk.bgRed.white(`🔥  SHARD ${bot.options.shard_id}:`), ...arguments);
 }
 
@@ -40,16 +38,16 @@ var rl = new Ratelimits();
 
 var settings = {};
 
-process.on('message', function(msg) {
-  if (msg.type == 'serverCount') {
+process.on('message', msg => {
+  if (msg.type === 'serverCount') {
     settings.serverCount = msg.content;
   }
 });
 
 settings.config = require('./config.json');
 
-r.connect({ host: settings.config.rethink, port: settings.config.rethinkport}, (err, conn) => {
-  if (err) console.error("DB ERROR:", err);
+r.connect({host: settings.config.rethink, port: settings.config.rethinkport}, (err, conn) => {
+  if (err) console.error('DB ERROR:', err);
   settings.dbconn = conn;
 });
 
@@ -58,7 +56,7 @@ settings.PREFIX = 'ok google';
 
 settings.startuptime = new Date() / 1000;
 
-settings.KEYS = fs.readFileSync('keys.txt').toString().split("\n");
+settings.KEYS = fs.readFileSync('keys.txt').toString().split('\n');
 settings.KEYS.splice(-1, 1);
 
 settings.KEYS = shuffle(settings.KEYS);
@@ -75,81 +73,75 @@ var commands = settings.commands;
 
 // this command makes help
 commands.help = {};
-commands.help.main = function(bot, msg) {
-  fs.readFile('./help.txt', 'utf8', function (err,data) {
-    if (err) {
-      return bot.error(err);
-    }
+commands.help.main = (bot, msg) => {
+  fs.readFile('./help.txt', 'utf8', function (err, data) {
+    if (err) return bot.error(err);
     msg.author.sendMessage(data).catch(err => bot.error(err));
     msg.channel.sendMessage('Help has been sent!');
   });
 };
 
 commands.load = {};
-commands.load.main = function(bot, msg) {
-  if (msg.author.id == settings.OWNERID){
+commands.load.main = (bot, msg) => {
+  if (msg.author.id !== settings.OWNERID) return;
   var args = msg.content;
   try {
     delete commands[args];
-    delete require.cache[__dirname+'/commands/'+args+'.js'];
-    commands[args] = require(__dirname+'/commands/'+args+'.js');
-    msg.channel.sendMessage('Loaded '+args);
-  } catch(err) {
-    msg.channel.sendMessage("Command not found or error loading\n`"+err.message+"`");
-  }
+    delete require.cache[path.join(__dirname, 'commands', args + '.js')];
+    commands[args] = require(path.join(__dirname, 'commands', args + '.js'));
+    msg.channel.sendMessage('Loaded', args);
+  } catch (err) {
+    msg.channel.sendMessage('Command not found or error loading\n`' + err.message + '`');
   }
 }
 
 commands.unload = {};
-commands.unload.main = function(bot, msg) {
-  if (msg.author.id == settings.OWNERID){
-      var args = msg.content;
-      try {
-        delete commands[args];
-        delete require.cache[__dirname+'/commands/'+args+'.js'];
-        msg.channel.sendMessage('Unloaded '+args);
-      }
-      catch(err){
-        msg.channel.sendMessage("Command not found or error unloading\n`"+err.message+"`");
-      }
+commands.unload.main = (bot, msg) => {
+  if (msg.author.id !== settings.OWNERID) return;
+  var args = msg.content;
+  try {
+    delete commands[args];
+    delete require.cache[path.join(__dirname, 'commands', args + '.js')];
+    msg.channel.sendMessage('Unloaded', args);
+  } catch (err) {
+    msg.channel.sendMessage('Command not found or error unloading\n`' + err.message + '`');
   }
 }
 
 commands.reload = {};
-commands.reload.main = function(bot, msg) {
-  if (msg.author.id == settings.OWNERID){
-      var args = msg.content;
-      try {
-        delete commands[args];
-        delete require.cache[__dirname+'/commands/'+args+'.js']; // this is the important part here, since require caches files, reloading would do nothing if we didn't clear it
-        commands[args] = require(__dirname+'/commands/'+args+'.js');
-        msg.channel.sendMessage('Reloaded '+args);
-      } catch(err) {
-        msg.channel.sendMessage("Command not found or error reloading\n`"+err.message+"`");
-      }
+commands.reload.main = (bot, msg) => {
+  if (msg.author.id !== settings.OWNERID) return;
+  var args = msg.content;
+  try {
+    delete commands[args];
+    delete require.cache[path.join(__dirname, 'commands', args + '.js')]; // this is the important part here, since require caches files, reloading would do nothing if we didn't clear it
+    commands[args] = require(path.join(__dirname, 'commands', args + '.js'));
+    msg.channel.sendMessage('Reloaded', args);
+  } catch (err) {
+    msg.channel.sendMessage('Command not found or error reloading\n`' + err.message + '`');
   }
 }
 
 commands.servers = {};
-commands.servers.main = function(bot, msg, settings) {
+commands.servers.main = (bot, msg, settings) => {
   msg.channel.sendMessage(settings.serverCount);
 }
 
-var loadCommands = function() {
-  var files = fs.readdirSync(__dirname+'/commands');
+const loadCommands = () => {
+  var files = fs.readdirSync(path.join(__dirname, 'commands'));
   for (let file of files) {
     if (file.endsWith('.js')) {
-      commands[file.slice(0, -3)] = require(__dirname+'/commands/'+file);
+      commands[file.slice(0, -3)] = require(path.join(__dirname, 'commands', file));
     }
   }
-  bot.log("———— All Commands Loaded! ————");
+  bot.log('———— All Commands Loaded! ————');
 }
 
-var checkCommand = function(msg, length, bot) {
+const checkCommand = (msg, length, bot) => {
   try {
     if (rl.changeCommand(msg, true)) {
-      if(typeof msg.content.split(' ')[length] !== 'undefined') {
-        msg.content = msg.content.substr(msg.content.split(" ", length).join(" ").length);
+      if (typeof msg.content.split(' ')[length] !== 'undefined') {
+        msg.content = msg.content.substr(msg.content.split(' ', length).join(' ').length);
         var original = msg.content;
         var command = msg.content.split(' ')[1]; // friggin space at the beginning >:(
         msg.content = msg.content.split(' ').splice(2, msg.content.split(' ').length).join(' ');
@@ -163,25 +155,23 @@ var checkCommand = function(msg, length, bot) {
         }
       }
     }
-  }
-  catch(err) {
+  } catch (err) {
     bot.error(err.message);
   }
 }
 
-
-bot.on('ready', function() {
+bot.on('ready', () => {
   bot.log(`READY! Serving in ${bot.channels.size} channels and ${bot.guilds.size} servers`);
-  bot.user.setStatus("online", {name: "ok google, help"});
+  bot.user.setStatus('online', {name: 'ok google, help'});
   loadCommands();
   rl.onReady();
   bot.sendIpc('serverCount', bot.guilds.size);
 });
 
-bot.on('message', function(msg) {
+bot.on('message', msg => {
   if (msg.guild === undefined) return;
   if (msg.author.bot) return;
-  if (msg.content.startsWith('<@'+bot.user.id+'>') || msg.content.startsWith('<@!'+bot.user.id+'>')) {
+  if (msg.content.startsWith('<@' + bot.user.id + '>') || msg.content.startsWith('<@!' + bot.user.id + '>')) {
     checkCommand(msg, 1, bot);
   } else if (msg.content.toLowerCase().startsWith(settings.PREFIX)) {
     checkCommand(msg, settings.PREFIX.split(' ').length, bot);
@@ -200,27 +190,28 @@ bot.on('messageDelete', msg => {
   }
 });
 
-bot.on('error', function(err) {
-  bot.error(`————— BIG ERROR —————`);
+bot.on('error', err => {
+  bot.error('————— BIG ERROR —————');
   bot.error(err);
-  bot.error("——— END BIG ERROR ———");
+  bot.error('——— END BIG ERROR ———');
 });
 
-bot.on('disconnect', function(bot) {
-  //alert the console
-  bot.log("Disconnected!");
+bot.on('disconnect', () => {
+  // alert the console
+  bot.log('Disconnected!');
   rl.onDisconnect();
 });
 
-bot.on('guildCreate', function(server) {
+bot.on('guildCreate', server => {
   bot.log('SERVER GET:', server.name, server.id, bot.options.shard_id);
-  r.db('google').table('servers').get(server.id).run(settings.dbconn, function(err, res) {
+  r.db('google').table('servers').get(server.id).run(settings.dbconn, (err, res) => {
+    if (err) return console.log(err);
     if (res === null) {
-      fs.readFile('./welcome.txt', 'utf8', function (err,data) {
+      fs.readFile('./welcome.txt', 'utf8', function (err, data) {
         if (err) {
           return bot.log(err);
         }
-        server.channels.get(server.id).sendMessage("<@" + server.owner.id + "> " + data);
+        server.channels.get(server.id).sendMessage('<@' + server.owner.id + '> ' + data);
         r.db('google').table('servers').insert({id: server.id, name: server.name, nsfw: '2', nick: 'Google'}).run(settings.dbconn);
       });
     }
@@ -228,7 +219,7 @@ bot.on('guildCreate', function(server) {
   bot.sendIpc('serverCount', bot.guilds.size);
 });
 
-bot.on('guildDelete', function(server) {
+bot.on('guildDelete', server => {
   bot.log('SERVER LOST:', server.name, server.id, bot.options.shard_id);
   bot.sendIpc('serverCount', bot.guilds.size);
 });

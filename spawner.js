@@ -4,33 +4,33 @@ const sleep = require('sleep').sleep;
 const chalk = require('chalk');
 const unirest = require('unirest');
 
-const cluster = new EventEmitter();
-cluster.workers = [];
-
 const config = require('./config.json');
 
-const wantedShards = 2;
+const wantedShards = 4;
+
+const cluster = new EventEmitter();
+cluster.workers = [];
 
 var running = {};
 var serverCount = {};
 
-const log = function() {
+const log = function () {
   console.log('⚠️ ', chalk.yellow('MASTER'), ...arguments);
 }
 
 cluster.on('fork', shard => {
   shard.on('message', msg => {
-    if (msg.type == 'serverCount') {
+    if (msg.type === 'serverCount') {
       serverCount[msg.id] = msg.content;
       let total = 0;
-      Object.keys(serverCount).forEach(function(k) {
+      Object.keys(serverCount).forEach(k => {
         total += serverCount[k];
       });
       updateCount(total);
-      Object.keys(cluster.workers).forEach(function(id) {
-        cluster.workers[id].send({ type: 'serverCount', content: total});
+      Object.keys(cluster.workers).forEach(id => {
+        cluster.workers[id].send({type: 'serverCount', content: total});
       })
-    } else if (msg.type == 'alive') {
+    } else if (msg.type === 'alive') {
       log('New shard! pid:', shard.pid, 'id:', msg.id);
       running[shard.pid] = msg.id;
     }
@@ -42,8 +42,8 @@ cluster.on('fork', shard => {
   });
 });
 
-const fork = function (shard_id, shard_count) {
-  let shard = childProcess.fork('googlebot.js', [], {env: { shard_id: shard_id, shard_count: shard_count }});
+const fork = (shardId, shardCount) => {
+  let shard = childProcess.fork('googlebot.js', [], {env: { shard_id: shardId, shard_count: shardCount }});
   cluster.emit('fork', shard);
   cluster.workers.push(shard);
 }
@@ -58,9 +58,8 @@ const updateCount = count => {
   updateAbal(count);
 }
 
-
-var updateCarbon = count => {
-  console.log("updating carbon");
+const updateCarbon = count => {
+  console.log('updating carbon');
   unirest.post('https://www.carbonitex.net/discord/data/botdata.php')
   .headers({'Content-Type': 'multipart/form-data', 'cache-control': 'no-cache'})
   .field('key', config.carbon)
@@ -71,7 +70,7 @@ var updateCarbon = count => {
 };
 
 const updateAbal = count => {
-  console.log("updating abal");
+  console.log('updating abal');
   unirest.post('https://bots.discord.pw/api/bots/187406062989606912/stats')
   .headers({
     'Content-Type': 'application/json',
@@ -79,7 +78,7 @@ const updateAbal = count => {
   })
   .send({'server_count': count})
   .end(res => {
-      console.log(res.body);
+    console.log(res.body);
   })
 };
 
