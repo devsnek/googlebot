@@ -12,7 +12,11 @@ const cluster = new EventEmitter();
 cluster.workers = [];
 
 var running = {};
-var serverCount = {};
+const stats = {
+  serverCount: {},
+  userCount: {},
+  channelCount: {}
+};
 
 const log = function () {
   console.log('⚠️ ', chalk.yellow('MASTER'), ...arguments);
@@ -21,15 +25,33 @@ const log = function () {
 cluster.on('fork', shard => {
   shard.on('message', msg => {
     if (msg.type === 'serverCount') {
-      serverCount[msg.id] = msg.content;
+      stats.serverCount[msg.id] = msg.content;
       let total = 0;
-      Object.keys(serverCount).forEach(k => {
-        total += serverCount[k];
+      Object.keys(stats.serverCount).forEach(k => {
+        total += stats.serverCount[k];
       });
       updateCount(total);
       Object.keys(cluster.workers).forEach(id => {
         cluster.workers[id].send({type: 'serverCount', content: total});
       })
+    } else if (msg.type === 'userCount') {
+      stats.userCount[msg.id] = msg.content;
+      let total = 0;
+      Object.keys(stats.userCount).forEach(k => {
+        total += stats.userCount[k]
+      });
+      Object.keys(cluster.workers).forEach(id => {
+        cluster.workers[id].send({type: 'userCount', content: total});
+      });
+    } else if (msg.type === 'channelCount') {
+      stats.channelCount[msg.id] = msg.content;
+      let total = 0;
+      Object.keys(stats.channelCount).forEach(k => {
+        total += stats.channelCount[k]
+      });
+      Object.keys(cluster.workers).forEach(id => {
+        cluster.workers[id].send({type: 'channelCount', content: total});
+      });
     } else if (msg.type === 'alive') {
       log('New shard! pid:', shard.pid, 'id:', msg.id);
       running[shard.pid] = msg.id;

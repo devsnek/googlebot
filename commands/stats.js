@@ -12,7 +12,15 @@ const toHHMMSS = seconds => {
 
 module.exports = {
   main: (bot, msg, settings) => {
-    msg.channel.sendMessage('Uptime: ' + toHHMMSS((new Date() / 1000) - settings.startuptime));
+    let final = `STATISTICS
+• Mem Usage    : ${process.memoryUsage().heapUsed / 1000000} MB
+• Uptime       : ${toHHMMSS((new Date() / 1000) - settings.startuptime)}
+• Users        : ${settings.userCount}
+• Servers      : ${settings.serverCount}
+• Channels     : ${settings.channelCount}
+• Discord.js   : v${require('../node_modules/discord.js/package.json').version}
+`;
+    msg.channel.sendCode('xl', final);
   },
   hide: true
-};
+}

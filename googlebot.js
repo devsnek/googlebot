@@ -12,7 +12,8 @@ var bot = new Discord.Client({
   autoReconnect: true,
   shard_count: parseInt(process.env.shard_count),
   shard_id: parseInt(process.env.shard_id),
-  maxCachedMessages: 1
+  maxCachedMessages: 1,
+  api_request_method: 'burst'
 });
 
 process.send({type: 'alive', id: bot.options.shard_id, content: bot.options.shard_id});
@@ -39,6 +40,10 @@ var settings = {};
 process.on('message', msg => {
   if (msg.type === 'serverCount') {
     settings.serverCount = msg.content;
+  } else if (msg.type === 'userCount') {
+    settings.userCount = msg.content;
+  } else if (msg.type === 'channelCount') {
+    settings.channelCount = msg.content;
   }
 });
 
@@ -192,6 +197,8 @@ bot.on('ready', () => {
   loadCommands();
   rl.onReady();
   bot.sendIpc('serverCount', bot.guilds.size);
+  bot.sendIpc('channelCount', bot.channels.size);
+  bot.sendIpc('userCount', bot.users.size);
 });
 
 bot.on('message', msg => {
@@ -249,6 +256,14 @@ bot.on('guildDelete', server => {
   bot.log('SERVER LOST:', server.name, server.id, bot.options.shard_id);
   bot.sendIpc('serverCount', bot.guilds.size);
 });
+
+bot.on('channelCreate', channel => {
+  bot.sendIpc('channelCount', bot.channels.size)
+})
+
+bot.on('channelDelete', channel => {
+  bot.sendIpc('channelCount', bot.channels.size)
+})
 
 bot.login(settings.config.token);
 
