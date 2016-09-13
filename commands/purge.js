@@ -1,7 +1,7 @@
 module.exports = {
   main: (bot, msg) => {
     let count = parseInt(msg.content) || 5;
-    msg.channel.getMessages({limit: 100}).then(messages => {
+    msg.channel.fetchMessages({limit: 100}).then(messages => {
       messages = messages.array().filter(m => m.author.id === bot.user.id).slice(0, count + 1);
       msg.channel.bulkDelete(messages);
     });
