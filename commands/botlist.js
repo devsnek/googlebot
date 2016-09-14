@@ -13,7 +13,8 @@ module.exports = {
         return b
       })
       while (bots.length > 0) chunks.push(bots.splice(0, 10));
-      msg.channel.sendMessage('```xl\n' + chunks[parseInt(msg.content) - 1].map(b => `${rightpad(b.name, 15, ' ')}${b.servercount} ${b.compliant ? 'Compliant' : ''}`).join('\n') + '\n```');
+      let page = Math.min(Math.max(parseInt(msg.content), 1), chunks.length);
+      msg.channel.sendCode('xl', `Page ${page}/${chunks.length}\n` + chunks[page-1].map(b => `${rightpad(b.name, 15, ' ')}${b.servercount} ${b.compliant ? 'Compliant' : ''}`).join('\n'));
     })
   },
   help: 'Grab the botlist from carbonitex',
