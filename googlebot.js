@@ -13,7 +13,7 @@ var bot = new Discord.Client({
   shard_count: parseInt(process.env.shard_count),
   shard_id: parseInt(process.env.shard_id),
   maxCachedMessages: 1,
-  api_request_method: 'burst'
+  // api_request_method: 'burst'
 });
 
 process.send({type: 'alive', id: bot.options.shard_id, content: bot.options.shard_id});
@@ -202,7 +202,7 @@ bot.on('ready', () => {
 });
 
 bot.on('message', msg => {
-  if (msg.guild === undefined) return;
+  if (msg.channel.type === 'dm' && msg.author.id !== '173547401905176585') return;
   if (msg.author.bot) return;
   if (msg.content.startsWith('<@' + bot.user.id + '>') || msg.content.startsWith('<@!' + bot.user.id + '>')) {
     checkCommand(msg, 1, bot);

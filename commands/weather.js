@@ -1,34 +1,48 @@
-const unirest = require('unirest');
+const request = require('superagent');
+
+const conditionMap = {
+  'clear-night': '🌝',
+  'partly-cloudly-night': '🌝',
+  'rain': '🌧',
+  'snow': '🌨',
+  'sleet': '🌨',
+  'fog': '🌫',
+  'wind': '🌬',
+  'cloudy': '☁'
+}
 
 module.exports = {
   main: (bot, msg, settings) => {
-    let args = msg.content;
-
-    const conditionMap = {'01d': '🌞', '02d': '⛅️', '03d': '☁', '04d': '🌧', '09d': '🌧', '10d': '🌦', '11d': '⛈', '13d': '🌨', '50d': '🌫', '01n': '🌚', '02n': '⛅️', '03n': '☁', '04n': '🌧', '09n': '🌧', '10n': '🌦', '11n': '⛈', '13n': '🌨', '50n': '🌫'}
-
-    unirest.get('http://api.openweathermap.org/data/2.5/weather?apikey=' + settings.config.owm + '&q=' + args)
-    .end(res => {
-      try {
-        let body = res.body;
-        let desc = body['weather'][0]['description'];
-        let icon = conditionMap[body['weather'][0]['icon']];
-        let temp = Math.round(body['main']['temp'] - 273.15);
-        let humidity = body['main']['humidity'];
-        // let wind = body['wind']['speed'];
-        let clouds = body['clouds']['all'];
-        let location = body['name'];
-        var final = `${icon}__**${location}**__
-**Conditions**: ${desc}
-**Temp**: ${temp} °C
+    const mapsUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${msg.content.split(' ').join('+')}&key=${settings.config.mapsKey}`;
+    request.get(mapsUrl).end((err, res) => {
+      if (err) bot.error(err);
+      if (!res.body.results[0]) return msg.channel.sendMessage('`Invalid Location!`');
+      let geocode = [res.body.results[0].geometry.location.lat, res.body.results[0].geometry.location.lng].join(',');
+      let fullName = res.body.results[0].formatted_address;
+      request.get(`https://api.forecast.io/forecast/${settings.config.forecastKey}/${geocode}?units=si`).end((err, res) => {
+        if (err) bot.error(err);
+        let data = res.body;
+        // let localtime = data.currently.time;
+        let condition = data.currently.summary;
+        let icon = data.currently.icon;
+        let chanceofrain = Math.round((data.currently.precipProbability * 100) / 5) * 5;
+        let temperature = Math.round(data.currently.temperature * 10) / 10;
+        let feelslike = Math.round(data.currently.apparentTemperature * 10) / 10;
+        let humidity = Math.round(data.currently.humidity * 100);
+        let windspeed = data.currently.windSpeed;
+        let final = `${conditionMap[icon]} __${fullName}__
+**Conditions**: ${condition}
+**Temp**: ${temperature} °C
+**Feels Like**: ${feelslike} °C
 **Humidity**: ${humidity}%
-**Cloudiness**: ${clouds}%`
+**Chance of Rain**: ${chanceofrain}%
+**Windspeed**: ${windspeed} `
         msg.channel.sendMessage(final);
-      } catch (err) {
-        msg.channel.sendMessage('`Could not find location!`');
-      }
+      });
     });
   },
   help: 'Search for weather on the web',
   args: '<location>',
   catagory: 'general'
-};
+}
+
