@@ -30,7 +30,7 @@ module.exports = {
         let feelslike = Math.round(data.currently.apparentTemperature * 10) / 10;
         let humidity = Math.round(data.currently.humidity * 100);
         let windspeed = data.currently.windSpeed;
-        let final = `${conditionMap[icon]} __${fullName}__
+        let final = `${conditionMap[icon] ? conditionMap[icon] : ''} __${fullName}__
 **Conditions**: ${condition}
 **Temp**: ${temperature} °C
 **Feels Like**: ${feelslike} °C
