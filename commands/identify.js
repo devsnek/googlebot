@@ -1,11 +1,12 @@
 const unirest = require('unirest');
 
 module.exports = {
-  main: (bot, msg) => {
+  main: (bot, msg, settings) => {
     var args = msg.content;
-    bot.log('IDENTIFY', msg.server.name, msg.server.id, args);
+    bot.log('IDENTIFY', msg.guild.name, msg.guild.id, args);
 
     msg.channel.sendMessage('`Identifying...`').then(message => {
+      settings.toBeDeleted.set(msg.id, message.id);
       unirest.get('https://www.captionbot.ai/api/init')
       .end(res => {
         var cid = res.body;
@@ -15,12 +16,11 @@ module.exports = {
         .end(res => {
           unirest.get('https://www.captionbot.ai/api/message?waterMark=&conversationId=' + cid)
           .end(res => {
-            bot.log('Identify: ', msg.server.name, msg.server.id, '|', args, '|', cid);
-            try {
-              message.edit('**'+JSON.parse(res.body).BotMessages[1]+'**');
-            } catch (err) {
+            // bot.log('Identify: ', msg.guild.name, msg.guild.id, '|', args, '|', cid);
+            message.edit('**' + JSON.parse(res.body).BotMessages[1] + '**').catch(err => {
+              bot.error(err);
               message.edit('**Could not identify image!**');
-            }
+            });
           });
         });
       });
@@ -30,3 +30,4 @@ module.exports = {
   args: '<url>',
   catagory: 'general'
 };
+
