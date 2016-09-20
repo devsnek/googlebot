@@ -19,7 +19,7 @@ module.exports = {
       if (!res.body.results[0]) return msg.channel.sendMessage('`Invalid Location!`');
       let geocode = [res.body.results[0].geometry.location.lat, res.body.results[0].geometry.location.lng].join(',');
       let fullName = res.body.results[0].formatted_address;
-      request.get(`https://api.forecast.io/forecast/${settings.config.forecastKey}/${geocode}?units=si`).end((err, res) => {
+      request.get(`https://api.darksky.net/forecast/${settings.config.forecastKey}/${geocode}?units=si`).end((err, res) => {
         if (err) bot.error(err);
         let data = res.body;
         // let localtime = data.currently.time;
