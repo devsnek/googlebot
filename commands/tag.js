@@ -30,7 +30,10 @@ module.exports = {
       let out = tags.get(msg.content, replace, functions);
       bot.fetchUser(out.meta.author).then(user => {
         msg.channel.sendMessage(`**${msg.content}** (${user.username}#${user.discriminator})\n${out.data}`.substring(0, 1999)).catch(bot.error);
-      }).catch(bot.error);
+      }).catch(err => {
+        bot.error(err);
+        msg.channel.sendMessage(`**${msg.content}**\n${out.data}`.substring(0, 1999)).catch(bot.error);
+      });
     }
   },
   tags: tags,
