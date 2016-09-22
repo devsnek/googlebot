@@ -12,7 +12,7 @@ var bot = new Discord.Client({
   autoReconnect: true,
   shard_count: parseInt(process.env.shard_count),
   shard_id: parseInt(process.env.shard_id),
-  maxCachedMessages: 1,
+  maxCachedMessages: 1
   // api_request_method: 'burst'
 });
 
@@ -33,7 +33,7 @@ bot.error = function () {
   console.log(chalk.bgRed.white(`🔥  SHARD ${bot.options.shard_id}:`), ...arguments);
 }
 
-var rl = new Ratelimits();
+var rl = new Ratelimits(bot);
 
 var settings = {};
 
@@ -78,7 +78,7 @@ var commands = settings.commands;
 commands.help = {
   main: (bot, msg, settings) => {
     var catagories = [];
-    var final = "";
+    var final = '';
     Object.keys(settings.commands).forEach(k => {
       var c = settings.commands[k];
       if (c.hide) return;
