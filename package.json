@@ -15,6 +15,7 @@
     "rethinkdb": "^2.3.2",
     "sherlockjs": "0.0.9",
     "sleep": "^3.0.1",
+    "tagmanager": "github:guscaplan/TagManager",
     "unirest": "^0.5.0"
   }
 }

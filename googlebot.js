@@ -172,6 +172,7 @@ const checkCommand = (msg, length, bot) => {
   try {
     if (rl.changeCommand(msg, true)) {
       if (typeof msg.content.split(' ')[length] !== 'undefined') {
+        let original = msg.content;
         msg.content = msg.content.split(' ').slice(length);
         var command = msg.content.shift();
         msg.content = msg.content.join(' ');
