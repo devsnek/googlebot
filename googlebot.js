@@ -172,10 +172,9 @@ const checkCommand = (msg, length, bot) => {
   try {
     if (rl.changeCommand(msg, true)) {
       if (typeof msg.content.split(' ')[length] !== 'undefined') {
-        msg.content = msg.content.substr(msg.content.split(' ', length).join(' ').length);
-        var original = msg.content;
-        var command = msg.content.split(' ')[1]; // friggin space at the beginning >:(
-        msg.content = msg.content.split(' ').splice(2, msg.content.split(' ').length).join(' ');
+        msg.content = msg.content.split(' ').slice(length);
+        var command = msg.content.shift();
+        msg.content = msg.content.join(' ');
         try {
           commands[command].main(bot, msg, settings);
         } catch (err) {
