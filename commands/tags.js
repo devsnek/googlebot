@@ -3,7 +3,9 @@ const tags = new TagManager();
 
 module.exports = {
   main: (bot, msg, settings) => {
-    msg.channel.sendMessage(tags.keys().join(', ').substring(0, 2000));
+    msg.channel.sendMessage(tags.keys().sort().join(', ').substring(0, 2000));
   },
-  hide: true
+  args: '',
+  catagory: 'general',
+  help: 'List all tags'
 }

@@ -89,7 +89,7 @@ commands.help = {
       if (c.commands.length < 1) return;
       final += ` ${c.name}:\n`;
       c.commands.sort((a, b) => a.name > b.name).map(cmd => {
-        final += `  ${rightpad(cmd.name + ' ' + cmd.args, 30, ' ')} ${cmd.help}\n`;
+        final += `  ${rightpad(cmd.name + ' ' + cmd.args, 38, ' ')} ${cmd.help}\n`;
       });
       final += '\n';
     });
