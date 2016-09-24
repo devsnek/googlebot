@@ -10,8 +10,6 @@ const chalk = require('chalk');
 
 var bot = new Discord.Client({
   autoReconnect: true,
-  shard_count: parseInt(process.env.shard_count),
-  shard_id: parseInt(process.env.shard_id),
   maxCachedMessages: 1
   // api_request_method: 'burst'
 });
@@ -196,9 +194,10 @@ bot.on('ready', () => {
   bot.user.setStatus('online', {name: 'ok google, help'});
   loadCommands();
   rl.onReady();
-  bot.sendIpc('serverCount', bot.guilds.size);
-  bot.sendIpc('channelCount', bot.channels.size);
-  bot.sendIpc('userCount', bot.users.size);
+  bot.sendIpc('_ready');
+  bot.sendIpc('fetchServerCount', bot.guilds.size);
+  bot.sendIpc('fetchChannelCount', bot.channels.size);
+  bot.sendIpc('fetchUserCount', bot.users.size);
 });
 
 bot.on('message', msg => {
@@ -249,20 +248,20 @@ bot.on('guildCreate', server => {
       });
     }
   });
-  bot.sendIpc('serverCount', bot.guilds.size);
+  bot.sendIpc('fetchServerCount', bot.guilds.size);
 });
 
 bot.on('guildDelete', server => {
   bot.log('SERVER LOST:', server.name, server.id, bot.options.shard_id);
-  bot.sendIpc('serverCount', bot.guilds.size);
+  bot.sendIpc('fetchServerCount', bot.guilds.size);
 });
 
 bot.on('channelCreate', channel => {
-  bot.sendIpc('channelCount', bot.channels.size)
+  bot.sendIpc('fetchChannelCount', bot.channels.size)
 })
 
 bot.on('channelDelete', channel => {
-  bot.sendIpc('channelCount', bot.channels.size)
+  bot.sendIpc('fetchChannelCount', bot.channels.size)
 })
 
 bot.login(settings.config.token);
