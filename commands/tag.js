@@ -3,16 +3,16 @@ const tags = new TagManager();
 
 module.exports = {
   main: (bot, msg, settings) => {
-    if (msg.content.startsWith('create')) {
-      let name = msg.content.split(' ')[1];
+    if (msg.cleanContent.startsWith('create')) {
+      let name = msg.cleanContent.split(' ')[1];
       if (tags.exists(name)) return msg.channel.sendMessage('That tag already exists!');
-      let content = msg.content.split(' ').splice(2).join(' ');
-      tags.set(name, content, {author: msg.author.id});
+      let content = msg.cleanContent.split(' ').splice(2).join(' ');
+      tags.set(name, cleanContent, {author: msg.author.id});
       return msg.channel.sendMessage(`Successfully created tag **${name}**!`);
-    } else if (msg.content.startsWith('remove')) {
-      let name = msg.content.split(' ')[1];
+    } else if (msg.cleanContent.startsWith('remove')) {
+      let name = msg.cleanContent.split(' ')[1];
       if (!tags.exists(name)) return msg.channel.sendMessage('That tag does not exist');
-      if (tags.get(name).meta.author === msg.author.id) {
+      if (tags.get(name).meta.author === msg.author.id || tags.get(name).meta.author === settings.OWNERID) {
         tags.remove(name);
         return msg.channel.sendMessage(`Successfully removed tag **${name}**!`);
       } else {
@@ -27,12 +27,12 @@ module.exports = {
       let functions = {
         'random': (min, max) => Math.floor(Math.random() * parseInt(max)) + parseInt(min)
       }
-      let out = tags.get(msg.content, replace, functions);
+      let out = tags.get(msg.cleanContent, replace, functions);
       bot.fetchUser(out.meta.author).then(user => {
-        msg.channel.sendMessage(`**${msg.content}** (${user.username}#${user.discriminator})\n${out.data}`.substring(0, 1999)).catch(bot.error);
+        msg.channel.sendMessage(`**${msg.cleanContent}** (${user.username}#${user.discriminator})\n${out.data}`.substring(0, 1999)).catch(bot.error);
       }).catch(err => {
         bot.error(err);
-        msg.channel.sendMessage(`**${msg.content}**\n${out.data}`.substring(0, 1999)).catch(bot.error);
+        msg.channel.sendMessage(`**${msg.cleanContent}**\n${out.data}`.substring(0, 1999)).catch(bot.error);
       });
     }
   },

@@ -173,13 +173,15 @@ const checkCommand = (msg, length, bot) => {
     if (rl.changeCommand(msg, true)) {
       if (typeof msg.content.split(' ')[length] !== 'undefined') {
         msg.content = msg.content.split(' ').slice(length);
+        var original = msg.content.join(' ');
         var command = msg.content.shift();
         msg.content = msg.content.join(' ');
         try {
           commands[command].main(bot, msg, settings);
         } catch (err) {
           if (msg.content.split(' ').length > 1) {
-            commands['knowledgegraph'].main(bot, msg, settings);
+            msg.content = original;
+            commands['search'].main(bot, msg, settings);
           }
         }
       }
