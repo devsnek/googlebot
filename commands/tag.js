@@ -7,7 +7,7 @@ module.exports = {
       let name = msg.cleanContent.split(' ')[1];
       if (tags.exists(name)) return msg.channel.sendMessage('That tag already exists!');
       let content = msg.cleanContent.split(' ').splice(2).join(' ');
-      tags.set(name, cleanContent, {author: msg.author.id});
+      tags.set(name, content, {author: msg.author.id});
       return msg.channel.sendMessage(`Successfully created tag **${name}**!`);
     } else if (msg.cleanContent.startsWith('remove')) {
       let name = msg.cleanContent.split(' ')[1];

@@ -170,6 +170,7 @@ const checkCommand = (msg, length, bot) => {
         try {
           commands[command].main(bot, msg, settings);
         } catch (err) {
+          bot.error(`ERROR RUNNING COMMAND ${command}`, err);
           if (msg.content.split(' ').length) {
             msg.content = original;
             commands['search'].main(bot, msg, settings);
