@@ -149,13 +149,6 @@ commands.reload = {
   hide: true
 }
 
-commands.servers = {
-  main: (bot, msg, settings) => {
-    msg.channel.sendMessage(settings.serverCount);
-  },
-  hide: true
-}
-
 const loadCommands = () => {
   var files = fs.readdirSync(path.join(__dirname, 'commands'));
   for (let file of files) {
@@ -198,6 +191,7 @@ bot.on('ready', () => {
   bot.sendIpc('fetchServerCount', bot.guilds.size);
   bot.sendIpc('fetchChannelCount', bot.channels.size);
   bot.sendIpc('fetchUserCount', bot.users.size);
+  bot.sendIpc('serverMap', bot.guilds.array().map(s => s.id));
 });
 
 bot.on('message', msg => {

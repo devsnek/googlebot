@@ -12,9 +12,11 @@ manager.log = function () {
 
 manager.spawn(4);
 
-const stats = {};
+const data = {};
+data.stats = {};
+data.servers = new Map();
 
-const backend = require('./google-util')(manager, stats);
+const [server, sse] = require('./google-util')(manager, data);
 
 manager.on('message', (shard, message) => {
   if (message.type) {
@@ -26,16 +28,20 @@ manager.on('message', (shard, message) => {
         manager.fetchClientValues('users.size').then(results => {
           let total = results.reduce((prev, val) => prev + val, 0);
           manager.broadcast({type: 'userCount', content: total});
-          stats.userCount = total;
+          data.stats.userCount = total;
         });
         break;
       case "fetchChannelCount":
         manager.fetchClientValues('channels.size').then(results => {
           let total = results.reduce((prev, val) => prev + val, 0);
           manager.broadcast({type: 'channelCount', content: total});
-          stats.channelCount = total;
+          data.stats.channelCount = total;
         });
         break;
+      case "serverMap":
+        message.content.forEach(s => {
+          data.servers.set(s, message.id);
+        });
       default:
         break;
     }
@@ -57,7 +63,7 @@ const updateCount = () => {
   manager.fetchClientValues('guilds.size').then(results => {
     let total = results.reduce((prev, val) => prev + val, 0);
     manager.broadcast({type: 'serverCount', content: total});
-    stats.serverCount = total;
+    data.stats.serverCount = total;
     updateCarbon(total);
     updateAbal(total);
   });
