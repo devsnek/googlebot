@@ -169,7 +169,7 @@ const loadCommands = () => {
 const checkCommand = (msg, length, bot) => {
   try {
     if (rl.changeCommand(msg, true)) {
-      if (typeof msg.content.split(' ')[length] !== 'undefined') {
+      if (msg.content.split(' ').length) {
         msg.content = msg.content.split(' ').slice(length);
         var original = msg.content.join(' ');
         var command = msg.content.shift();
@@ -177,7 +177,7 @@ const checkCommand = (msg, length, bot) => {
         try {
           commands[command].main(bot, msg, settings);
         } catch (err) {
-          if (msg.content.split(' ').length > 1) {
+          if (msg.content.split(' ').length) {
             msg.content = original;
             commands['search'].main(bot, msg, settings);
           }
