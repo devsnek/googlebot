@@ -12,6 +12,10 @@ manager.log = function () {
 
 manager.spawn(4);
 
+const stats = {};
+
+const backend = require('./google-util')(manager, stats);
+
 manager.on('message', (shard, message) => {
   if (message.type) {
     switch(message.type) {
@@ -22,16 +26,21 @@ manager.on('message', (shard, message) => {
         manager.fetchClientValues('users.size').then(results => {
           let total = results.reduce((prev, val) => prev + val, 0);
           manager.broadcast({type: 'userCount', content: total});
+          stats.userCount = total;
         });
         break;
       case "fetchChannelCount":
         manager.fetchClientValues('channels.size').then(results => {
           let total = results.reduce((prev, val) => prev + val, 0);
           manager.broadcast({type: 'channelCount', content: total});
+          stats.channelCount = total;
         });
         break;
       default:
         break;
+    }
+    if (message.type.includes('stats')) {
+      manager.emit('stats', stats);
     }
   }
 });
@@ -48,6 +57,7 @@ const updateCount = () => {
   manager.fetchClientValues('guilds.size').then(results => {
     let total = results.reduce((prev, val) => prev + val, 0);
     manager.broadcast({type: 'serverCount', content: total});
+    stats.serverCount = total;
     updateCarbon(total);
     updateAbal(total);
   });
