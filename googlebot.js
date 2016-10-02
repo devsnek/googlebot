@@ -93,7 +93,9 @@ commands.help = {
     });
     fs.readFile('./help.txt', 'utf8', (err, data) => {
       if (err) return bot.error(err);
-      msg.author.sendMessage(data.replace('{{help_text}}', final)).catch(err => bot.error(err));
+      data = data.replace('{{servers}}', Math.round(settings.serverCount / 500) * 500)
+                 .replace('{{help_text}}', final);
+      msg.author.sendMessage(data).catch(err => bot.error(err));
       msg.channel.sendMessage('Help has been sent!');
     })
   },
@@ -170,7 +172,7 @@ const checkCommand = (msg, length, bot) => {
         try {
           commands[command].main(bot, msg, settings);
         } catch (err) {
-          bot.error(`ERROR RUNNING COMMAND ${command}`, err);
+          bot.error(`ERROR RUNNING COMMAND ${command} FALLING BACK TO SEARCH`);
           if (msg.content.split(' ').length) {
             msg.content = original;
             commands['search'].main(bot, msg, settings);
@@ -197,6 +199,7 @@ bot.on('ready', () => {
 
 bot.on('message', msg => {
   if (msg.channel.type === 'dm' && msg.author.id !== '173547401905176585') return;
+  bot.sendIpc('_message', msg.content);
   if (msg.author.bot) return;
   if (msg.content.startsWith('<@' + bot.user.id + '>') || msg.content.startsWith('<@!' + bot.user.id + '>')) {
     checkCommand(msg, 1, bot);

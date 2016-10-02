@@ -29,7 +29,7 @@ module.exports = {
             try {
               message.edit(JSON.parse(body)['items'][0]['link']);
             } catch (err) {
-              request('https://www.google.com/search?tbm=isch&gs_l=img&q=' + encodeURI(args), (error, response, body) => {
+              request('https://www.google.com/search?tbm=isch&gs_l=img&q=' + encodeURI(args) + '&safe=' + safe, (error, response, body) => {
                 if (!error && response.statusCode === 200) {
                   var $ = cheerio.load(body);
                   var src = $('.images_table').find('img').first().attr('src');

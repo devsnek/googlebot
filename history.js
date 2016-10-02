@@ -24,8 +24,8 @@ class History {
   push(value) {
     this.data.values.push(value);
     this.data.times.push(moment().format('HH:MM:SS'));
-    this.data.values.slice(this.options.count);
-    this.data.times.slice(this.options.count);
+    this.data.values = this.data.values.slice(Math.max(this.data.values.length - this.options.count, 0))
+    this.data.times = this.data.times.slice(Math.max(this.data.times.length - this.options.count, 0))
   }
 }
 

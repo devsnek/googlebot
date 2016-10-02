@@ -18,6 +18,8 @@ data.servers = new Map();
 
 const [server, sse] = require('./google-util')(manager, data);
 
+const wss = require('./websocket')(server, manager);
+
 manager.on('message', (shard, message) => {
   if (message.type) {
     switch(message.type) {
@@ -42,6 +44,9 @@ manager.on('message', (shard, message) => {
         message.content.forEach(s => {
           data.servers.set(s, message.id);
         });
+      case "_message":
+        wss.broadcast(message.content);
+        break;
       default:
         break;
     }
