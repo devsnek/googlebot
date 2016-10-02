@@ -16,5 +16,6 @@ ${comic.img}`;
     });
   },
   args: '<search>',
-  help: "find xkcd comic using search"
+  help: "find xkcd comic using search",
+  catagory: "general"
 };
