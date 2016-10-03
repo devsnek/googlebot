@@ -1,12 +1,14 @@
 const Sherlock = require('sherlockjs');
+const moment = require('moment');
 
 module.exports = {
   main: (bot, msg) => {
     let s = Sherlock.parse(msg.content);
-    msg.channel.sendMessage(s.eventTitle + ': ' + (s.startDate.getTime() - Date.now()) / 1000);
+    let relative = s.startDate.getTime() - Date.now();
+    msg.channel.sendMessage(`I will remind you to ${s.eventTitle} ${moment().add(relative, 'ms').fromNow()}`);
     setTimeout(() => {
-      msg.channel.sendMessage(`${msg.author.mention()} **REMINDER:** ${s.eventTitle}`);
-    }, s.startDate.getTime() - Date.now());
+      msg.channel.sendMessage(`${msg.author} **REMINDER:** ${s.eventTitle}`);
+    }, relative);
   },
   hide: true
 }
