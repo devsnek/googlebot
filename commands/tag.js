@@ -1,4 +1,5 @@
 const TagManager = require('tagmanager');
+
 const tags = new TagManager();
 
 module.exports = {
@@ -19,21 +20,20 @@ module.exports = {
         return msg.channel.sendMessage('That is not your tag!');
       }
     } else {
-      let replace = {
+      let functions = {
         'name': msg.author.username,
         'channel': msg.channel.toString(),
-        'guild': msg.guild.name
+        'guild': msg.guild.name,
+        'random': (min, max) => Math.floor(Math.random() * parseInt(max) - parseInt(min) + 1) + parseInt(min)
       }
-      let functions = {
-        'random': (min, max) => Math.floor(Math.random() * parseInt(max)) + parseInt(min)
-      }
-      let out = tags.get(msg.cleanContent, replace, functions);
-      bot.fetchUser(out.meta.author).then(user => {
-        msg.channel.sendMessage(`**${msg.cleanContent}** (${user.username}#${user.discriminator})\n${out.data}`.substring(0, 1999)).catch(bot.error);
-      }).catch(err => {
-        bot.error(err);
-        msg.channel.sendMessage(`**${msg.cleanContent}**\n${out.data}`.substring(0, 1999)).catch(bot.error);
-      });
+      tags.get(msg.cleanContent, functions).then(out => {
+        bot.fetchUser(out.meta.author).then(user => {
+          msg.channel.sendMessage(`**${msg.cleanContent}** (${user.username}#${user.discriminator})\n${out.data}`.substring(0, 1999)).catch(bot.error);
+        }).catch(err => {
+          bot.error(err);
+          msg.channel.sendMessage(`**${msg.cleanContent}**\n${out.data}`.substring(0, 1999)).catch(bot.error);
+        });
+      }).catch(console.error);
     }
   },
   tags: tags,

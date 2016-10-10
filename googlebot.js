@@ -10,8 +10,9 @@ const chalk = require('chalk');
 
 var bot = new Discord.Client({
   autoReconnect: true,
-  maxCachedMessages: 1
+  messageCacheMaxSize: 1,
   // api_request_method: 'burst'
+  disabledEvents: ['PRESENCE_UPDATE', 'TYPING_START', 'TYPING_STOP', 'VOICE_STATE_UPDATE', 'FRIEND_ADD', 'FRIEND_REMOVE']
 });
 
 process.send({type: 'alive', id: bot.options.shard_id, content: bot.options.shard_id});
@@ -20,15 +21,15 @@ process.send({type: 'alive', id: bot.options.shard_id, content: bot.options.shar
 
 bot.sendIpc = (t, c) => {
   if (!process.connected) process.exit(1);
-  process.send({type: t, id: bot.options.shard_id, content: c});
+  process.send({type: t, id: bot.shard.id, content: c});
 };
 
 bot.log = function () { // needs to be es5 function for dat ...arguments
-  console.log(chalk.green(`⚙  SHARD ${bot.options.shard_id}:`), ...arguments);
+  console.log(chalk.green(`⚙  SHARD ${bot.shard.id}:`), ...arguments);
 };
 
 bot.error = function () {
-  console.log(chalk.bgRed.white(`🔥  SHARD ${bot.options.shard_id}:`), ...arguments);
+  console.log(chalk.bgRed.white(`🔥  SHARD ${bot.shard.id}:`), ...arguments);
 }
 
 var rl = new Ratelimits(bot);
@@ -187,13 +188,13 @@ const checkCommand = (msg, length, bot) => {
 
 bot.on('ready', () => {
   bot.log(`READY! Serving in ${bot.channels.size} channels and ${bot.guilds.size} servers`);
-  bot.user.setStatus('online', {name: 'ok google, help'});
+  bot.user.setGame('ok google, help');
   loadCommands();
   rl.onReady();
   bot.sendIpc('_ready');
   bot.sendIpc('fetchServerCount', bot.guilds.size);
   bot.sendIpc('fetchChannelCount', bot.channels.size);
-  bot.sendIpc('fetchUserCount', bot.users.size);
+  bot.sendIpc('fetchUserCount', bot.guilds.map(g => g.memberCount).reduce((a, b) => a+b));
   bot.sendIpc('serverMap', bot.guilds.array().map(s => s.id));
 });
 

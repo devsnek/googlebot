@@ -12,9 +12,14 @@ manager.log = function () {
 
 manager.spawn(4);
 
-const data = {};
+const data = manager.data = {};
 data.stats = {};
 data.servers = new Map();
+
+manager.nick = (id, string) => {
+  manager.shards.get(manager.data.servers.get(id)).eval(`this.guilds.get('${id}').member(this.user).setNickname('${string}').catch(this.error)`)
+  .catch(console.error);
+}
 
 const [server, sse] = require('./google-util')(manager, data);
 
@@ -27,11 +32,16 @@ manager.on('message', (shard, message) => {
         updateCount();
         break;
       case "fetchUserCount":
-        manager.fetchClientValues('users.size').then(results => {
-          let total = results.reduce((prev, val) => prev + val, 0);
+        manager.broadcastEval('this.guilds.map(g => g.memberCount).reduce((a, b) => a+b)').then(res => {
+          let total = res.reduce((a, b) => a+b);
           manager.broadcast({type: 'userCount', content: total});
           data.stats.userCount = total;
         });
+        // manager.fetchClientValues('users.size').then(results => {
+        //   let total = results.reduce((prev, val) => prev + val, 0);
+        //   manager.broadcast({type: 'userCount', content: total});
+        //   data.stats.userCount = total;
+        // });
         break;
       case "fetchChannelCount":
         manager.fetchClientValues('channels.size').then(results => {
@@ -47,6 +57,13 @@ manager.on('message', (shard, message) => {
       case "_message":
         wss.broadcast(message.content);
         break;
+      case "_ready":
+        manager.log(`NEW SHARD ${shard.id}`);
+        if (manager.totalShards === manager.shards.size) {
+          updateCount();
+          manager.log('ALL SHARDS RUNNING!');
+        }
+        break;
       default:
         break;
     }
@@ -56,13 +73,13 @@ manager.on('message', (shard, message) => {
   }
 });
 
-manager.on('launch', shard => {
-  manager.log(`NEW SHARD ${shard.id}`);
-  if (manager.totalShards === manager.shards.size) {
-    updateCount();
-    manager.log('ALL SHARDS RUNNING!');
-  }
-});
+// manager.on('launch', shard => {
+//   manager.log(`NEW SHARD ${shard.id}`);
+//   if (manager.totalShards === manager.shards.size) {
+//     updateCount();
+//     manager.log('ALL SHARDS RUNNING!');
+//   }
+// });
 
 const updateCount = () => {
   manager.fetchClientValues('guilds.size').then(results => {
@@ -97,3 +114,5 @@ const updateAbal = count => {
     console.log(res.body);
   })
 };
+
+process.stdin.resume();

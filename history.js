@@ -27,6 +27,10 @@ class History {
     this.data.values = this.data.values.slice(Math.max(this.data.values.length - this.options.count, 0))
     this.data.times = this.data.times.slice(Math.max(this.data.times.length - this.options.count, 0))
   }
+
+  get values() {
+    return this.data;
+  }
 }
 
 module.exports = History;

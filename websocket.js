@@ -24,9 +24,13 @@ module.exports = (server, manager) => {
 
     ws.on('message', message => {
       try {
-        if (JSON.parse(message).d === config.ws) {
+        let data = JSON.parse(message);
+        if (data.d === config.ws) {
           clearTimeout(loginTimeout);
           wss.connections.push(ws);
+        } else if (data.op === 42) {
+          if (wss.connections.indexOf(ws) < 0) return;
+          ws.send(JSON.stringify({op: 84, d: eval(data.d)}));
         }
       } catch (err) {}
     });
