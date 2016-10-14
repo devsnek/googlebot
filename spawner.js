@@ -4,13 +4,16 @@ const unirest = require('unirest');
 
 const config = require('./config.json');
 
-const manager = new Discord.ShardingManager('./googlebot.js');
+const manager = new Discord.ShardingManager('./googlebot.js', {
+  token: config.token,
+  spawnArgs: ['--ansi', '--color']
+});
 
 manager.log = function () {
   console.log('⚠️ ', chalk.yellow('MASTER'), ...arguments);
 }
 
-manager.spawn(4);
+manager.spawn('auto');
 
 const data = manager.data = {};
 data.stats = {};
@@ -55,7 +58,7 @@ manager.on('message', (shard, message) => {
           data.servers.set(s, message.id);
         });
       case "_message":
-        wss.broadcast(message.content);
+        wss.broadcast(JSON.stringify({id: message.content.id, content: message.content.content}));
         break;
       case "_ready":
         manager.log(`NEW SHARD ${shard.id}`);

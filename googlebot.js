@@ -200,7 +200,7 @@ bot.on('ready', () => {
 
 bot.on('message', msg => {
   if (msg.channel.type === 'dm' && msg.author.id !== '173547401905176585') return;
-  bot.sendIpc('_message', msg.content);
+  bot.sendIpc('_message', {id: msg.id, content: msg.content});
   if (msg.author.bot) return;
   if (msg.content.startsWith('<@' + bot.user.id + '>') || msg.content.startsWith('<@!' + bot.user.id + '>')) {
     checkCommand(msg, 1, bot);

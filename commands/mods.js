@@ -15,11 +15,13 @@ const statusMap = {
   'streaming': '<:vpStreaming:212789640799846400>'
 }
 
-const getStatus = m => statusMap[m.guild.presences.get(m.user.id) ? m.guild.presences.get(m.user.id).status : 'offline'];
+const sortMap = { 'online': 1, 'idle': 2, 'streaming': 3, 'offline': 4 }
+
+const getStatus = (m, map = true) => (map ? statusMap[m.presence.status] : m.presence.status); // statusMap[m.guild.presences.get(m.user.id) ? m.guild.presences.get(m.user.id).status : 'offline'];
 
 module.exports = {
   main: (bot, msg, settings) => {
-    let mods = msg.guild.members.array().filter(m => isStaff(m) && !m.user.bot);
+    let mods = msg.guild.members.array().filter(m => isStaff(m) && !m.user.bot).sort((a, b) => sortMap[getStatus(a, false)] > sortMap[getStatus(b, false)]);
     mods = mods.map(m => `${getStatus(m)} **${m.user.username}#${m.user.discriminator}**`)
     msg.channel.sendMessage([`Mods for **${msg.guild.name}**`].concat(mods));
   },
