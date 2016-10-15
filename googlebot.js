@@ -8,6 +8,8 @@ const Ratelimits = require('./ratelimits');
 const r = require('rethinkdb');
 const chalk = require('chalk');
 
+if (!process.send) process.send = () => {}
+
 var bot = new Discord.Client({
   autoReconnect: true,
   messageCacheMaxSize: 1,
@@ -235,16 +237,12 @@ bot.on('disconnect', () => {
 
 bot.on('guildCreate', server => {
   bot.log('SERVER GET:', server.name, server.id, bot.options.shard_id);
+  let data = fs.readFileSync('./welcome.txt', 'utf8')
+  server.defaultChannel.sendMessage(`${server.owner} ${data}`);
   r.db('google').table('servers').get(server.id).run(settings.dbconn, (err, res) => {
     if (err) return console.log(err);
     if (res === null) {
-      fs.readFile('./welcome.txt', 'utf8', function (err, data) {
-        if (err) {
-          return bot.log(err);
-        }
-        server.channels.get(server.id).sendMessage('<@' + server.owner.id + '> ' + data);
-        r.db('google').table('servers').insert({id: server.id, name: server.name, nsfw: '2', nick: 'Google'}).run(settings.dbconn);
-      });
+      r.db('google').table('servers').insert({id: server.id, name: server.name, nsfw: '2', nick: 'Google'}).run(settings.dbconn);
     }
   });
   bot.sendIpc('fetchServerCount', bot.guilds.size);

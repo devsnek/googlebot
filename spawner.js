@@ -6,7 +6,7 @@ const config = require('./config.json');
 
 const manager = new Discord.ShardingManager('./googlebot.js', {
   token: config.token,
-  spawnArgs: ['--ansi', '--color']
+  shardArgs: ['--ansi', '--color', '--no-warnings']
 });
 
 manager.log = function () {
@@ -51,7 +51,7 @@ manager.on('message', (shard, message) => {
           let total = results.reduce((prev, val) => prev + val, 0);
           manager.broadcast({type: 'channelCount', content: total});
           data.stats.channelCount = total;
-        });
+        }).catch(() => {});
         break;
       case "serverMap":
         message.content.forEach(s => {
@@ -63,8 +63,8 @@ manager.on('message', (shard, message) => {
       case "_ready":
         manager.log(`NEW SHARD ${shard.id}`);
         if (manager.totalShards === manager.shards.size) {
-          updateCount();
-          manager.log('ALL SHARDS RUNNING!');
+          // updateCount();
+          // manager.log('ALL SHARDS RUNNING!');
         }
         break;
       default:
@@ -91,7 +91,7 @@ const updateCount = () => {
     data.stats.serverCount = total;
     updateCarbon(total);
     updateAbal(total);
-  });
+  }).catch(() => {});
 }
 
 const updateCarbon = count => {

@@ -12,12 +12,16 @@ const statusMap = {
   'online': '<:vpOnline:212789758110334977>',
   'idle': '<:vpAway:212789859071426561>',
   'offline': '<:vpOffline:212790005943369728>',
+  'dnd': 'DND',
   'streaming': '<:vpStreaming:212789640799846400>'
 }
 
-const sortMap = { 'online': 1, 'idle': 2, 'streaming': 3, 'offline': 4 }
+const sortMap = { 'online': 1, 'idle': 2, 'streaming': 3, 'dnd': 4, 'offline': 5 }
 
-const getStatus = (m, map = true) => (map ? statusMap[m.presence.status] : m.presence.status); // statusMap[m.guild.presences.get(m.user.id) ? m.guild.presences.get(m.user.id).status : 'offline'];
+const getStatus = (m, map = true) => {
+  let status = m.guild.presences.get(m.user.id) ? m.guild.presences.get(m.user.id).status : 'offline';
+  return (map ? statusMap[status] : status);
+}
 
 module.exports = {
   main: (bot, msg, settings) => {
