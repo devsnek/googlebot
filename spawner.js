@@ -1,3 +1,5 @@
+#!/usr/bin/env node --harmony
+
 const Discord = require('discord.js');
 const chalk = require('chalk');
 const unirest = require('unirest');
