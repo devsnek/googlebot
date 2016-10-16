@@ -3,7 +3,7 @@ const superagent = require('superagent');
 const shortenTitle = string => string.length > 40 ? string.substring(0, 40) + '...' : string;
 
 module.exports = {
-  main: (bot, msg, settings) => {
+  main: async (bot, msg, settings) => {
     superagent.post('https://qeeqle.guscaplan.me')
     .send(JSON.stringify({'query': msg.content}))
     .end((err, res) => {

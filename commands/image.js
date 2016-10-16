@@ -3,7 +3,7 @@ const r = require('rethinkdb');
 const cheerio = require('cheerio');
 
 module.exports = {
-  main: (bot, msg, settings) => {
+  main: async (bot, msg, settings) => {
     var args = msg.content;
     var safeMap = {
       1: 'off',

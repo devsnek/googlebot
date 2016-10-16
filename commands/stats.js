@@ -11,7 +11,7 @@ const toHHMMSS = seconds => {
 }
 
 module.exports = {
-  main: (bot, msg, settings) => {
+  main: async (bot, msg, settings) => {
     let final = `STATISTICS
 • Mem Usage    : ${process.memoryUsage().heapUsed / 1000000} MB
 • Uptime       : ${toHHMMSS((new Date() / 1000) - settings.startuptime)}

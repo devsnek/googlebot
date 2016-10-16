@@ -1,5 +1,5 @@
 module.exports = {
-  main: (bot, msg, settings) => {
+  main: async (bot, msg, settings) => {
     if (msg.author.id === settings.OWNERID) {
       var args = msg.content;
       bot.log('EVAL WAS RUN!');

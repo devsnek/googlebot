@@ -1,7 +1,7 @@
 var unirest = require('unirest');
 
 module.exports = {
-  main: (bot, msg, settings) => {
+  main: async (bot, msg, settings) => {
     let url = 'https://www.googleapis.com/urlshortener/v1/url?key=' + settings.config.shortenKey;
     unirest.post(url)
       .set('Content-Type', 'application/json')

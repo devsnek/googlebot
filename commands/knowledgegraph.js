@@ -1,7 +1,7 @@
 const request = require('superagent');
 
 module.exports = {
-  main: (bot, msg, settings) => {
+  main: async (bot, msg, settings) => {
     var args = msg.content;
     args = args.replace(/(who|what|when|where) (was|is|were|are) /gi, '');
     msg.channel.sendMessage('`Searching...`').then(message => {

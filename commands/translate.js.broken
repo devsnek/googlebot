@@ -2,7 +2,7 @@ const request = require('request');
 const iso = require('iso-639-1').default;
 
 module.exports = {
-  main: (bot, msg, settings) => {
+  main: async (bot, msg, settings) => {
     let args = msg.content.replace(/'/g, '');
     let tolang = args.split(' ')[args.split(' ').length - 1];
     tolang = iso.getCode(tolang) === '' ? tolang : iso.getCode(tolang);

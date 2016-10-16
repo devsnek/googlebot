@@ -4,7 +4,7 @@ const cheerio = require('cheerio');
 const querystring = require('querystring');
 
 module.exports = {
-  main: (bot, msg, settings) => {
+  main: async (bot, msg, settings) => {
     var args = msg.content.trimLeft();
     msg.channel.sendMessage('`Searching...`').then(message => {
       var key = settings.KEYS[settings.lastKey + 1];

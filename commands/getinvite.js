@@ -1,7 +1,7 @@
 const request = require('request');
 
 module.exports = {
-  main: (bot, msg, settings) => {
+  main: async (bot, msg, settings) => {
     var args = msg.content.split(' ');
     var method = args[0];
     args.shift();

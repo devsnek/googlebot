@@ -26,7 +26,7 @@ const getStatus = (m, map = true) => {
 }
 
 module.exports = {
-  main: (bot, msg, settings) => {
+  main: async (bot, msg, settings) => {
     let mods = msg.guild.members.array().filter(m => isStaff(m) && !m.user.bot).sort((a, b) => sortMap[getStatus(a, false)] > sortMap[getStatus(b, false)]);
     mods = mods.map(m => `${getStatus(m)} **${m.user.username}#${m.user.discriminator}**`)
     msg.channel.sendMessage([`Mods for **${msg.guild.name}**`].concat(mods));

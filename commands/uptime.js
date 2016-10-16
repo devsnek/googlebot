@@ -11,7 +11,7 @@ const toHHMMSS = seconds => {
 }
 
 module.exports = {
-  main: (bot, msg, settings) => {
+  main: async (bot, msg, settings) => {
     msg.channel.sendMessage('Uptime: ' + toHHMMSS((new Date() / 1000) - settings.startuptime));
   },
   hide: true
