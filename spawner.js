@@ -6,7 +6,7 @@ const config = require('./config.json');
 
 const manager = new Discord.ShardingManager('./googlebot.js', {
   token: config.token,
-  shardArgs: ['--ansi', '--color', '--no-warnings']
+  shardArgs: ['--harmony', '--ansi', '--color', '--no-warnings']
 });
 
 manager.log = function () {
@@ -35,14 +35,14 @@ manager.on('message', async (shard, message) => {
         updateCount();
         break;
       case 'fetchUserCount':
-        const res = await manager.broadcastEval('this.guilds.map(g => g.memberCount).reduce((a, b) => a+b)')
+        let res = await manager.broadcastEval('this.guilds.map(g => g.memberCount).reduce((a, b) => a+b)')
         let total = res.reduce((a, b) => a + b);
         manager.broadcast({type: 'userCount', content: total});
         data.stats.userCount = total;
         break;
       case 'fetchChannelCount':
-        const res = manager.fetchClientValues('channels.size');
-        let total = res.reduce((prev, val) => prev + val, 0);
+        res = manager.fetchClientValues('channels.size');
+        total = res.reduce((prev, val) => prev + val, 0);
         manager.broadcast({type: 'channelCount', content: total});
         data.stats.channelCount = total;
         break;
