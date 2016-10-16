@@ -2,7 +2,7 @@ const superagent = require('superagent');
 const cheerio = require('cheerio');
 const querystring = require('querystring');
 
-const fallback = async (message, query, client) => {
+const fallback = async (message, args, safe, client) => {
   let url = `https://www.google.com/search?safe=${safe}&q=${encodeURI(args)}`;
   superagent.get(url).end((err, res) => {
     if (err) client.error(err);
@@ -27,12 +27,12 @@ module.exports = {
     superagent.get(url).end((err, res) => {
       if (err) {
         client.error(err);
-        return fallback(message, args, client);
+        return fallback(message, args, safe, client);
       }
       message.edit(JSON.parse(res.text)['items'][0]['link']).catch(err => {
         if (err) {
           client.error(err);
-          return fallback(message, args, client);
+          return fallback(message, args, safe, client);
         }
       });
     });
