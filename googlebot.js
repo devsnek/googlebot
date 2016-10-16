@@ -1,3 +1,5 @@
+#!/usr/bin/env node --harmony
+
 const rightpad = (v, n, c = '0') => String(v).length >= n ? '' + v : String(v) + String(c).repeat(n - String(v).length);
 const shuffle = (a) => {for(let c,d,b=a.length;b;)d=Math.floor(Math.random()*b--),c=a[b],a[b]=a[d],a[d]=c;return a} // eslint-disable-line
 

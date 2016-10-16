@@ -34,7 +34,7 @@ module.exports = {
                   var $ = cheerio.load(body);
                   try {
                     var href = $('.r').first().find('a').first().attr('href');
-                    res = Object.keys(querystring.parse(href.substr(7, href.length)))[0];
+                    let res = Object.keys(querystring.parse(href.substr(7, href.length)))[0];
                     if (res === '?q') {
                       message.edit('`No results found`');
                     } else {
