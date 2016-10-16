@@ -5,6 +5,7 @@
   "author": "Gus Caplan <me@guscaplan.me>",
   "description": "Google’s mission is to organize the world’s information and make it universally accessible and useful.",
   "dependencies": {
+    "axios": "^0.15.1",
     "chalk": "^1.1.3",
     "cheerio": "^0.20.0",
     "colors": "^1.1.2",
