@@ -281,3 +281,7 @@ client.login(settings.config.token);
 process.on('SIGHUP', () => {
   process.exit(0);
 });
+
+process.on('unhandledRejection', reason => {
+  client.error('UNHANDLED REJECTION', reason);
+});
