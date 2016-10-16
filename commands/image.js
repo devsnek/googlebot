@@ -23,7 +23,11 @@ module.exports = {
     let url = `https://www.googleapis.com/customsearch/v1?searchType=image&key=${key}&cx=${settings.config.cx}&safe=${safe}&q=${encodeURI(args)}`;
     superagent.get(url).end((err, res) => {
       if (err) return fallback(message, args, safe, bot);
-      message.edit(JSON.parse(res.text)['items'][0]['link']).catch(() => fallback(message, args, safe, bot));
+      try {
+        message.edit(JSON.parse(res.text)['items'][0]['link']).catch(() => fallback(message, args, safe, bot));
+      } catch (err) {
+        fallback(message, args, safe, bot);
+      }
     });
     settings.toBeDeleted.set(msg.id, message.id);
     settings.lastKey += 1;
