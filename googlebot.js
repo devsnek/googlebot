@@ -176,6 +176,7 @@ const checkCommand = (msg, length, client) => {
         msg.content = msg.content.split(' ').slice(length);
         const original = msg.content.join(' ');
         const command = msg.content.shift();
+        console.log('COMMAND', command);
         msg.content = msg.content.join(' ');
         try {
           commands[command].main(client, msg, settings);
