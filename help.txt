@@ -1,8 +1,4 @@
 **```xl
-Google’s mission is to organize the world’s information and make it universally accessible and useful.
-
-PREFIX: "ok google"
-
 [optional parameter]
 <required parameter>
 
@@ -17,5 +13,5 @@ Hey Guys! we just hit 🌟 {{servers}} 🌟  servers, and keeping this running i
 https://patreon.com/guscaplan 🍪
 https://paypal.me/guscaplan
 
-© 2016 Google Inc. All rights reserved. Google and the Google Logo are registered trademarks of Google Inc.
+Google and the Google Logo are registered trademarks of Google Inc.
 ```**

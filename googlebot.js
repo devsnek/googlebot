@@ -83,7 +83,7 @@ let commands = settings.commands;
 
 // this command makes help
 commands.help = {
-  main: (client, msg, settings) => {
+  main: async (client, msg, settings) => {
     const catagories = [];
     let final = '';
     Object.keys(settings.commands).forEach(k => {
@@ -113,7 +113,7 @@ commands.help = {
 };
 
 commands.load = {
-  main: (client, msg) => {
+  main: async (client, msg) => {
     if (msg.author.id !== settings.OWNERID) return;
     const args = msg.content;
     try {
@@ -129,7 +129,7 @@ commands.load = {
 }
 
 commands.unload = {
-  main: (client, msg) => {
+  main: async (client, msg) => {
     if (msg.author.id !== settings.OWNERID) return;
     const args = msg.content;
     try {
@@ -144,7 +144,7 @@ commands.unload = {
 }
 
 commands.reload = {
-  main: (client, msg) => {
+  main: async (client, msg) => {
     if (msg.author.id !== settings.OWNERID) return;
     const args = msg.content;
     try {
