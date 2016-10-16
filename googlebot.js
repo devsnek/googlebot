@@ -79,7 +79,7 @@ settings.commands = {};
 
 settings.toBeDeleted = new Map();
 
-const commands = settings.commands;
+let commands = settings.commands;
 
 // this command makes help
 commands.help = {
@@ -169,17 +169,26 @@ const loadCommands = () => {
   client.log('———— All Commands Loaded! ————');
 }
 
-const checkCommand = (msg, length, client) => {
+const checkCommand = (msg, length) => {
   try {
     if (rl.changeCommand(msg, true)) {
       if (msg.content.split(' ').length) {
         msg.content = msg.content.split(' ').slice(length);
         const original = msg.content.join(' ');
         const command = msg.content.shift();
-        console.log('COMMAND', command);
         msg.content = msg.content.join(' ');
         try {
-          commands[command].main(client, msg, settings);
+          let run = commands[command].main(client, msg, settings);
+          if (run.catch) {
+            run.catch(err => {
+              client.error(err);
+              client.error(`ERROR RUNNING COMMAND ${command} FALLING BACK TO SEARCH`);
+              if (msg.content.split(' ').length) {
+                msg.content = original;
+                commands['search'].main(client, msg, settings);
+              }
+            });
+          }
         } catch (err) {
           client.error(`ERROR RUNNING COMMAND ${command} FALLING BACK TO SEARCH`);
           if (msg.content.split(' ').length) {
@@ -213,7 +222,7 @@ client.on('message', msg => {
   if (msg.content.startsWith('<@' + client.user.id + '>') || msg.content.startsWith('<@!' + client.user.id + '>')) {
     checkCommand(msg, 1, client);
   } else if (msg.content.toLowerCase().startsWith(settings.PREFIX)) {
-    checkCommand(msg, settings.PREFIX.split(' ').length, client);
+    checkCommand(msg, settings.PREFIX.split(' ').length);
   }
 });
 
