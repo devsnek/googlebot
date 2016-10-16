@@ -1,59 +1,35 @@
-const request = require('request');
-const r = require('rethinkdb');
+const superagent = require('superagent');
 const cheerio = require('cheerio');
+
+const fallback = (message, args, safe, bot) => {
+  let url = `https://www.google.com/search?tbm=isch&gs_l=img&safe=${safe}&q=${encodeURI(args)}`;
+  superagent.get(url).end((err, res) => {
+    if (err) bot.error(err);
+    const $ = cheerio.load(res.text);
+    const result = $('.images_table').find('img').first().attr('src');
+    message.edit(result).catch(() => message.edit('`No results found!`'));
+  });
+}
 
 module.exports = {
   main: async (bot, msg, settings) => {
-    var args = msg.content;
-    var safeMap = {
-      1: 'off',
-      2: 'medium',
-      3: 'high'
-    };
-    msg.channel.sendMessage('`Searching...`').then(message => {
-      var key = settings.KEYS[settings.lastKey + 1];
-      r.db('google').table('servers').get(msg.guild.id).run(settings.dbconn, (err, thing) => {
-        if (err) bot.error(err);
-        var safeSetting;
-        if (thing === null) {
-          safeSetting = 'medium'
-        } else {
-          safeSetting = safeMap[parseInt(thing.nsfw)];
-        }
-        var safe = (msg.channel.name.includes('nsfw') ? 'off' : safeSetting);
-        bot.log('Image:', msg.guild.name, msg.guild.id, '|', args, '|', safe, '|', key, settings.lastKey + 1);
-        var url = 'https://www.googleapis.com/customsearch/v1?key=' + key + '&cx=' + settings.config.cxImg + '&safe=' + safe + '&searchType=image&q=' + encodeURI(args);
-        try {
-          request(url, (err, response, body) => {
-            if (err) bot.error(err);
-            try {
-              message.edit(JSON.parse(body)['items'][0]['link']);
-            } catch (err) {
-              request('https://www.google.com/search?tbm=isch&gs_l=img&q=' + encodeURI(args) + '&safe=' + safe, (error, response, body) => {
-                if (!error && response.statusCode === 200) {
-                  var $ = cheerio.load(body);
-                  var src = $('.images_table').find('img').first().attr('src');
-                  if (src) {
-                    message.edit(src);
-                  } else {
-                    message.edit('`No results found!`');
-                  }
-                } else {
-                  message.edit('`No results found!`');
-                }
-              });
-            }
-          });
-        } catch (err) {
-          message.edit('`No results found!`');
-        }
-        settings.toBeDeleted.set(msg.id, message.id);
-        settings.lastKey += 1;
-        if (settings.lastKey + 1 >= settings.KEYS.length) settings.lastKey = 0;
-      });
+    const args = msg.content.trimLeft();
+    const message = await msg.channel.sendMessage('`Searching...`');
+    const key = settings.KEYS[settings.lastKey + 1];
+    const s = await settings.rethink(msg.guild.id);
+    const safeSetting = s ? {1: 'off', 2: 'medium', 3: 'high'}[parseInt(s.nsfw)] : 'medium';
+    const safe = msg.channel.name.includes('nsfw') ? 'off' : safeSetting;
+    bot.log('Search:', msg.guild.name, msg.guild.id, '|', args, '|', safe, '|', key, settings.lastKey + 1);
+    let url = `https://www.googleapis.com/customsearch/v1?searchType=image&key=${key}&cx=${settings.config.cx}&safe=${safe}&q=${encodeURI(args)}`;
+    superagent.get(url).end((err, res) => {
+      if (err) return fallback(message, args, safe, bot);
+      message.edit(JSON.parse(res.text)['items'][0]['link']).catch(() => fallback(message, args, safe, bot));
     });
+    settings.toBeDeleted.set(msg.id, message.id);
+    settings.lastKey += 1;
+    if (settings.lastKey + 1 >= settings.KEYS.length) settings.lastKey = 0;
   },
   args: '<query>',
-  help: 'Search for images on the web',
+  help: 'Search billions of web pages',
   catagory: 'general'
 };

@@ -26,12 +26,10 @@ module.exports = {
     let url = `https://www.googleapis.com/customsearch/v1?key=${key}&cx=${settings.config.cx}&safe=${safe}&q=${encodeURI(args)}`;
     superagent.get(url).end((err, res) => {
       if (err) {
-        client.error(err);
         return fallback(message, args, safe, client);
       }
       message.edit(JSON.parse(res.text)['items'][0]['link']).catch(err => {
         if (err) {
-          client.error(err);
           return fallback(message, args, safe, client);
         }
       });
