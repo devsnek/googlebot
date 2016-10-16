@@ -218,7 +218,7 @@ client.on('ready', () => {
 client.on('message', msg => {
   if (msg.channel.type === 'dm' && msg.author.id !== '173547401905176585') return;
   client.sendIpc('_message', {id: msg.id, content: msg.content});
-  if (msg.author.client) return;
+  if (msg.author.bot) return;
   if (msg.content.startsWith('<@' + client.user.id + '>') || msg.content.startsWith('<@!' + client.user.id + '>')) {
     checkCommand(msg, 1, client);
   } else if (msg.content.toLowerCase().startsWith(settings.PREFIX)) {
