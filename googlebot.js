@@ -178,17 +178,7 @@ const checkCommand = (msg, length) => {
         const command = msg.content.shift();
         msg.content = msg.content.join(' ');
         try {
-          let run = commands[command].main(client, msg, settings);
-          if (run.catch) {
-            run.catch(err => {
-              client.error(err);
-              client.error(`ERROR RUNNING COMMAND ${command} FALLING BACK TO SEARCH`);
-              if (msg.content.split(' ').length) {
-                msg.content = original;
-                commands['search'].main(client, msg, settings);
-              }
-            });
-          }
+          commands[command].main(client, msg, settings);
         } catch (err) {
           client.error(`ERROR RUNNING COMMAND ${command} FALLING BACK TO SEARCH`);
           if (msg.content.split(' ').length) {
