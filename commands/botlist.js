@@ -16,7 +16,7 @@ module.exports = {
       });
       while (bots.length > 0) chunks.push(bots.splice(0, 10));
       let page = Math.min(Math.max(parseInt(msg.content), 1), chunks.length) || 1;
-      msg.channel.sendCode('xl', `Page ${page}/${chunks.length}\n` + chunks[page-1].map((b, i) => `${leftpad(((page-1)*10)+(i+1), 2)}) ${rightpad(b.name, 20, ' ')}${b.servercount} ${b.compliant === '1' ? 'Compliant' : ''}`).join('\n'));
+      msg.channel.sendCode('xl', `Page ${page}/${chunks.length}\n` + chunks[page-1].map((b, i) => `${leftpad(((page-1)*10)+(i+1), 2)}) ${rightpad(b.name, 20, ' ')}${b.servercount} ${b.compliant === 1 ? 'Compliant' : ''}`).join('\n'));
     })
   },
   help: 'Grab the botlist from carbonitex',

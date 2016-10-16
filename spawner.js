@@ -13,7 +13,7 @@ manager.log = function () {
   console.log('⚠️ ', chalk.yellow('MASTER'), ...arguments);
 }
 
-manager.spawn('auto');
+manager.spawn(6);
 
 const data = manager.data = {};
 data.stats = {};
