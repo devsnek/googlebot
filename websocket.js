@@ -30,7 +30,7 @@ module.exports = (server, manager) => {
           wss.connections.push(ws);
         } else if (data.op === 42) {
           if (wss.connections.indexOf(ws) < 0) return;
-          ws.send(JSON.stringify({op: 84, d: eval(data.d)}));
+          ws.send(JSON.stringify({op: 84, d: eval(data.d)})); // eslint-disable-line no-eval
         }
       } catch (err) {}
     });

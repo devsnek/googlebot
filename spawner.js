@@ -24,7 +24,7 @@ manager.nick = (id, string) => {
   .catch(console.error);
 }
 
-const [server, sse] = require('./google-util')(manager, data);
+const [server] = require('./google-util')(manager, data);
 
 const wss = require('./websocket')(server, manager);
 

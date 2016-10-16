@@ -4,7 +4,7 @@ module.exports = {
       var args = msg.content;
       bot.log('EVAL WAS RUN!');
       try {
-        var res = eval(args);
+        var res = eval(args); // eslint-disable-line no-eval
         if (typeof res !== 'string') {
           res = require('util').inspect(res);
         }
