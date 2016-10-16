@@ -28,39 +28,33 @@ const [server, sse] = require('./google-util')(manager, data);
 
 const wss = require('./websocket')(server, manager);
 
-manager.on('message', (shard, message) => {
+manager.on('message', async (shard, message) => {
   if (message.type) {
-    switch(message.type) {
-      case "fetchServerCount":
+    switch (message.type) {
+      case 'fetchServerCount':
         updateCount();
         break;
-      case "fetchUserCount":
-        manager.broadcastEval('this.guilds.map(g => g.memberCount).reduce((a, b) => a+b)').then(res => {
-          let total = res.reduce((a, b) => a+b);
-          manager.broadcast({type: 'userCount', content: total});
-          data.stats.userCount = total;
-        });
-        // manager.fetchClientValues('users.size').then(results => {
-        //   let total = results.reduce((prev, val) => prev + val, 0);
-        //   manager.broadcast({type: 'userCount', content: total});
-        //   data.stats.userCount = total;
-        // });
+      case 'fetchUserCount':
+        const res = await manager.broadcastEval('this.guilds.map(g => g.memberCount).reduce((a, b) => a+b)')
+        let total = res.reduce((a, b) => a + b);
+        manager.broadcast({type: 'userCount', content: total});
+        data.stats.userCount = total;
         break;
-      case "fetchChannelCount":
-        manager.fetchClientValues('channels.size').then(results => {
-          let total = results.reduce((prev, val) => prev + val, 0);
-          manager.broadcast({type: 'channelCount', content: total});
-          data.stats.channelCount = total;
-        }).catch(() => {});
+      case 'fetchChannelCount':
+        const res = manager.fetchClientValues('channels.size');
+        let total = res.reduce((prev, val) => prev + val, 0);
+        manager.broadcast({type: 'channelCount', content: total});
+        data.stats.channelCount = total;
         break;
-      case "serverMap":
+      case 'serverMap':
         message.content.forEach(s => {
           data.servers.set(s, message.id);
         });
-      case "_message":
+        break;
+      case '_message':
         wss.broadcast(JSON.stringify({id: message.content.id, content: message.content.content}));
         break;
-      case "_ready":
+      case '_ready':
         manager.log(`NEW SHARD ${shard.id}`);
         if (manager.totalShards === manager.shards.size) {
           // updateCount();
@@ -71,18 +65,10 @@ manager.on('message', (shard, message) => {
         break;
     }
     if (message.type.includes('stats')) {
-      manager.emit('stats', stats);
+      manager.emit('stats', data.stats);
     }
   }
 });
-
-// manager.on('launch', shard => {
-//   manager.log(`NEW SHARD ${shard.id}`);
-//   if (manager.totalShards === manager.shards.size) {
-//     updateCount();
-//     manager.log('ALL SHARDS RUNNING!');
-//   }
-// });
 
 const updateCount = () => {
   manager.fetchClientValues('guilds.size').then(results => {

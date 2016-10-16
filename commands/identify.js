@@ -1,33 +1,23 @@
-const unirest = require('unirest');
+const axios = require('axios');
 
 module.exports = {
-  main: (bot, msg, settings) => {
+  main: async (bot, msg, settings) => {
     var args = msg.content;
     bot.log('IDENTIFY', msg.guild.name, msg.guild.id, args);
-
-    msg.channel.sendMessage('`Identifying...`').then(message => {
-      settings.toBeDeleted.set(msg.id, message.id);
-      unirest.get('https://www.captionbot.ai/api/init')
-      .end(res => {
-        var cid = res.body;
-        unirest.post('https://www.captionbot.ai/api/message')
-        .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
-        .send({'conversationId': cid, 'waterMark': '', 'userMessage': args.split(' ')[0]})
-        .end(res => {
-          unirest.get('https://www.captionbot.ai/api/message?waterMark=&conversationId=' + cid)
-          .end(res => {
-            // bot.log('Identify: ', msg.guild.name, msg.guild.id, '|', args, '|', cid);
-            message.edit('**' + JSON.parse(res.body).BotMessages[1] + '**').catch(err => {
-              bot.error(err);
-              message.edit('**Could not identify image!**');
-            });
-          });
-        });
-      });
+    const message = msg.channel.sendMessage('`Identifying...`');
+    settings.toBeDeleted.set(msg.id, message.id);
+    let res = await axios.get('https://www.captionbot.ai/api/init');
+    const cid = res.body;
+    res = await axios.post('https://www.captionbot.ai/api/message',
+      {'conversationId': cid, 'waterMark': '', 'userMessage': args.split(' ')[0]},
+      { headers: {'Accept': 'application/json', 'Content-Type': 'application/json'} });
+    res = await axios.get(`https://www.captionbot.ai/api/message?waterMark=&conversationId=${cid}`)
+    message.edit('**' + JSON.parse(res.body).BotMessages[1] + '**').catch(err => {
+      bot.error(err);
+      message.edit('**Could not identify image!**');
     });
   },
   help: 'Identify an image',
   args: '<url>',
   catagory: 'general'
 };
-

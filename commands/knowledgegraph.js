@@ -33,4 +33,3 @@ ${kg.detailedDescription.articleBody}
   },
   hide: true
 };
-

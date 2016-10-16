@@ -1,5 +1,5 @@
 const rightpad = (v, n, c = '0') => String(v).length >= n ? '' + v : String(v) + String(c).repeat(n - String(v).length);
-const shuffle = (a) => {for(var c,d,b=a.length;b;)d=Math.floor(Math.random()*b--),c=a[b],a[b]=a[d],a[d]=c;return a} // eslint-disable-line
+const shuffle = (a) => {for(let c,d,b=a.length;b;)d=Math.floor(Math.random()*b--),c=a[b],a[b]=a[d],a[d]=c;return a} // eslint-disable-line
 
 const Discord = require('discord.js');
 const fs = require('fs');
@@ -8,35 +8,35 @@ const Ratelimits = require('./ratelimits');
 const r = require('rethinkdb');
 const chalk = require('chalk');
 
-if (!process.send) process.send = () => {}
+if (!process.send) process.send = () => {};
 
-var bot = new Discord.Client({
+const client = new Discord.Client({
   autoReconnect: true,
   messageCacheMaxSize: 1,
   // api_request_method: 'burst'
   disabledEvents: ['PRESENCE_UPDATE', 'TYPING_START', 'TYPING_STOP', 'VOICE_STATE_UPDATE', 'FRIEND_ADD', 'FRIEND_REMOVE']
 });
 
-process.send({type: 'alive', id: bot.options.shard_id, content: bot.options.shard_id});
+process.send({type: 'alive', id: client.options.shard_id, content: client.options.shard_id});
 
 // there are those that would say extending the client like this is bad. those people are 100% correct.
 
-bot.sendIpc = (t, c) => {
+client.sendIpc = (t, c) => {
   if (!process.connected) process.exit(1);
-  process.send({type: t, id: bot.shard.id, content: c});
+  process.send({type: t, id: client.shard.id, content: c});
 };
 
-bot.log = function () { // needs to be es5 function for dat ...arguments
-  console.log(chalk.green(`⚙  SHARD ${bot.shard.id}:`), ...arguments);
+client.log = function () { // needs to be es5 function for dat ...arguments
+  console.log(chalk.green(`⚙  SHARD ${client.shard.id}:`), ...arguments);
 };
 
-bot.error = function () {
-  console.log(chalk.bgRed.white(`🔥  SHARD ${bot.shard.id}:`), ...arguments);
+client.error = function () {
+  console.log(chalk.bgRed.white(`🔥  SHARD ${client.shard.id}:`), ...arguments);
 }
 
-var rl = new Ratelimits(bot);
+const rl = new Ratelimits(client);
 
-var settings = {};
+const settings = {};
 
 process.on('message', msg => {
   if (msg.type === 'serverCount') {
@@ -60,6 +60,10 @@ settings.PREFIX = 'ok google';
 
 settings.startuptime = new Date() / 1000;
 
+settings.rethink = id => {
+  return require('./util/RethinkPromises')(id, settings.dbconn);
+}
+
 settings.KEYS = fs.readFileSync('keys.txt').toString().split('\n');
 settings.KEYS.splice(-1, 1);
 
@@ -73,15 +77,15 @@ settings.commands = {};
 
 settings.toBeDeleted = new Map();
 
-var commands = settings.commands;
+const commands = settings.commands;
 
 // this command makes help
 commands.help = {
-  main: (bot, msg, settings) => {
-    var catagories = [];
-    var final = '';
+  main: (client, msg, settings) => {
+    const catagories = [];
+    let final = '';
     Object.keys(settings.commands).forEach(k => {
-      var c = settings.commands[k];
+      const c = settings.commands[k];
       if (c.hide) return;
       if (!catagories.includes(c.catagory)) catagories.push({name: c.catagory, commands: []});
       catagories.find(catagory => catagory.name === c.catagory).commands.push({help: c.help, args: c.args, name: k})
@@ -95,10 +99,9 @@ commands.help = {
       final += '\n';
     });
     fs.readFile('./help.txt', 'utf8', (err, data) => {
-      if (err) return bot.error(err);
-      data = data.replace('{{servers}}', Math.round(settings.serverCount / 500) * 500)
-                 .replace('{{help_text}}', final);
-      msg.author.sendMessage(data).catch(err => bot.error(err));
+      if (err) return client.error(err);
+      data = data.replace('{{servers}}', Math.round(settings.serverCount / 500) * 500).replace('{{help_text}}', final);
+      msg.author.sendMessage(data).catch(err => client.error(err));
       msg.channel.sendMessage('Help has been sent!');
     })
   },
@@ -108,9 +111,9 @@ commands.help = {
 };
 
 commands.load = {
-  main: (bot, msg) => {
+  main: (client, msg) => {
     if (msg.author.id !== settings.OWNERID) return;
-    var args = msg.content;
+    const args = msg.content;
     try {
       delete commands[args];
       delete require.cache[path.join(__dirname, 'commands', args + '.js')];
@@ -124,9 +127,9 @@ commands.load = {
 }
 
 commands.unload = {
-  main: (bot, msg) => {
+  main: (client, msg) => {
     if (msg.author.id !== settings.OWNERID) return;
-    var args = msg.content;
+    const args = msg.content;
     try {
       delete commands[args];
       delete require.cache[path.join(__dirname, 'commands', args + '.js')];
@@ -139,12 +142,12 @@ commands.unload = {
 }
 
 commands.reload = {
-  main: (bot, msg) => {
+  main: (client, msg) => {
     if (msg.author.id !== settings.OWNERID) return;
-    var args = msg.content;
+    const args = msg.content;
     try {
       delete commands[args];
-      delete require.cache[path.join(__dirname, 'commands', args + '.js')]; // this is the important part here, since require caches files, reloading would do nothing if we didn't clear it
+      delete require.cache[path.join(__dirname, 'commands', args + '.js')];
       commands[args] = require(path.join(__dirname, 'commands', args + '.js'));
       msg.channel.sendMessage('Reloaded', args);
     } catch (err) {
@@ -155,63 +158,63 @@ commands.reload = {
 }
 
 const loadCommands = () => {
-  var files = fs.readdirSync(path.join(__dirname, 'commands'));
+  const files = fs.readdirSync(path.join(__dirname, 'commands'));
   for (let file of files) {
     if (file.endsWith('.js')) {
       commands[file.slice(0, -3)] = require(path.join(__dirname, 'commands', file));
     }
   }
-  bot.log('———— All Commands Loaded! ————');
+  client.log('———— All Commands Loaded! ————');
 }
 
-const checkCommand = (msg, length, bot) => {
+const checkCommand = (msg, length, client) => {
   try {
     if (rl.changeCommand(msg, true)) {
       if (msg.content.split(' ').length) {
         msg.content = msg.content.split(' ').slice(length);
-        var original = msg.content.join(' ');
-        var command = msg.content.shift();
+        const original = msg.content.join(' ');
+        const command = msg.content.shift();
         msg.content = msg.content.join(' ');
         try {
-          commands[command].main(bot, msg, settings);
+          commands[command].main(client, msg, settings);
         } catch (err) {
-          bot.error(`ERROR RUNNING COMMAND ${command} FALLING BACK TO SEARCH`);
+          client.error(`ERROR RUNNING COMMAND ${command} FALLING BACK TO SEARCH`);
           if (msg.content.split(' ').length) {
             msg.content = original;
-            commands['search'].main(bot, msg, settings);
+            commands['search'].main(client, msg, settings);
           }
         }
       }
     }
   } catch (err) {
-    bot.error(err.message);
+    client.error(err.message);
   }
 }
 
-bot.on('ready', () => {
-  bot.log(`READY! Serving in ${bot.channels.size} channels and ${bot.guilds.size} servers`);
-  bot.user.setGame('ok google, help');
+client.on('ready', () => {
+  client.log(`READY! Serving in ${client.channels.size} channels and ${client.guilds.size} servers`);
+  client.user.setGame('ok google, help');
   loadCommands();
   rl.onReady();
-  bot.sendIpc('_ready');
-  bot.sendIpc('fetchServerCount', bot.guilds.size);
-  bot.sendIpc('fetchChannelCount', bot.channels.size);
-  bot.sendIpc('fetchUserCount', bot.guilds.map(g => g.memberCount).reduce((a, b) => a+b));
-  bot.sendIpc('serverMap', bot.guilds.array().map(s => s.id));
+  client.sendIpc('_ready');
+  client.sendIpc('fetchServerCount', client.guilds.size);
+  client.sendIpc('fetchChannelCount', client.channels.size);
+  client.sendIpc('fetchUserCount', client.guilds.map(g => g.memberCount).reduce((a, b) => a + b));
+  client.sendIpc('serverMap', client.guilds.array().map(s => s.id));
 });
 
-bot.on('message', msg => {
+client.on('message', msg => {
   if (msg.channel.type === 'dm' && msg.author.id !== '173547401905176585') return;
-  bot.sendIpc('_message', {id: msg.id, content: msg.content});
-  if (msg.author.bot) return;
-  if (msg.content.startsWith('<@' + bot.user.id + '>') || msg.content.startsWith('<@!' + bot.user.id + '>')) {
-    checkCommand(msg, 1, bot);
+  client.sendIpc('_message', {id: msg.id, content: msg.content});
+  if (msg.author.client) return;
+  if (msg.content.startsWith('<@' + client.user.id + '>') || msg.content.startsWith('<@!' + client.user.id + '>')) {
+    checkCommand(msg, 1, client);
   } else if (msg.content.toLowerCase().startsWith(settings.PREFIX)) {
-    checkCommand(msg, settings.PREFIX.split(' ').length, bot);
+    checkCommand(msg, settings.PREFIX.split(' ').length, client);
   }
 });
 
-bot.on('messageDelete', msg => {
+client.on('messageDelete', msg => {
   try {
     if (settings.toBeDeleted.get(msg.id)) {
       msg.channel.messages.get(settings.toBeDeleted.get(msg.id)).delete().then(() => {
@@ -219,49 +222,49 @@ bot.on('messageDelete', msg => {
       });
     }
   } catch (err) {
-    bot.error(err);
+    client.error(err);
   }
 });
 
-bot.on('error', err => {
-  bot.error('————— BIG ERROR —————');
-  bot.error(err);
-  bot.error('——— END BIG ERROR ———');
+client.on('error', err => {
+  client.error('————— BIG ERROR —————');
+  client.error(err);
+  client.error('——— END BIG ERROR ———');
 });
 
-bot.on('disconnect', () => {
+client.on('disconnect', () => {
   // alert the console
-  bot.log('Disconnected!');
+  client.log('Disconnected!');
   rl.onDisconnect();
 });
 
-bot.on('guildCreate', server => {
-  bot.log('SERVER GET:', server.name, server.id, bot.options.shard_id);
-  let data = fs.readFileSync('./welcome.txt', 'utf8')
-  server.defaultChannel.sendMessage(`${server.owner} ${data}`);
-  r.db('google').table('servers').get(server.id).run(settings.dbconn, (err, res) => {
+client.on('guildCreate', guild => {
+  client.log('SERVER GET:', guild.name, guild.id, client.options.shard_id);
+  r.db('google').table('servers').get(guild.id).run(settings.dbconn, (err, res) => {
     if (err) return console.log(err);
     if (res === null) {
-      r.db('google').table('servers').insert({id: server.id, name: server.name, nsfw: '2', nick: 'Google'}).run(settings.dbconn);
+      let data = fs.readFileSync('./welcome.txt', 'utf8')
+      guild.defaultChannel.sendMessage(`${guild.owner} ${data}`);
+      r.db('google').table('servers').insert({id: guild.id, name: guild.name, nsfw: '2', nick: 'Google'}).run(settings.dbconn);
     }
   });
-  bot.sendIpc('fetchServerCount', bot.guilds.size);
+  client.sendIpc('fetchServerCount', client.guilds.size);
 });
 
-bot.on('guildDelete', server => {
-  bot.log('SERVER LOST:', server.name, server.id, bot.options.shard_id);
-  bot.sendIpc('fetchServerCount', bot.guilds.size);
+client.on('guildDelete', guild => {
+  client.log('SERVER LOST:', guild.name, guild.id, client.options.shard_id);
+  client.sendIpc('fetchServerCount', client.guilds.size);
 });
 
-bot.on('channelCreate', channel => {
-  bot.sendIpc('fetchChannelCount', bot.channels.size)
+client.on('channelCreate', channel => {
+  client.sendIpc('fetchChannelCount', client.channels.size)
 })
 
-bot.on('channelDelete', channel => {
-  bot.sendIpc('fetchChannelCount', bot.channels.size)
+client.on('channelDelete', channel => {
+  client.sendIpc('fetchChannelCount', client.channels.size)
 })
 
-bot.login(settings.config.token);
+client.login(settings.config.token);
 
 process.on('SIGHUP', () => {
   process.exit(0);

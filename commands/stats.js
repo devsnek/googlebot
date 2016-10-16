@@ -19,7 +19,7 @@ module.exports = {
 • Servers      : ${settings.serverCount}
 • Channels     : ${settings.channelCount}
 • Discord.js   : v${require('../node_modules/discord.js/package.json').version}
-• Shard        : ${Number(bot.shard.id)+1}/${bot.shard.count}
+• Shard        : ${Number(bot.shard.id) + 1}/${bot.shard.count}
 `;
     msg.channel.sendCode('xl', final);
   },
