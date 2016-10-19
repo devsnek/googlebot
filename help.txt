@@ -3,10 +3,10 @@
 <required parameter>
 
 {{help_text}}
-Help server: https://guscaplan.me/discord
+Help server: https://gus.host/discord
 
 Change all sorts of cool settings from the Web Control Panel!
-Just go to http://google.guscaplan.me/panel
+Just go to http://google.gus.host/panel
 
 Hey Guys! we just hit 🌟 {{servers}} 🌟  servers, and keeping this running is becoming rather expensive. Please consider donating.
 

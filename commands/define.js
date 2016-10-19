@@ -6,11 +6,11 @@ module.exports = {
     const message = await msg.channel.sendMessage('`Opening Dictionary...`');
     const url = `https://wordsapiv1.p.mashape.com/words/${msg.content}`
     var headers = {'X-Mashape-Key': settings.config.wordsApi, 'Accept': 'application/json'}
-    let res = await axios.get({url: url, headers: headers});
-    res = JSON.parse(res);
+    let res = await axios.get(url, {headers: headers});
+    res = res.data;
     var final = '';
     try {
-      for (var item in res.results) {
+      for (const item in res.results) {
         final += (parseInt(item) + 1) + ': ' + res.results[item].definition + '\n'
       }
       message.edit('```xl\nDefinitions for ' + msg.content + ':\n' + final + '\n```');

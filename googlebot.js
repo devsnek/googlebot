@@ -29,7 +29,7 @@ client.sendIpc = (t, c) => {
 };
 
 client.log = function () { // needs to be es5 function for dat ...arguments
-  console.log(chalk.green(`⚙  SHARD ${client.shard.id}:`), ...arguments);
+  console.log(chalk.green(`⚙  SHARD ${client.shard.id + 1}:`), ...arguments);
 };
 
 client.error = function () {

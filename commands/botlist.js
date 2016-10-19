@@ -5,9 +5,9 @@ const leftpad = (v, n, c = '0') => String(v).length >= n ? '' + v : (String(c).r
 
 module.exports = {
   main: async (bot, msg, settings) => {
-    const res = await axios.get('https://www.carbonitex.net/discord/api/listedbots')
+    const res = await axios.get('https://www.carbonitex.net/discord/api/listedbots');
     let chunks = [];
-    let bots = res.body.sort((a, b) => b.servercount - a.servercount);
+    let bots = res.data.sort((a, b) => b.servercount - a.servercount);
     bots = bots.filter(b => (b.servercount !== '0' && b.botid > 10));
     bots = bots.map(b => {
       b.name = b.name.replace(/[^a-z0-9]/gmi, '').replace(/\s+/g, '');

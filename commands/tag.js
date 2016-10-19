@@ -26,7 +26,7 @@ module.exports = {
         'guild': msg.guild.name,
         'random': (min, max) => Math.floor(Math.random() * parseInt(max) - parseInt(min) + 1) + parseInt(min)
       }
-      const out = await tags.get(msg.cleanContent, functions)
+      const out = await tags.get(msg.cleanContent, functions);
       bot.fetchUser(out.meta.author).then(user => {
         msg.channel.sendMessage(`**${msg.cleanContent}** (${user.username}#${user.discriminator})\n${out.data}`.substring(0, 1999)).catch(bot.error);
       }).catch(err => {
