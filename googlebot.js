@@ -121,6 +121,7 @@ commands.load = {
       delete require.cache[path.join(__dirname, 'commands', args + '.js')];
       commands[args] = require(path.join(__dirname, 'commands', args + '.js'));
       msg.channel.sendMessage('Loaded', args);
+      require('./generatehelp')()
     } catch (err) {
       msg.channel.sendMessage('Command not found or error loading\n`' + err.message + '`');
     }
@@ -136,6 +137,7 @@ commands.unload = {
       delete commands[args];
       delete require.cache[path.join(__dirname, 'commands', args + '.js')];
       msg.channel.sendMessage('Unloaded', args);
+      require('./generatehelp')()
     } catch (err) {
       msg.channel.sendMessage('Command not found or error unloading\n`' + err.message + '`');
     }
@@ -152,6 +154,7 @@ commands.reload = {
       delete require.cache[path.join(__dirname, 'commands', args + '.js')];
       commands[args] = require(path.join(__dirname, 'commands', args + '.js'));
       msg.channel.sendMessage('Reloaded', args);
+      require('./generatehelp')()
     } catch (err) {
       msg.channel.sendMessage('Command not found or error reloading\n`' + err.message + '`');
     }
@@ -194,6 +197,7 @@ const checkCommand = (msg, length) => {
 }
 
 client.on('ready', () => {
+  if (client.shard.id === 0) require('./generatehelp')();
   client.log(`READY! Serving in ${client.channels.size} channels and ${client.guilds.size} servers`);
   client.user.setGame('ok google, help');
   loadCommands();
