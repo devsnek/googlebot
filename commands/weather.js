@@ -15,11 +15,11 @@ module.exports = {
   main: async (bot, msg, settings) => {
     const mapsUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${msg.content.split(' ').join('+')}&key=${settings.config.mapsKey}`;
     let res = await axios.get(mapsUrl);
-    if (!res.body.results[0]) return msg.channel.sendMessage('`Invalid Location!`');
-    let geocode = [res.body.results[0].geometry.location.lat, res.body.results[0].geometry.location.lng].join(',');
-    let fullName = res.body.results[0].formatted_address;
+    if (!res.data.results[0]) return msg.channel.sendMessage('`Invalid Location!`');
+    let geocode = [res.data.results[0].geometry.location.lat, res.data.results[0].geometry.location.lng].join(',');
+    let fullName = res.data.results[0].formatted_address;
     res = await axios.get(`https://api.darksky.net/forecast/${settings.config.forecastKey}/${geocode}?units=si`);
-    let data = res.body;
+    let data = res.data;
     let condition = data.currently.summary;
     let icon = data.currently.icon;
     let chanceofrain = Math.round((data.currently.precipProbability * 100) / 5) * 5;

@@ -219,10 +219,11 @@ client.on('message', async msg => {
     checkCommand(msg, settings.PREFIX.split(' ').length);
   } else {
     const guild = await settings.rethink(msg.guild.id);
-    if (guild.settings.prefix) {
-      if (msg.content.startsWith(guild.settings.prefix)) {
-        checkCommand(msg, guild.settings.prefix.split(' ').length);
-      }
+    if (guild === null) return;
+    if (!guild.settings) return;
+    if (!guild.settings.prefix) return;
+    if (msg.content.startsWith(guild.settings.prefix)) {
+      checkCommand(msg, guild.settings.prefix.split(' ').length);
     }
   }
 });
