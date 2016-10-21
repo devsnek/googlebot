@@ -209,14 +209,21 @@ client.on('ready', () => {
   client.sendIpc('serverMap', client.guilds.array().map(s => s.id));
 });
 
-client.on('message', msg => {
-  if (msg.channel.type === 'dm' && msg.author.id !== '173547401905176585') return;
+client.on('message', async msg => {
+  if (msg.channel.type === 'dm' && msg.author.id !== settings.OWNERID) return;
   client.sendIpc('_message', {id: msg.id, content: msg.content});
   if (msg.author.bot) return;
   if (msg.content.startsWith('<@' + client.user.id + '>') || msg.content.startsWith('<@!' + client.user.id + '>')) {
     checkCommand(msg, 1, client);
   } else if (msg.content.toLowerCase().startsWith(settings.PREFIX)) {
     checkCommand(msg, settings.PREFIX.split(' ').length);
+  } else {
+    const guild = await settings.rethink(msg.guild.id);
+    if (guild.settings.prefix) {
+      if (msg.content.startsWith(guild.settings.prefix)) {
+        checkCommand(msg, guild.settings.prefix.split(' ').length);
+      }
+    }
   }
 });
 
