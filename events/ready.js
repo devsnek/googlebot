@@ -22,7 +22,7 @@ module.exports = async client => {
       if (!client.guilds.has(change.new_val.id)) return;
       let guild = client.guilds.get(change.new_val.id);
       guild.settings = change.new_val;
-      if (change.new_val.nick) guild.member(client.user).setNickname(this.new_val.nick);
+      if (change.new_val.nick) guild.member(client.user).setNickname(change.new_val.nick);
     });
   })
 
