@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const chalk = require('chalk');
 const config = require('./config.json');
+const updateStats = require('updateStats');
 
 const manager = new Discord.ShardingManager('./bot/bot.js', {
   token: config.discord[config.env],
@@ -58,6 +59,7 @@ const fetchGuilds = async () => {
   let res = await manager.broadcastEval('this.guilds.size');
   manager.stats.guilds = res = res.reduce((a, b) => a + b);
   manager.broadcast({event: 'guildsFetched', data: res});
+  updateStats(res);
   manager.log('FETCHED GUILDS', res);
 }
 
