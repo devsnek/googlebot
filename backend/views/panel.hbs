@@ -1,0 +1,125 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+        <link rel="stylesheet" href="css/nprogress.css">
+        <!-- <link rel="stylesheet" href="smain.css"> -->
+    <style>
+        table { table-layout: fixed; }
+        td { width: 33%; }
+        body {
+            background-color: #23272A;
+            color: #7289DA;
+        }
+        .dropdown-content li>span {
+            color: #7289DA;
+        }
+        a {
+            color: #7289DA;
+            text-decoration: underline;
+        }
+        .logout {
+       position:absolute;
+       top:0;
+       right:0;
+       padding-top: 1em;
+       padding-right: 0.5em;
+    }
+    @media only screen and (max-width: 800px) {
+        .server-img {
+            display: none;
+        }
+    }
+    </style>
+    </head>
+    <body>
+    <div class="logout">
+    <p>Logged in as {{user.username}}#{{user.discriminator}} (<a href="logout">Log out</a>)
+    </div>
+        <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    <h2>Google Webpanel</h2>
+                </div>
+                <div class="col s12">
+                    Servers on which you have Manage Server permissions and Google is connected.
+                    <table>
+                        <thead>
+                            <tr>
+                                <th data-field="server">Server</th>
+                                <th data-field="toggle">Server-Wide Safe-Search Setting</th>
+                                <th data-field="nickname">Nickname on server</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#if guilds.length}}
+                            {{#each guilds}}
+                            <tr>
+                                <td><img class="server-img" guild_name="{{this.name}}" style="border-radius: 50%;" height="60px" src="https://cdn.discordapp.com/icons/{{this.id}}/{{this.icon}}.jpg"> <p style="float:right;margin-top:1.25em">{{this.name}}</p></td>
+                                <td>
+                                      <div class="input-field col s12">
+                                      <select option_selected="{{this.settings.nsfw}}" guild_id="{{this.id}}">
+                                          <option value="1">Off</option>
+                                          <option value="2">Medium *Default*</option>
+                                          <option value="3">High</option>
+                                      </select>
+                                      <label>Safe-Search Setting</label>
+                                      </div>
+                                </td>
+                                <td>
+                                    <div class="input-field col s12">
+                                        <input id="nick_{{this.id}}" guild_id="{{this.id}}" type="text" class="validate nickname" length="32" placeholder="{{this.settings.nick}}">
+                                        <label for="nick_{{this.id}}">Nickname On Server</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            {{/each}}
+                            {{else}}
+                            <h5>The Wumpus is lonely... <a target="_blank" href="https://google.gus.host/invite">Invite Google</a> to you server.</h5>
+                            {{/if}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    <script src="js/nprogress.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+    <script>
+    $(document).ready(function() {
+      NProgress.done();
+      $('select').material_select();
+      $('select').each(function() {
+        $(this).val($(this).attr('option_selected'));
+        $(this).change();
+        $(this).material_select();
+      });
+      Array.from($('img')).forEach(i => {
+        var name = i.attributes.guild_name.value;
+        name = name.match(/\b(\w)/g).join('')
+        if (!(i.complete && i.naturalHeight != 0)) {
+          i.src = 'https://placeholdit.imgix.net/~text?txtsize=50&w=128&h=128&bg=000&txtclr=fff&txt=' + name
+        }
+      });
+      $('select').change(function() {
+        NProgress.start();
+        NProgress.inc();
+        $.get('/setting/set/' + $(this).attr('guild_id') + '/nsfw/' + $(this).val(), function(){
+          NProgress.done();
+        });
+      });
+      $('.nickname').keypress(function (e) {
+        if (e.which == 13) {
+          if ($(this).val().length < 33) {
+            NProgress.start();
+            NProgress.inc();
+            $.get( "/setting/set/" + $(this).attr('guild_id') + "/nick/" + $(this).val(), function(){
+              NProgress.done();
+            });
+          }
+          return false;
+        }
+      });
+    });
+    </script>
+    </body>
+</html>

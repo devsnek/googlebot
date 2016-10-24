@@ -1,0 +1,22 @@
+{
+  "name": "googlebot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "Gus Caplan <me@gus.host>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.15.2",
+    "center-text": "^0.1.0",
+    "cheerio": "^0.22.0",
+    "discord.js": "github:hydrabolt/discord.js#indev",
+    "express": "^4.14.0",
+    "express-session": "^1.14.1",
+    "hbs": "^4.0.1",
+    "html-entities": "^1.2.0",
+    "moment": "^2.15.1",
+    "rethinkdbdash": "^2.3.23",
+    "sherlockjs": "0.0.9",
+    "sse": "github:guscaplan/sse.js"
+  }
+}
