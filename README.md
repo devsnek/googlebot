@@ -4,7 +4,7 @@ Making the information of the world accessible to all Discord users.
 
 Written and run by Gus Caplan.  
 [Patreon](https://patreon.com/guscaplan) |
-[Paypal](paypal.me/guscaplan)
+[Paypal](https://paypal.me/guscaplan)
 
 [Website](https://google.gus.host) |
 [Invite](https://google.gus.host/invite)
