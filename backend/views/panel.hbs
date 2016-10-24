@@ -5,7 +5,7 @@
         <!-- <link rel="stylesheet" href="smain.css"> -->
     <style>
         table { table-layout: fixed; }
-        td { width: 33%; }
+        /*td { width: 33%; }*/
         body {
             background-color: #23272A;
             color: #7289DA;
@@ -42,40 +42,84 @@
                 </div>
                 <div class="col s12">
                     Servers on which you have Manage Server permissions and Google is connected.
+                    <div id="modal-holder">
+                      {{#if guilds.length}}
+                      {{#each guilds}}
+                        <div id="modal_{{this.id}}" class="modal modal-fixed-footer">
+                          <div class="modal-content">
+                            <h4>Settings for {{this.name}}</h4>
+                            <table>
+                              <tr>
+                                <td>
+                                  <div class="input-field col s12">
+                                    <select id="nsfw_{{this.id}}" option_selected="{{this.settings.nsfw}}" guild_id="{{this.id}}">
+                                        <option value="1">Off</option>
+                                        <option value="2">Medium *Default*</option>
+                                        <option value="3">High</option>
+                                    </select>
+                                    <label for="nsfw_{{this.id}}">Safe-Search Setting</label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <div class="input-field col s12">
+                                    <input id="nick_{{this.id}}" guild_id="{{this.id}}" type="text" class="validate nickname" length="32" placeholder="{{this.settings.nick}}"></input>
+                                    <label for="nick_{{this.id}}">Nickname</label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <div class="input-field col s12">
+                                    <input id="prefix_{{this.id}}" guild_id="{{this.id}}" type="text" class="validate customprefix" length="32" placeholder="{{this.settings.prefix}}"></input>
+                                    <label for="prefix_{{this.id}}">Custom Prefix</label>
+                                  </div>
+                                </td>
+                              </tr>
+                            </table>
+                          </div>
+                          <div class="modal-footer">
+                            <a href="#!" class="modal-action modal-close waves-effect waves-purple btn">Close</a>
+                          </div>
+                        </div>
+                      {{/each}}
+                      {{/if}}
+                    </div>
                     <table>
-                        <thead>
-                            <tr>
-                                <th data-field="server">Server</th>
-                                <th data-field="toggle">Server-Wide Safe-Search Setting</th>
-                                <th data-field="nickname">Nickname on server</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{#if guilds.length}}
-                            {{#each guilds}}
-                            <tr>
-                                <td><img class="server-img" guild_name="{{this.name}}" style="border-radius: 50%;" height="60px" src="https://cdn.discordapp.com/icons/{{this.id}}/{{this.icon}}.jpg"> <p style="float:right;margin-top:1.25em">{{this.name}}</p></td>
-                                <td>
-                                      <div class="input-field col s12">
-                                      <select option_selected="{{this.settings.nsfw}}" guild_id="{{this.id}}">
-                                          <option value="1">Off</option>
-                                          <option value="2">Medium *Default*</option>
-                                          <option value="3">High</option>
-                                      </select>
-                                      <label>Safe-Search Setting</label>
-                                      </div>
-                                </td>
-                                <td>
-                                    <div class="input-field col s12">
-                                        <input id="nick_{{this.id}}" guild_id="{{this.id}}" type="text" class="validate nickname" length="32" placeholder="{{this.settings.nick}}">
-                                        <label for="nick_{{this.id}}">Nickname On Server</label>
-                                    </div>
-                                </td>
-                            </tr>
-                            {{/each}}
-                            {{else}}
-                            <h5>The Wumpus is lonely... <a target="_blank" href="https://google.gus.host/invite">Invite Google</a> to you server.</h5>
-                            {{/if}}
+                      <thead>
+                        <tr>
+                            <th data-field="server">Server</th>
+                            <th data-field="open">Settings</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          {{#if guilds.length}}
+                          {{#each guilds}}
+                          <tr>
+                            <td><img class="server-img" guild_name="{{this.name}}" style="border-radius: 50%;" height="60px" src="https://cdn.discordapp.com/icons/{{this.id}}/{{this.icon}}.jpg"> <p style="float:right;margin-top:1.25em">{{this.name}}</p></td>
+                            <td><button class="waves-effect waves-light btn modal-trigger" data-target="modal_{{this.id}}">Open Settings</button>
+                            <!-- <td>
+                              <div class="input-field col s12">
+                              <select option_selected="{{this.settings.nsfw}}" guild_id="{{this.id}}">
+                                  <option value="1">Off</option>
+                                  <option value="2">Medium *Default*</option>
+                                  <option value="3">High</option>
+                              </select>
+                              <label>Safe-Search Setting</label>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="input-field col s12">
+                                <input id="nick_{{this.id}}" guild_id="{{this.id}}" type="text" class="validate nickname" length="32" placeholder="{{this.settings.nick}}">
+                                <label for="nick_{{this.id}}">Nickname On Server</label>
+                              </div>
+                            </td> -->
+                          </tr>
+                          {{/each}}
+                          {{else}}
+                          <h5>The Wumpus is lonely... <a target="_blank" href="https://google.gus.host/invite">Invite Google</a> to you server.</h5>
+                          {{/if}}
                         </tbody>
                     </table>
                 </div>
@@ -119,6 +163,19 @@
           return false;
         }
       });
+      $('.customprefix').keypress(function (e) {
+        if (e.which == 13) {
+          if ($(this).val().length < 33) {
+            NProgress.start();
+            NProgress.inc();
+            $.get( "/setting/set/" + $(this).attr('guild_id') + "/prefix/" + $(this).val(), function(){
+              NProgress.done();
+            });
+          }
+          return false;
+        }
+      });
+      $('.modal-trigger').leanModal();
     });
     </script>
     </body>

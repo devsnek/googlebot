@@ -5,7 +5,7 @@ const center = require('center-text');
 
 module.exports = async client => {
   client.config.prefixes = client.config.prefixes.map(p => p.replace('{ID}', client.user.id));
-  client.config.prefix = new RegExp(`^${client.config.prefixes.join('|')}`);
+  client.config.prefix = new RegExp(`^${client.config.prefixes.join('|^')}`);
 
   const guilds = await client.rethink.fetchGuilds();
   for (const guild of guilds) {
@@ -13,6 +13,16 @@ module.exports = async client => {
     client.guilds.get(guild.id).settings = guild;
   }
   let s = (x) => console.log(chalk.bgMagenta.white.bold(x));
+
+  client.rethink.raw.db('google').table('servers').changes().run((err, cursor) => {
+    if (err) client.error(err);
+    cursor.each((err, change) => {
+      if (err) client.error(err);
+      if (!change.new_val) return;
+      if (!client.guilds.has(change.new_val.id)) return;
+      client.guilds.get(change.new_val.id).settings = change.new_val;
+    });
+  })
 
   let top = client.shard ? `| — SHARD ${leftpad(client.shard.id + 1, 2, '0')} READY — |` : '| —  CLIENT READY  — |';
   let info = `${client.user.username.replace('\u1160', '')}#${client.user.discriminator}`;

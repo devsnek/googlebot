@@ -35,14 +35,16 @@ router.get('/callback', async (req, res) => {
   let token = `${tokenRes.data.token_type} ${tokenRes.data.access_token}`;
   let userRes = await axios.get('https://discordapp.com/api/users/@me', {headers: {'Authorization': token}});
   let guildsRes = await axios.get('https://discordapp.com/api/users/@me/guilds', {headers: {'Authorization': token}});
-  req.session.guilds = guildsRes.data.filter(g => {
+  guildsRes = guildsRes.data.filter(g => {
     if (g.permissions & (1 << 3)) return true;
     if (g.permissions & (1 << 5)) return true;
     return false;
-  }).map(guild => {
-    guild.settings = availGuilds.find(g => g.id === guild.id);
-    return guild;
   });
+  for (const guild of availGuilds) {
+    if (!guildsRes.find(g => g.id === guild.id)) continue;
+    guildsRes.find(g => g.id === guild.id).settings = guild;
+  }
+  req.session.guilds = guildsRes;
   req.session.user = userRes.data;
   req.session.loggedIn = true;
   res.redirect('/panel');
