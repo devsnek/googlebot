@@ -3,7 +3,7 @@ const chalk = require('chalk');
 const config = require('./config.json');
 
 const manager = new Discord.ShardingManager('./bot/bot.js', {
-  token: config.discord.prod,
+  token: config.discord[config.env],
   shardArgs: ['--ansi', '--color']
 });
 
@@ -20,7 +20,7 @@ let alive = []
 
 const backend = require('./backend/index')(manager);
 
-manager.spawn(6);
+manager.spawn(config.discord.SHARD_COUNT);
 
 manager.on('message', async (shard, message) => {
   switch (message.event) {
