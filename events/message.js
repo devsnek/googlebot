@@ -23,7 +23,10 @@ module.exports = async message => {
 
   // message processing
   if (client.config.prefix.test(message.content)) {
-    message.content = message.content.replace(client.config.prefix, '').trim()
+    message.content = message.content
+      .replace(client.config.prefix, '')
+      .replace(/^\,/, '')
+      .trim()
     checkCommand(message);
   } else if (message.guild.settings) {
     if (!message.content.startsWith(message.guild.settings.prefix)) return;

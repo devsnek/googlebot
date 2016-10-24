@@ -4,7 +4,7 @@ const rightpad = (v, n, c = '0') => String(v).length >= n ? '' + v : String(v) +
 const leftpad = (v, n, c = '0') => String(v).length >= n ? '' + v : (String(c).repeat(n) + v).slice(-n);
 
 module.exports = {
-  main: async (client, message) => {
+  main: async message => {
     const res = await axios.get('https://www.carbonitex.net/discord/api/listedbots');
     let chunks = [];
     let bots = res.data.sort((a, b) => b.servercount - a.servercount);

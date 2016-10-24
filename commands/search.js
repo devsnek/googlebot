@@ -8,9 +8,13 @@ const fallback = async (message, args, safe, client) => {
     if (err) client.error(err);
     const $ = cheerio.load(res.text);
     const href = $('.r').first().find('a').first().attr('href');
-    const result = Object.keys(querystring.parse(href.substr(7, href.length)))[0];
-    if (result !== '?q') message.edit(result).catch(() => message.edit('`No results found!`'));
-    else message.edit('`No results found!`');
+    try {
+      const result = Object.keys(querystring.parse(href.substr(7, href.length)))[0];
+      if (result !== '?q') message.edit(result).catch(() => message.edit('`No results found!`'));
+      else message.edit('`No results found!`');
+    } catch (err) {
+      message.edit('`No results found!`');
+    }
   });
 }
 
