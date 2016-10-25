@@ -17,7 +17,7 @@ manager.stats = {
   shards: manager.shards.size
 }
 
-let alive = []
+let alive = [];
 
 const backend = require('./backend/index')(manager);
 

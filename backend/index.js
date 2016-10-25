@@ -26,6 +26,7 @@ app.use(require('express-session')({
 router.use('/', require('./routes/index'));
 router.use('/panel', require('./routes/panel'));
 router.use('/setting', require('./routes/setting'));
+router.use('/invite', require('./routes/invite'));
 
 app.use(router);
 
