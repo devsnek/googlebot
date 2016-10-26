@@ -8,10 +8,14 @@ router.get('/', (req, res) => {
 });
 
 router.get('/callback', async (req, res) => {
-  const guild = await axios.get(`https://discordapp.com/api/guilds/${req.query.guild_id}`, {
-    headers: {'Authorization': `Bot ${config.discord[config.env]}`}
-  });
-  res.render('invite', {guild: guild.data});
+  try {
+    const guild = await axios.get(`https://discordapp.com/api/guilds/${req.query.guild_id}`, {
+      headers: {'Authorization': `Bot ${config.discord[config.env]}`}
+    });
+    res.render('invite', {guild: guild.data});
+  } catch (err) {
+    res.redirect('/');
+  }
 });
 
 module.exports = router;
