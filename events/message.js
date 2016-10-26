@@ -29,6 +29,7 @@ module.exports = async message => {
       .trim()
     checkCommand(message);
   } else if (message.guild.settings) {
+    if (!message.guild.settings.prefix) return;
     if (!message.content.startsWith(message.guild.settings.prefix)) return;
     message.content = message.content.replace(message.guild.settings.prefix, '').trim();
     checkCommand(message);
