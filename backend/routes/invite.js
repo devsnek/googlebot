@@ -20,7 +20,7 @@ router.get('/callback', async (req, res) => {
   try {
     const guild = await superagent.get(`https://discordapp.com/api/guilds/${req.query.guild_id}`)
     .set({'Authorization': `Bot ${config.discord[config.env]}`});
-    res.render('invite', {guild: guild.data});
+    res.render('invite', {guild: guild.body});
   } catch (err) {
     res.redirect('/');
   }

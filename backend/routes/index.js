@@ -6,7 +6,7 @@ const entities = new require('html-entities').XmlEntities; // eslint-disable-lin
 
 router.use(async (req, res, next) => {
   const quote = await superagent.get('http://quotesondesign.com/wp-json/posts?filter[orderby]=rand');
-  res.locals.quote = entities.decode(quote.data[0].content).replace(/<\/?p>/g, '');
+  res.locals.quote = entities.decode(quote.body[0].content).replace(/<\/?p>/g, '');
   return next();
 });
 
