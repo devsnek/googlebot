@@ -1,4 +1,4 @@
-const axios = require('axios')
+const superagent = require('superagent');
 const config = require('../config');
 
 module.exports = count => {
@@ -8,20 +8,14 @@ module.exports = count => {
 
 const updateCarbon = count => {
   console.log('updating carbon');
-  axios.post('https://www.carbonitex.net/discord/data/botdata.php', {
-    servercount: count,
-    key: config.stats.carbon
-  }, {
-    headers: {'Content-Type': 'application/json', 'cache-control': 'no-cache'}
-  });
-};
+  superagent.post('https://www.carbonitex.net/discord/data/botdata.php')
+    .set({'Content-Type': 'application/json', 'cache-control': 'no-cache'})
+    .send({ servercount: count, key: config.stats.carbon })
+}
 
 const updateAbal = count => {
   console.log('updating abal');
-  axios.post('https://bots.discord.pw/api/bots/187406062989606912/stats', {
-    'server_count': count
-  }, {
-    'Content-Type': 'application/json',
-    'Authorization': config.stats.abal
-  });
+  superagent.post('https://bots.discord.pw/api/bots/187406062989606912/stats')
+    .set({ 'Content-Type': 'application/json', 'Authorization': config.stats.abal })
+    .send({ 'server_count': count })
 }

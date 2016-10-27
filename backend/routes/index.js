@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const r = require('../../util/rethink');
-const axios = require('axios');
+const superagent = require('superagent');
 const entities = new require('html-entities').XmlEntities; // eslint-disable-line
 
 router.use(async (req, res, next) => {
-  const quote = await axios.get('http://quotesondesign.com/wp-json/posts?filter[orderby]=rand');
+  const quote = await superagent.get('http://quotesondesign.com/wp-json/posts?filter[orderby]=rand');
   res.locals.quote = entities.decode(quote.data[0].content).replace(/<\/?p>/g, '');
   return next();
 });

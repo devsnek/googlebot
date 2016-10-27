@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const axios = require('axios');
+const superagent = require('superagent');
 const r = require('../../util/rethink');
 const config = require('../../config.json').backend;
 
@@ -31,11 +31,11 @@ router.get('/logout', (req, res) => {
 router.get('/callback', async (req, res) => {
   let availGuilds = await r.raw.db('google').table('servers').run();
   let tokenUri = `https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${req.query.code}&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&redirect_uri=${REDIR_URI}`;
-  let tokenRes = await axios.post(tokenUri);
-  let token = `${tokenRes.data.token_type} ${tokenRes.data.access_token}`;
-  let userRes = await axios.get('https://discordapp.com/api/users/@me', {headers: {'Authorization': token}});
-  let guildsRes = await axios.get('https://discordapp.com/api/users/@me/guilds', {headers: {'Authorization': token}});
-  guildsRes = guildsRes.data.filter(g => {
+  let tokenRes = await superagent.post(tokenUri);
+  let token = `${tokenRes.body.token_type} ${tokenRes.body.access_token}`;
+  let userRes = await superagent.get('https://discordapp.com/api/users/@me').set({'Authorization': token});
+  let guildsRes = await superagent.get('https://discordapp.com/api/users/@me/guilds').set({'Authorization': token});
+  guildsRes = guildsRes.body.filter(g => {
     if (g.permissions & (1 << 3)) return true;
     if (g.permissions & (1 << 5)) return true;
     return false;
@@ -45,7 +45,7 @@ router.get('/callback', async (req, res) => {
     guildsRes.find(g => g.id === guild.id).settings = guild;
   }
   req.session.guilds = guildsRes;
-  req.session.user = userRes.data;
+  req.session.user = userRes.body;
   req.session.loggedIn = true;
   res.redirect('/panel');
 });

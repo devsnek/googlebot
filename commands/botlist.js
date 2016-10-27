@@ -1,13 +1,13 @@
-const axios = require('axios');
+const superagent = require('superagent');
 
 const rightpad = (v, n, c = '0') => String(v).length >= n ? '' + v : String(v) + String(c).repeat(n - String(v).length);
 const leftpad = (v, n, c = '0') => String(v).length >= n ? '' + v : (String(c).repeat(n) + v).slice(-n);
 
 module.exports = {
   main: async message => {
-    const res = await axios.get('https://www.carbonitex.net/discord/api/listedbots');
+    const res = await superagent.get('https://www.carbonitex.net/discord/api/listedbots');
     let chunks = [];
-    let bots = res.data.sort((a, b) => b.servercount - a.servercount);
+    let bots = res.body.sort((a, b) => b.servercount - a.servercount);
     bots = bots.filter(b => (b.servercount !== '0' && b.botid > 10));
     bots = bots.map(b => {
       b.name = b.name.replace(/[^a-z0-9]/gmi, '').replace(/\s+/g, '');

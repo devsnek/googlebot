@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const config = require('../../config.json');
-const axios = require('axios');
+const superagent = require('superagent');
 
 router.get('/', (req, res) => {
   const INVITE_REDIR = req.query.redirect_uri || config.backend.INVITE_REDIR;
@@ -18,9 +18,8 @@ ${req.query.state ? `&state=${req.query.state}` : ''}`.replace(/\n|%0A/g, '')
 
 router.get('/callback', async (req, res) => {
   try {
-    const guild = await axios.get(`https://discordapp.com/api/guilds/${req.query.guild_id}`, {
-      headers: {'Authorization': `Bot ${config.discord[config.env]}`}
-    });
+    const guild = await superagent.get(`https://discordapp.com/api/guilds/${req.query.guild_id}`)
+    .set({'Authorization': `Bot ${config.discord[config.env]}`});
     res.render('invite', {guild: guild.data});
   } catch (err) {
     res.redirect('/');

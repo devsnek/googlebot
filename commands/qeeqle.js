@@ -1,11 +1,11 @@
-const axios = require('axios');
+const superagent = require('superagent');
 
 const shortenTitle = string => string.length > 40 ? string.substring(0, 40) + '...' : string;
 
 module.exports = {
   main: async message => {
     try {
-      const res = await axios.post('https://qeeqle.guscaplan.me', {'query': message.content});
+      const res = await superagent.post('https://qeeqle.gus.host').send({query: message.content});
       let final = res.body.slice(0, 5).map((r, i) => {
         return `${i + 1}. (${r.rating} ⭐) ${shortenTitle(r.title)}
      ${r.link}`
