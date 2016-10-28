@@ -3,35 +3,36 @@ const TagManager = require('tagmanager');
 const tags = new TagManager();
 
 module.exports = {
-  main: async (bot, msg, settings) => {
-    if (msg.cleanContent.startsWith('create')) {
-      let name = msg.cleanContent.split(' ')[1];
-      if (tags.exists(name)) return msg.channel.sendMessage('That tag already exists!');
-      let content = msg.cleanContent.split(' ').splice(2).join(' ');
-      tags.set(name, content, {author: msg.author.id});
-      return msg.channel.sendMessage(`Successfully created tag **${name}**!`);
-    } else if (msg.cleanContent.startsWith('remove')) {
-      let name = msg.cleanContent.split(' ')[1];
-      if (!tags.exists(name)) return msg.channel.sendMessage('That tag does not exist');
-      if (tags.get(name).meta.author === msg.author.id || tags.get(name).meta.author === settings.OWNERID) {
+  main: async message => {
+    const client = message.client;
+    if (message.cleanContent.startsWith('create')) {
+      let name = message.cleanContent.split(' ')[1];
+      if (tags.exists(name)) return message.channel.sendMessage('That tag already exists!');
+      let content = message.cleanContent.split(' ').splice(2).join(' ');
+      tags.set(name, content, {author: message.author.id});
+      return message.channel.sendMessage(`Successfully created tag **${name}**!`);
+    } else if (message.cleanContent.startsWith('remove')) {
+      let name = message.cleanContent.split(' ')[1];
+      if (!tags.exists(name)) return message.channel.sendMessage('That tag does not exist');
+      if (tags.get(name).meta.author === message.author.id || tags.get(name).meta.author === client.config.OWNERID) {
         tags.remove(name);
-        return msg.channel.sendMessage(`Successfully removed tag **${name}**!`);
+        return message.channel.sendMessage(`Successfully removed tag **${name}**!`);
       } else {
-        return msg.channel.sendMessage('That is not your tag!');
+        return message.channel.sendMessage('That is not your tag!');
       }
     } else {
       let functions = {
-        'name': msg.author.username,
-        'channel': msg.channel.toString(),
-        'guild': msg.guild.name,
+        'name': message.author.username,
+        'channel': message.channel.toString(),
+        'guild': message.guild.name,
         'random': (min, max) => Math.floor(Math.random() * parseInt(max) - parseInt(min) + 1) + parseInt(min)
       }
-      const out = await tags.get(msg.cleanContent, functions);
-      bot.fetchUser(out.meta.author).then(user => {
-        msg.channel.sendMessage(`**${msg.cleanContent}** (${user.username}#${user.discriminator})\n${out.data}`.substring(0, 1999)).catch(bot.error);
+      const out = await tags.get(message.cleanContent, functions);
+      client.fetchUser(out.meta.author).then(user => {
+        message.channel.sendMessage(`**${message.cleanContent}** (${user.username}#${user.discriminator})\n${out.data}`.substring(0, 1999)).catch(client.error);
       }).catch(err => {
-        bot.error(err);
-        msg.channel.sendMessage(`**${msg.cleanContent}**\n${out.data}`.substring(0, 1999)).catch(bot.error);
+        client.error(err);
+        message.channel.sendMessage(`**${message.cleanContent}**\n${out.data}`.substring(0, 1999)).catch(client.error);
       });
     }
   },

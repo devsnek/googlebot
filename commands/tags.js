@@ -1,9 +1,10 @@
 const TagManager = require('tagmanager');
-const tags = new TagManager();
+const tagManager = new TagManager();
 
 module.exports = {
   main: async message => {
-    message.channel.sendMessage(tags.keys().sort().join(', ').substring(0, 2000));
+    const tags = tagManager.keys().sort().join(', ').substring(0, 2000);
+    message.channel.sendMessage(tags.length ? tags : 'No tags!');
   },
   args: '',
   catagory: 'general',
