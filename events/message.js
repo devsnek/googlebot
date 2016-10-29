@@ -1,5 +1,18 @@
 const tulpize = require('../util/tulpize');
 
+const superClean = (message, prefix) => {
+  return [
+    tulpize(message.content
+      .replace(prefix, '')
+      .replace(/^,/, '')
+      .trim()),
+    tulpize(message.cleanContent
+      .replace(prefix, '')
+      .replace(/^,/, '')
+      .trim())
+  ]
+}
+
 const checkCommand = message => {
   const client = message.client;
   const original = message.content;
@@ -18,8 +31,6 @@ module.exports = async message => {
   // checks and setting up of variables and such
   const client = message.client;
 
-  message.content = tulpize(message.content);
-
   if (message.channel.type === 'dm' && message.author.id !== client.config.OWNERID) return;
   if (message.author.bot) return;
 
@@ -27,15 +38,12 @@ module.exports = async message => {
 
   // message processing
   if (client.config.prefix.test(message.content)) {
-    message.content = message.content
-      .replace(client.config.prefix, '')
-      .replace(/^,/, '')
-      .trim()
+    [message.content, message.cleanContent] = superClean(message, client.config.prefix);
     checkCommand(message);
   } else if (message.guild.settings) {
     if (!message.guild.settings.prefix) return;
     if (!message.content.startsWith(message.guild.settings.prefix)) return;
-    message.content = message.content.replace(message.guild.settings.prefix, '').trim();
+    [message.content, message.cleanContent] = superClean(message, message.guild.settings.prefix);
     checkCommand(message);
   }
 }
