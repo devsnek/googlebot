@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/help', async (req, res) => {
-  res.locals.commands = await r.raw.db('google').table('commands').run();
+  res.locals.commands = [{id: 'test', description: 'this is a description', usage: 'ok google test'}] // await r.raw.db('google').table('commands').run();
   res.render('help');
 });
 
