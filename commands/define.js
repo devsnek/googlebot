@@ -9,11 +9,11 @@ module.exports = {
     try {
       let res = await superagent.get(url).set({'X-Mashape-Key': client.config.wordsApi, 'Accept': 'application/json'});
       res = res.body;
-      var final = '';
+      var final = [`**Definitions for __${message.content}__:**`];
       for (const item in res.results) {
-        final += (parseInt(item) + 1) + ': ' + res.results[item].definition + '\n'
+        final.push(`**${(parseInt(item) + 1)}:** ${res.results[item].definition}`);
       }
-      msg.edit('```xl\nDefinitions for ' + message.content + ':\n' + final + '\n```');
+      msg.edit(final);
     } catch (err) {
       msg.edit('`No results found!`');
     }
