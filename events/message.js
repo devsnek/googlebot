@@ -1,3 +1,5 @@
+const tulpize = require('../util/tulpize');
+
 const checkCommand = message => {
   const client = message.client;
   const original = message.content;
@@ -16,6 +18,8 @@ module.exports = async message => {
   // checks and setting up of variables and such
   const client = message.client;
 
+  message.content = tulpize(message.content);
+
   if (message.channel.type === 'dm' && message.author.id !== client.config.OWNERID) return;
   if (message.author.bot) return;
 
@@ -25,7 +29,7 @@ module.exports = async message => {
   if (client.config.prefix.test(message.content)) {
     message.content = message.content
       .replace(client.config.prefix, '')
-      .replace(/^\,/, '')
+      .replace(/^,/, '')
       .trim()
     checkCommand(message);
   } else if (message.guild.settings) {
