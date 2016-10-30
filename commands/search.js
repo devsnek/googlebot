@@ -1,17 +1,17 @@
 const superagent = require('superagent');
 const cheerio = require('cheerio');
-const querystring = require('querystring');
+const url = require('url');
 
 const fallback = async (message, args, safe, client) => {
-  let url = `https://www.google.com/search?safe=${safe}&q=${encodeURI(args)}`;
-  superagent.get(url).end((err, res) => {
+  let sUrl = `https://www.google.com/search?safe=${safe}&q=${encodeURI(args)}`;
+  superagent.get(sUrl).end((err, res) => {
     if (err) client.error(err);
     const $ = cheerio.load(res.text);
     const href = $('.r').first().find('a').first().attr('href');
     try {
-      const result = Object.keys(querystring.parse(href.substr(7, href.length)))[0];
-      if (result !== '?q') message.edit(result).catch(() => message.edit('`No results found!`'));
-      else message.edit('`No results found!`');
+      let result = url.parse(href.toString());
+      result = `${result.protocol}${result.slashes ? '//' : ''}${result.host}${result.port ? result.port : ''}${result.pathname ? result.pathname : ''}`
+      message.edit(result).catch(() => message.edit('`No results found!`'));
     } catch (err) {
       message.edit('`No results found!`');
     }
