@@ -55,7 +55,7 @@
                         </thead>
                         <tbody>
                         {{#each commands}}
-                        <tr>
+                        <tr id="{{this.id}}">
                         <td>{{this.id}}</td>
                         <td>{{this.description}}</td>
                         <td><pre>{{this.usage}}</pre></td>
