@@ -2,14 +2,14 @@ const tulpize = require('../util/tulpize');
 
 const superClean = (message, prefix) => {
   return [
-    tulpize(message.content
+    message.content
       .replace(prefix, '')
       .replace(/^,/, '')
-      .trim()),
-    tulpize(message.cleanContent
+      .trim(),
+    message.cleanContent
       .replace(prefix, '')
       .replace(/^,/, '')
-      .trim())
+      .trim()
   ]
 }
 
@@ -35,6 +35,8 @@ module.exports = async message => {
   if (message.author.bot) return;
 
   client.rethink.activateGuild(message.guild);
+
+  [message.content, message.cleanContent] = tulpize(message);
 
   // message processing
   if (client.config.prefix.test(message.content)) {
