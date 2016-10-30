@@ -7,7 +7,11 @@ const fallback = async (message, args, safe, client) => {
   superagent.get(sUrl).end((err, res) => {
     if (err) client.error(err);
     const $ = cheerio.load(res.text);
-    const href = $('.r').first().find('a').first().attr('href');
+    let href = $('.r').first().find('a').first().attr('href')
+    if (href.indexOf('/url?q=') !== -1) {
+      href = href.replace('/url?q=', '');
+      href = href.slice(0, href.indexOf('&sa'));
+    };
     try {
       let result = url.parse(href.toString());
       result = `${result.protocol}${result.slashes ? '//' : ''}${result.host}${result.port ? result.port : ''}${result.pathname ? result.pathname : ''}`

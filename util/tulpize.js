@@ -1,4 +1,4 @@
-const TULPA_REGEX = /^\/\/ ?|^[\[{\(~"] ?| ?["~\)}\]]$/g;
+const TULPA_REGEX = /^\/\/ ?|^[\[{\(~] ?| ?[~\)}\]]$/g;
 
 module.exports = (message) => {
   return [
