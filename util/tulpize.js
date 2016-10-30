@@ -1,8 +1,24 @@
-const TULPA_REGEX = /^\/\/ ?|^[\[{\(~] ?| ?[~\)}\]]$/g;
+const START = /^\/\/|^["{\[~-] ?/g;
+const END = / ?["\]}~-]$/g;
+
+if (!Reflect.has(Array.prototype, 'last')) {
+  Object.defineProperty(Array.prototype, 'last', { // eslint-disable-line
+    get: function () {
+      return this[this.length - 1];
+    }
+  });
+}
 
 module.exports = (message) => {
-  return [
-    message.content.replace(TULPA_REGEX, ''),
-    message.cleanContent.replace(TULPA_REGEX, '')
-  ]
+  const x = [];
+  for (let c of [message.content, message.cleanContent]) {
+    if (START.test(c)) {
+      c = c.replace(START, '');
+      if (END.test(c)) {
+        c = c.replace(END, '')
+      }
+    }
+    x.push(c);
+  }
+  return x;
 }
