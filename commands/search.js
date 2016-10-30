@@ -14,6 +14,9 @@ const fallback = async (message, args, safe, client) => {
     };
     try {
       let result = url.parse(href.toString());
+      if (result.protocol === null) {
+        return message.edit('`No results found!`');
+      }
       result = `${result.protocol}${result.slashes ? '//' : ''}${result.host}${result.port ? result.port : ''}${result.pathname ? result.pathname : ''}`
       message.edit(result).catch(() => message.edit('`No results found!`'));
     } catch (err) {
