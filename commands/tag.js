@@ -27,13 +27,17 @@ module.exports = {
         'guild': message.guild.name,
         'random': (min, max) => Math.floor(Math.random() * parseInt(max) - parseInt(min) + 1) + parseInt(min)
       }
-      const out = await tags.get(message.cleanContent, functions);
-      client.fetchUser(out.meta.author).then(user => {
-        message.channel.sendMessage(`**${message.cleanContent}** (${user.username}#${user.discriminator})\n${out.data}`.substring(0, 1999)).catch(client.error);
-      }).catch(err => {
-        client.error(err);
-        message.channel.sendMessage(`**${message.cleanContent}**\n${out.data}`.substring(0, 1999)).catch(client.error);
-      });
+      try {
+        const out = await tags.get(message.cleanContent, functions);
+        await client.fetchUser(out.meta.author).then(user => {
+          message.channel.sendMessage(`**${message.cleanContent}** (${user.username}#${user.discriminator})\n${out.data}`.substring(0, 1999)).catch(client.error);
+        }).catch(err => {
+          client.error(err);
+          message.channel.sendMessage(`**${message.cleanContent}**\n${out.data}`.substring(0, 1999)).catch(client.error);
+        });
+      } catch (err) {
+        message.channel.sendMessage('`Tag not found!`')
+      }
     }
   },
   tags: tags,
