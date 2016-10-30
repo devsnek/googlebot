@@ -17,7 +17,7 @@ const checkCommand = message => {
   const client = message.client;
   const original = message.content;
   message.content = message.content.split(' ');
-  const command = message.content.shift();
+  const command = message.content.shift().toLowerCase();
   message.content = message.content.join(' ');
   if (command in client.commands) {
     client.commands[command].main(message);
