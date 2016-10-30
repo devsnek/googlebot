@@ -9,14 +9,20 @@ const resolve = guildOrId => {
   return guildOrId instanceof Discord.Guild ? guildOrId.id : guildOrId;
 }
 
+const guilds = r.db('google').table('servers');
+
 module.exports = {
   raw: r,
+  hasGuild: async guild => {
+    guild = resolve(guild);
+    return (await guilds.get(guild).run()) !== null;
+  },
   fetchGuild: async guild => {
     guild = resolve(guild);
-    return await r.db('google').table('servers').get(guild).run();
+    return await guilds.get(guild).run();
   },
   createGuild: async guild => {
-    return await r.db('google').table('servers').insert({
+    return await guilds.insert({
       id: guild.id,
       name: guild.name,
       nsfw: '2',
@@ -26,22 +32,22 @@ module.exports = {
   },
   vacateGuild: async guild => {
     guild = resolve(guild);
-    return await r.db('google').table('servers').get(guild).update({
+    return await guilds.get(guild).update({
       status: 'vacated'
     }).run();
   },
   activateGuild: async guild => {
     guild = resolve(guild);
-    await r.db('google').table('servers').get(guild).update({
+    await guilds.get(guild).update({
       status: 'active'
     }).run();
   },
   updateGuild: async (guild, settings) => {
     guild = resolve(guild);
-    return await r.db('google').table('servers').get(guild).update(settings).run();
+    return await guilds.get(guild).update(settings).run();
   },
   fetchGuilds: async () => {
-    return r.db('google').table('servers').run();
+    return guilds.run();
   },
   updateCommand: async command => {
     if (command.hide) return;

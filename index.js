@@ -87,3 +87,7 @@ setInterval(() => {
   manager.stats.shards = manager.shards.size;
   backend.sse.broadcast('stats', JSON.stringify(manager.stats));
 }, 2000);
+
+process.on('unhandledRejection', (reason, promise) => {
+  manager.log(reason);
+});

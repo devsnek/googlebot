@@ -19,7 +19,7 @@ const updateAbal = count => {
   console.log('updating abal');
   superagent.post('https://bots.discord.pw/api/bots/187406062989606912/stats')
     .set({ 'Content-Type': 'application/json', 'Authorization': config.stats.abal })
-    .send({ 'server_count': count }).end((err, res) => {}).end((err, res) => {
+    .send({ 'server_count': count }).end((err, res) => {
       if (!err) console.log('SUCCESSFUL ABAL UPDATE', count);
     });
 }

@@ -16,7 +16,6 @@ const client = new Discord.Client({
 
 // ALL THE THINGS THAT NEED TO BE ATTACHED TO THE CLIENT //
 client.config = require('../config.json');
-client.commands = {};
 client.rethink = require('../util/rethink');
 require('../util/attachDebugMethods')(client);
 require('../util/loadAssets')(client, __dirname);
@@ -41,6 +40,6 @@ process.on('message', message => {
 
 process.on('SIGHUP', () => process.exit(0));
 
-process.on('unhandledRejection', rejection => {
-  client.error('UNHANDLED REJECTION', rejection);
+process.on('unhandledRejection', (reason, promise) => {
+  client.error(reason);
 });
