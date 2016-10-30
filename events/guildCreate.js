@@ -1,10 +1,14 @@
 module.exports = async guild => {
   const client = guild.client;
 
-  if (await client.rethink.hasGuild(guild)) {
+  const hasGuild = await client.rethink.hasGuild(guild);
+
+  client.log('NEW GUILD', hasGuild);
+
+  if (hasGuild) {
     client.rethink.activateGuild(guild);
   } else {
-    guild.defaultChannel.sendMessage(client.messages.welcome);
+    guild.defaultChannel.sendMessage(`${guild.owner} ${client.messages.welcome}`).catch(client.error);
     client.rethink.createGuild(guild);
   }
 

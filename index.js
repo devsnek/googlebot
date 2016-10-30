@@ -51,10 +51,6 @@ manager.on('message', async (shard, message) => {
   }
 });
 
-// manager.on('launch', shard => {
-//   console.log('LAUNCH');
-// })
-
 const fetchGuilds = async () => {
   let res = await manager.broadcastEval('this.guilds.size');
   manager.stats.guilds = res = res.reduce((a, b) => a + b);
