@@ -19,7 +19,7 @@ const fallback = async (message, args, safe, client) => {
         return message.edit('`No results found!`');
       }
       result = `${result.protocol}${result.slashes ? '//' : ''}${result.host}${result.port ? result.port : ''}${result.pathname ? result.pathname : ''}`
-      message.edit(result).catch(() => message.edit('`No results found!`'));
+      message.edit(decodeURIComponent(result)).catch(() => message.edit('`No results found!`'));
     } catch (err) {
       message.edit('`No results found!`');
     }
