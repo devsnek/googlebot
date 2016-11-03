@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const KEYS = module.exports.KEYS = fs.readFileSync(path.resolve('keys.txt')).toString().split('\n').slice(-1, 1);
+const KEYS = fs.readFileSync(path.resolve('keys.txt')).toString().split('\n');
+KEYS.pop();
+module.exports.KEYS = KEYS;
 
 let lastKey = module.exports.lastKey = 0;
 
