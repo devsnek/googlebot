@@ -38,10 +38,8 @@ module.exports = {
     client.log('Search:', msg.guild.name, msg.guild.id, '|', args, '|', safe, '|', key, client.keys.lastKey);
     let url = `https://www.googleapis.com/customsearch/v1?key=${key}&cx=${client.config.google.cx}&safe=${safe}&q=${encodeURI(args)}`;
     superagent.get(url).end((err, res) => {
-      if (err) {
-        return fallback(msg, args, safe, client);
-      }
-      msg.edit(JSON.parse(res.text)['items'][0]['link']).catch(err => {
+      if (err) return fallback(msg, args, safe, client);
+      msg.edit(res.body.items[0].link).catch(err => {
         if (err) {
           return fallback(msg, args, safe, client);
         }
