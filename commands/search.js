@@ -39,6 +39,7 @@ module.exports = {
     let url = `https://www.googleapis.com/customsearch/v1?key=${key}&cx=${client.config.google.cx}&safe=${safe}&q=${encodeURI(args)}`;
     superagent.get(url).end((err, res) => {
       if (err) return fallback(msg, args, safe, client);
+      if (res.body.queries.request[0].totalResults === '0') return msg.edit('`No results found!`');
       msg.edit(res.body.items[0].link).catch(err => {
         if (err) {
           return fallback(msg, args, safe, client);
