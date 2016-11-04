@@ -8,7 +8,7 @@ const fallback = async (message, args, safe, client) => {
     if (err) client.error(err);
     const $ = cheerio.load(res.text);
     let href = $('.r').first().find('a').first().attr('href');
-    if (href === null) return message.edit('`No results found!`');
+    if (!href) return message.edit('`No results found!`');
     if (href.indexOf('/url?q=') !== -1) {
       href = href.replace('/url?q=', '');
       href = href.slice(0, href.indexOf('&sa'));
