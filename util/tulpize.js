@@ -1,4 +1,4 @@
-const START = /^\/\/|^["{[~-] ?/g;
+const START = /^\/\/ ?|^["{[~-] ?/g;
 const END = / ?["\]}~-]$/g;
 
 module.exports = (message) => {
