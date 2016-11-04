@@ -5,3 +5,6 @@ Note: by default, safe search is set to medium, except in channels with "nsfw" i
 
 **Consider donating to keep this bot running!
 <https://patreon.com/guscaplan>**
+
+**Help keep Googlebot alive!
+<https://www.change.org/p/google-inc-help-googlebot-not-die>**
