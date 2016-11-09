@@ -7,7 +7,7 @@ module.exports = (message) => {
     if (START.test(c)) {
       c = c.replace(START, '');
       if (END.test(c)) {
-        c = c.replace(END, '')
+        c = c.replace(END, '');
       }
     }
     x.push(c.trim());

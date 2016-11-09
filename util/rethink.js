@@ -5,21 +5,17 @@ const r = require('rethinkdbdash')({
   host: config.host
 });
 
-const resolve = guildOrId => {
-  return guildOrId instanceof Discord.Guild ? guildOrId.id : guildOrId;
-}
+const resolve = guildOrId => guildOrId instanceof Discord.Guild ? guildOrId.id : guildOrId;
 
 const guilds = r.db('google').table('servers');
 
 module.exports = {
   raw: r,
   hasGuild: async guild => {
-    guild = resolve(guild);
-    return (await guilds.get(guild).run()) !== null;
+    return (await guilds.get(resolve(guild)).run()) !== null;
   },
   fetchGuild: async guild => {
-    guild = resolve(guild);
-    return await guilds.get(guild).run();
+    return await guilds.get(resolve(guild)).run();
   },
   createGuild: async guild => {
     return await guilds.insert({
@@ -31,20 +27,17 @@ module.exports = {
     }).run();
   },
   vacateGuild: async guild => {
-    guild = resolve(guild);
-    return await guilds.get(guild).update({
+    return await guilds.get(resolve(guild)).update({
       status: 'vacated'
     }).run();
   },
   activateGuild: async guild => {
-    guild = resolve(guild);
-    await guilds.get(guild).update({
+    return await guilds.get(resolve(guild)).update({
       status: 'active'
     }).run();
   },
   updateGuild: async (guild, settings) => {
-    guild = resolve(guild);
-    return await guilds.get(guild).update(settings).run();
+    return await guilds.get(resolve(guild)).update(settings).run();
   },
   fetchGuilds: async () => {
     return guilds.run();
@@ -57,7 +50,7 @@ module.exports = {
       usage: `ok google, ${command.name} ${command.args}`
     }
     let rCommand = await r.db('google').table('commands').get(command.name).run();
-    if (rCommand) r.db('google').table('commands').get(command.name).update(update).run();
-    else r.db('google').table('commands').insert(update);
+    if (rCommand) return r.db('google').table('commands').get(command.name).update(update).run();
+    else return r.db('google').table('commands').insert(update);
   }
 }

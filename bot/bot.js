@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const KeyManager = require('../util/KeyManager');
 
 const client = new Discord.Client({
   autoReconnect: true,
@@ -19,7 +20,7 @@ client.config = require('../config.json');
 client.rethink = require('../util/rethink');
 require('../util/attachDebugMethods')(client);
 require('../util/loadAssets')(client, __dirname);
-client.keys = require('../util/keyManager');
+client.keys = new KeyManager();
 client.sendIpc = (event, data) => {
   process.send({event, data, id: client.shard.id});
 }
