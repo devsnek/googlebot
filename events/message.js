@@ -23,7 +23,7 @@ const checkCommand = message => {
     client.commands[command].main(message);
   } else {
     message.content = original;
-    client.commands['search'].main(message);
+    client.commands['knowledgegraph'].main(message);
   }
 }
 
