@@ -9,7 +9,7 @@ module.exports = {
     const url = `https://kgsearch.googleapis.com/v1/entities:search?key=${client.config.google.kgKey}&limit=1&indent=True&query=${args}`;
     superagent.get(url).end((err, res) => {
       if (err) {
-        client.error(err);
+        client.error(err.stack);
         msg.delete();
         return client.commands.search.main(message);
       }
@@ -18,7 +18,7 @@ module.exports = {
 ${kg.detailedDescription.articleBody}
 <${kg.detailedDescription.url}>`;
       msg.edit(final).catch(err => {
-        client.error(err);
+        client.error(err.stack);
         msg.delete();
         client.commands.search.main(message);
       });
