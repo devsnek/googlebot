@@ -5,16 +5,17 @@ module.exports = {
     const client = message.client;
     client.log('DEFINE', message.content);
     const msg = await message.channel.sendMessage('`Opening Dictionary...`');
-    const url = `https://wordsapiv1.p.mashape.com/words/${message.content}`
+    const url = `https://glosbe.com/gapi/translate?from=en&dest=en&format=json&phrase=${message.content}`
     try {
-      let res = await superagent.get(url).set({'X-Mashape-Key': client.config.wordsApi, 'Accept': 'application/json'});
+      let res = await superagent.get(url);
       res = res.body;
       var final = [`**Definitions for __${message.content}__:**`];
-      for (const item in res.results) {
-        final.push(`**${(parseInt(item) + 1)}:** ${res.results[item].definition}`);
+      for (const [index, item] of Object.entries(res.tuc[0].meanings.slice(0, 5))) {
+        final.push(`**${(parseInt(index) + 1)}:** ${item.text}`);
       }
       msg.edit(final);
     } catch (err) {
+      client.error(err.stack);
       msg.edit('`No results found!`');
     }
   },
