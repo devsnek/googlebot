@@ -3,6 +3,7 @@ const superagent = require('superagent');
 module.exports = {
   main: async message => {
     const client = message.client;
+    if (message.content.trim() === '') return;
     const args = message.content.replace(/(who|what|when|where) (was|is|were|are) /gi, '');
     const msg = await message.channel.sendMessage('`Searching...`');
     client.log('KG: ', message.guild.name, message.guild.id, '|', args);
