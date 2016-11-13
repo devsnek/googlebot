@@ -21,9 +21,8 @@ client.rethink = require('../util/rethink');
 require('../util/attachDebugMethods')(client);
 require('../util/loadAssets')(client, __dirname);
 client.keys = new KeyManager();
-client.sendIpc = (event, data) => {
-  process.send({event, data, id: client.shard.id});
-}
+client.embed = require('../util/embed');
+client.sendIpc = (event, data) => process.send({event, data, id: client.shard.id});
 
 // EVENTS //
 require('../util/loadEvents')(client);

@@ -11,20 +11,9 @@ module.exports = {
     if (!res.body.itemListElement[0]) return client.commands.search.main(message, msg);
     const kg = res.body.itemListElement[0].result;
     if (!kg.detailedDescription) return client.commands.search.main(message, msg);
-    const embed = {
-      title: `${kg.name} (${kg['@type'].filter(t => t !== 'Thing').map(t => t.replace(/([a-z])([A-Z])/g, '$1 $2')).join(', ')})`,
-      description: `${kg.detailedDescription.articleBody} [more...](${kg.detailedDescription.url})
-
-[Help keep Googlebot running](https://www.change.org/p/google-inc-help-googlebot-not-die/)
-[Donate to keep Googlebot alive](https://patreon.com/guscaplan)`,
-      url: kg.detailedDescription.url,
-      timestamp: new Date(),
-      footer: {
-        text: 'Powered by Google',
-        icon_url: 'https://google.com/favicon.ico'
-      }
-    }
-    msg.edit('', { embed }).catch(err => {
+    const title = `${kg.name} (${kg['@type'].filter(t => t !== 'Thing').map(t => t.replace(/([a-z])([A-Z])/g, '$1 $2')).join(', ')})`;
+    const description = `${kg.detailedDescription.articleBody} [more...](${kg.detailedDescription.url})`;
+    msg.edit('', { embed: client.embed(kg.detailedDescription.url, title, description) }).catch(err => {
       client.error(err.stack);
       client.commands.search.main(message, msg);
     });

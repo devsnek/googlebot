@@ -2,20 +2,6 @@ const superagent = require('superagent');
 const cheerio = require('cheerio');
 const url = require('url');
 
-const embed = (url) => {
-  return {
-    title: url,
-    description: `ᅠ\n[Help keep Googlebot running](https://www.change.org/p/google-inc-help-googlebot-not-die/)
-[Donate to keep Googlebot alive](https://patreon.com/guscaplan)`,
-    url: url,
-    timestamp: new Date(),
-    footer: {
-      text: 'Powered by Google',
-      icon_url: 'https://google.com/favicon.ico'
-    }
-  }
-}
-
 const fallback = async (message, args, safe, client) => {
   let sUrl = `https://www.google.com/search?safe=${safe}&q=${encodeURI(args)}`;
   superagent.get(sUrl).end((err, res) => {
@@ -33,7 +19,7 @@ const fallback = async (message, args, safe, client) => {
         return message.edit('`No results found!`');
       }
       result = `${result.protocol}${result.slashes ? '//' : ''}${result.host}${result.port ? result.port : ''}${result.pathname ? result.pathname : ''}`
-      message.edit('', { embed: decodeURIComponent(result) }).catch(() => message.edit('`No results found!`'));
+      message.edit('', { embed: client.embed(decodeURIComponent(result)) }).catch(() => message.edit('`No results found!`'));
     } catch (err) {
       message.edit('`No results found!`');
     }
@@ -54,7 +40,7 @@ module.exports = {
     superagent.get(url).end((err, res) => {
       if (err) return fallback(msg, args, safe, client);
       if (res.body.queries.request[0].totalResults === '0') return msg.edit('`No results found!`');
-      msg.edit('', { embed: embed(res.body.items[0].link) });
+      msg.edit('', { embed: client.embed(res.body.items[0].link) });
     });
   },
   args: '<query>',
