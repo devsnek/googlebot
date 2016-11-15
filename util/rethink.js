@@ -47,7 +47,7 @@ module.exports = {
     let update = {
       id: command.name,
       description: command.help,
-      usage: `ok google, ${command.name} ${command.args}`
+      usage: `@Google ${command.name} ${command.args}`
     }
     let rCommand = await r.db('google').table('commands').get(command.name).run();
     if (rCommand) return r.db('google').table('commands').get(command.name).update(update).run();
