@@ -13,7 +13,7 @@ module.exports = {
     const kg = res.body.itemListElement[0].result;
     if (!kg.detailedDescription) return client.commands.search.main(message, msg);
     const title = `${kg.name} (${kg['@type'].filter(t => t !== 'Thing').map(t => t.replace(/([a-z])([A-Z])/g, '$1 $2')).join(', ')})`;
-    const description = `${kg.detailedDescription.articleBody} [more...](${kg.detailedDescription.url})`;
+    const description = `${kg.detailedDescription.articleBody} [Learn More...](${kg.detailedDescription.url})`;
     msg.edit('', { embed: client.embed(kg.detailedDescription.url, title, description) }).catch(err => {
       client.error(err.stack);
       client.commands.search.main(message, msg);

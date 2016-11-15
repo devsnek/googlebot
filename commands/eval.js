@@ -12,9 +12,7 @@ module.exports = {
       } catch (err) {
         res = err.message;
       }
-      message.channel.sendMessage('```js\n' + res + '\n```').then(message => {
-        // settings.toBeDeleted.set(msg.id, message.id);
-      });
+      message.channel.sendMessage('```js\n' + res + '\n```');
     }
   },
   args: '',

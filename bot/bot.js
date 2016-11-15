@@ -22,7 +22,7 @@ require('../util/attachDebugMethods')(client);
 require('../util/loadAssets')(client, __dirname);
 client.keys = new KeyManager();
 client.embed = require('../util/embed');
-client.sendIpc = (event, data) => process.send({event, data, id: client.shard.id});
+client.sendIpc = (event, data) => process.send({ event, data, id: client.shard.id });
 
 // EVENTS //
 require('../util/loadEvents')(client);
@@ -40,6 +40,4 @@ process.on('message', message => {
 
 process.on('SIGHUP', () => process.exit(0));
 
-process.on('unhandledRejection', (reason, promise) => {
-  client.error(reason);
-});
+process.on('unhandledRejection', (reason, promise) => client.error(reason));

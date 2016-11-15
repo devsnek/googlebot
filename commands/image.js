@@ -26,6 +26,7 @@ module.exports = {
       if (err) return fallback(msg, args, safe, client);
       try {
         msg.edit(res.body.items[0].link).catch(err => {
+          client.error(err.stack);
           fallback(msg, args, safe, client);
         });
       } catch (err) {

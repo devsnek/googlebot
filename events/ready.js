@@ -12,7 +12,6 @@ module.exports = async client => {
     if (!client.guilds.has(guild.id)) continue;
     client.guilds.get(guild.id).settings = guild;
   }
-  let s = (x) => console.log(chalk.bgMagenta.white.bold(x));
 
   client.rethink.raw.db('google').table('servers').changes().run((err, cursor) => {
     if (err) client.error(err);
@@ -28,13 +27,18 @@ module.exports = async client => {
 
   let top = client.shard ? `| — SHARD ${leftpad(client.shard.id + 1, 2, '0')} READY — |` : '| —  CLIENT READY  — |';
   let info = `${client.user.username.replace('\u1160', '')}#${client.user.discriminator}`;
-  s(top);
-  s(`|${center(info, {columns: top.length - 2})}|`);
-  s(`|${center(client.user.id, {columns: top.length - 2})}|`);
-  s(`|   Guilds: ${pad(client.guilds.size)} |`);
-  s(`| Channels: ${pad(client.channels.size)} |`);
-  s(`|    Users: ${pad(client.users.size)} |`);
-  s(`|   Emojis: ${pad(client.emojis.size)} |`);
-  s(`|  —  —  —  —  —  —  |`);
+  const final = [
+    top,
+    `|${center(info, {columns: top.length - 2})}|`,
+    `|${center(client.user.id, {columns: top.length - 2})}|`,
+    `|   Guilds: ${pad(client.guilds.size)} |`,
+    `| Channels: ${pad(client.channels.size)} |`,
+    `|    Users: ${pad(client.users.size)} |`,
+    `|   Emojis: ${pad(client.emojis.size)} |`,
+    `|  —  —  —  —  —  —  |`
+  ]
+  console.log(final.map(f => chalk.bgMagenta.white.bold(f)).join('\n'));
   client.sendIpc('alive', client.shard.id);
+
+  client.user.setPresence({ status: 'online', game: { name: `@${client.user.username} help` } });
 }

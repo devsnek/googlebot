@@ -34,8 +34,8 @@ module.exports = {
     const key = client.keys.nextKey;
     const s = await client.rethink.fetchGuild(message.guild.id);
     const safeSetting = s ? {1: 'off', 2: 'medium', 3: 'high'}[parseInt(s.nsfw)] : 'medium';
-    const safe = msg.channel.name.includes('nsfw') ? 'off' : safeSetting;
-    client.log('Search:', msg.guild.name, msg.guild.id, '|', args, '|', safe, '|', key, client.keys.last);
+    const safe = message.channel.name.includes('nsfw') ? 'off' : safeSetting;
+    client.log('Search:', message.guild.name, message.guild.id, '|', args, '|', safe, '|', key, client.keys.last);
     let url = `https://www.googleapis.com/customsearch/v1?key=${key}&cx=${client.config.google.cx}&safe=${safe}&q=${encodeURI(args)}`;
     superagent.get(url).end((err, res) => {
       if (err) return fallback(msg, args, safe, client);
