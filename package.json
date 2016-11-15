@@ -14,6 +14,7 @@
     "express-session": "^1.14.1",
     "hbs": "^4.0.1",
     "html-entities": "^1.2.0",
+    "iso-639-1": "github:guscaplan/iso-639-1",
     "marked": "^0.3.6",
     "moment": "^2.15.1",
     "rethinkdbdash": "^2.3.23",
