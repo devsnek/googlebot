@@ -6,8 +6,8 @@ module.exports = {
 • Mem Usage    : ${process.memoryUsage().heapUsed / 1000000} MB
 • Uptime       : ${client.util.toHHMMSS(client.uptime / 1000)}
 • Users        : ${users}
-• Servers      : ${channels}
-• Channels     : ${guilds}
+• Channels     : ${channels}
+• Guilds       : ${guilds}
 • Discord.js   : v${require('../node_modules/discord.js/package.json').version}
 • Shard        : ${Number(client.shard.id) + 1}/${client.shard.count}`;
     message.channel.sendCode('xl', final);
