@@ -31,7 +31,7 @@ module.exports = async message => {
   // checks and setting up of variables and such
   const client = message.client;
 
-  if (message.channel.type === 'dm' && message.author.id !== client.config.OWNERID) return;
+  if (message.channel.type === 'dm' && !client.config.OWNERS.includes(message.author.id)) return;
   if (message.author.bot) return;
 
   client.rethink.activateGuild(message.guild);

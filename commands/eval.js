@@ -1,7 +1,7 @@
 module.exports = {
   main: async message => {
     const client = message.client;
-    if (message.author.id === client.config.OWNERID) {
+    if (client.config.OWNERS.includes(message.author.id)) {
       var args = message.content;
       client.log('EVAL WAS RUN!');
       try {

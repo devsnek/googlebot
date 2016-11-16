@@ -14,7 +14,7 @@ module.exports = {
     } else if (message.cleanContent.startsWith('remove')) {
       let name = message.cleanContent.split(' ')[1];
       if (!tags.exists(name)) return message.channel.sendMessage('That tag does not exist');
-      if (tags.get(name).meta.author === message.author.id || message.author.id === client.config.OWNERID) {
+      if (tags.get(name).meta.author === message.author.id || client.config.OWNERS.includes(message.author.id)) {
         tags.remove(name);
         return message.channel.sendMessage(`Successfully removed tag **${name}**!`);
       } else {
