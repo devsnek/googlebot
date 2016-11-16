@@ -1,10 +1,8 @@
 const superagent = require('superagent');
 
-const rightpad = (v, n, c = ' ') => String(v).length >= n ? '' + v : String(v) + String(c).repeat(n - String(v).length);
-const leftpad = (v, n, c = ' ') => String(v).length >= n ? '' + v : (String(c).repeat(n) + v).slice(-n);
-
 module.exports = {
   main: async message => {
+    const { left, right } = message.client.util.pad;
     const res = await superagent.get('https://www.carbonitex.net/discord/api/listedbots');
     let chunks = [];
     let bots = res.body.sort((a, b) => b.servercount - a.servercount);
@@ -15,7 +13,7 @@ module.exports = {
     });
     while (bots.length > 0) chunks.push(bots.splice(0, 10));
     let page = Math.min(Math.max(parseInt(message.content), 1), chunks.length) || 1;
-    message.channel.sendCode('xl', `Page ${page}/${chunks.length}\n` + chunks[page - 1].map((b, i) => `${leftpad(((page - 1) * 10) + (i + 1), 2)}) ${rightpad(b.name, 20)}${b.servercount} ${b.compliant === 1 ? 'Compliant' : ''}`).join('\n'));
+    message.channel.sendCode('xl', `Page ${page}/${chunks.length}\n` + chunks[page - 1].map((b, i) => `${left(((page - 1) * 10) + (i + 1), 2)}) ${right(b.name, 20)}${b.servercount} ${b.compliant === 1 ? 'Compliant' : ''}`).join('\n'));
   },
   help: 'Grab the botlist from carbonitex',
   args: '<page>',

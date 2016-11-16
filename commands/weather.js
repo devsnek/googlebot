@@ -28,13 +28,13 @@ module.exports = {
     let feelslike = Math.round(data.currently.apparentTemperature * 10) / 10;
     let humidity = Math.round(data.currently.humidity * 100);
     let windspeed = data.currently.windSpeed;
-    let final = `${conditionMap[icon] ? conditionMap[icon] : ''} __${fullName}__
+    let final = `${icon in conditionMap ? conditionMap[icon] : ''} __${fullName}__
 **Conditions**: ${condition}
 **Temp**: ${temperature} °C
 **Feels Like**: ${feelslike} °C
 **Humidity**: ${humidity}%
 **Chance of Rain**: ${chanceofrain}%
-**Windspeed**: ${windspeed} `
+**Windspeed**: ${windspeed}Kts`;
     message.channel.sendMessage(final);
   },
   help: 'Search for weather on the web',

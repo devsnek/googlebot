@@ -1,12 +1,10 @@
-const toHHMMSS = require('../util/toHHMMSS');
-
 module.exports = {
   main: async message => {
     const client = message.client;
     const { users, channels, guilds } = await client.util.fetchStats();
     let final = `STATISTICS
 • Mem Usage    : ${process.memoryUsage().heapUsed / 1000000} MB
-• Uptime       : ${toHHMMSS(client.uptime / 1000)}
+• Uptime       : ${client.util.toHHMMSS(client.uptime / 1000)}
 • Users        : ${users}
 • Servers      : ${channels}
 • Channels     : ${guilds}

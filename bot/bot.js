@@ -4,6 +4,7 @@ const KeyManager = require('../util/KeyManager');
 const client = new Discord.Client({
   autoReconnect: true,
   messageCacheMaxSize: 1,
+  disableEveryone: true,
   // api_request_method: 'burst',
   disabledEvents: [
     'PRESENCE_UPDATE',
@@ -16,16 +17,22 @@ const client = new Discord.Client({
 });
 
 // ALL THE THINGS THAT NEED TO BE ATTACHED TO THE CLIENT //
-client.config = require('../config.json');
 client.rethink = require('../util/rethink');
+
+client.sendIpc = (event, data) => process.send({ event, data, id: client.shard.id });
+client.config = require('../config.json');
+
+require('../util/attachDebugMethods')(client);
+require('../util/loadAssets')(client, __dirname);
+
 client.util = {
   keys: new KeyManager(),
   embed: require('../util/embed'),
-  fetchStats: require('../util/fetchStats')(client)
+  fetchStats: require('../util/fetchStats')(client),
+  isStaff: require('../util/isStaff'),
+  toHHMMSS: require('../util/toHHMMSS'),
+  pad: require('../util/pad')
 }
-require('../util/attachDebugMethods')(client);
-require('../util/loadAssets')(client, __dirname);
-client.sendIpc = (event, data) => process.send({ event, data, id: client.shard.id });
 
 // EVENTS //
 require('../util/loadEvents')(client);
