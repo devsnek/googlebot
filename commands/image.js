@@ -16,11 +16,11 @@ module.exports = {
     const client = message.client;
     const args = message.content.trimLeft();
     const msg = await message.channel.sendMessage('`Searching...`');
-    const key = client.keys.nextKey;
+    const key = client.util.keys.nextKey;
     const s = await client.rethink.fetchGuild(message.guild);
     const safeSetting = s ? {1: 'off', 2: 'medium', 3: 'high'}[parseInt(s.nsfw)] : 'medium';
     const safe = message.channel.name.includes('nsfw') ? 'off' : safeSetting;
-    client.log('Image:', message.guild.name, message.guild.id, '|', args, '|', safe, '|', key, client.keys.last);
+    client.log('Image:', message.guild.name, message.guild.id, '|', args, '|', safe, '|', key, client.util.keys.last);
     let url = `https://www.googleapis.com/customsearch/v1?searchType=image&key=${key}&cx=${client.config.cxImg}&safe=${safe}&q=${encodeURI(args)}`;
     superagent.get(url).end((err, res) => {
       if (err) return fallback(msg, args, safe, client);

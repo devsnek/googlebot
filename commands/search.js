@@ -19,7 +19,7 @@ const fallback = async (message, args, safe, client) => {
         return message.edit('`No results found!`');
       }
       result = `${result.protocol}${result.slashes ? '//' : ''}${result.host}${result.port ? result.port : ''}${result.pathname ? result.pathname : ''}`
-      message.edit('', { embed: client.embed(decodeURIComponent(result)) }).catch(() => message.edit('`No results found!`'));
+      message.edit('', { embed: client.util.embed(decodeURIComponent(result)) }).catch(() => message.edit('`No results found!`'));
     } catch (err) {
       message.edit('`No results found!`');
     }
@@ -31,16 +31,16 @@ module.exports = {
     const client = message.client;
     const args = message.content.trimLeft();
     if (!msg) msg = await message.channel.sendMessage('`Searching...`');
-    const key = client.keys.nextKey;
+    const key = client.util.keys.nextKey;
     const s = await client.rethink.fetchGuild(message.guild.id);
     const safeSetting = s ? {1: 'off', 2: 'medium', 3: 'high'}[parseInt(s.nsfw)] : 'medium';
     const safe = message.channel.name.includes('nsfw') ? 'off' : safeSetting;
-    client.log('Search:', message.guild.name, message.guild.id, '|', args, '|', safe, '|', key, client.keys.last);
+    client.log('Search:', message.guild.name, message.guild.id, '|', args, '|', safe, '|', key, client.util.keys.last);
     let url = `https://www.googleapis.com/customsearch/v1?key=${key}&cx=${client.config.google.cx}&safe=${safe}&q=${encodeURI(args)}`;
     superagent.get(url).end((err, res) => {
       if (err) return fallback(msg, args, safe, client);
       if (res.body.queries.request[0].totalResults === '0') return msg.edit('`No results found!`');
-      msg.edit('', { embed: client.embed(res.body.items[0].link) });
+      msg.edit('', { embed: client.util.embed(res.body.items[0].link) });
     });
   },
   args: '<query>',

@@ -54,7 +54,6 @@ manager.on('message', async (shard, message) => {
 const fetchGuilds = async () => {
   let res = await manager.broadcastEval('this.guilds.size');
   manager.stats.guilds = res = res.reduce((a, b) => a + b);
-  manager.broadcast({event: 'guildsFetched', data: res});
   updateCount(res);
   manager.log('FETCHED GUILDS', res);
 }
@@ -62,14 +61,12 @@ const fetchGuilds = async () => {
 const fetchChannels = async () => {
   let res = await manager.broadcastEval('this.channels.size');
   manager.stats.channels = res = res.reduce((a, b) => a + b);
-  manager.broadcast({event: 'channelsFetched', data: res});
   manager.log('FETCHED CHANNELS', res);
 }
 
 const fetchUsers = async () => {
   let res = await manager.broadcastEval('this.guilds.map(g => g.memberCount).reduce((a, b) => a + b)');
   manager.stats.users = res = res.reduce((a, b) => a + b);
-  manager.broadcast({event: 'usersFetched', data: res});
   manager.log('FETCHED USERS', res);
 }
 

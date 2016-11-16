@@ -18,10 +18,13 @@ const client = new Discord.Client({
 // ALL THE THINGS THAT NEED TO BE ATTACHED TO THE CLIENT //
 client.config = require('../config.json');
 client.rethink = require('../util/rethink');
+client.util = {
+  keys: new KeyManager(),
+  embed: require('../util/embed'),
+  fetchStats: require('../util/fetchStats')(client)
+}
 require('../util/attachDebugMethods')(client);
 require('../util/loadAssets')(client, __dirname);
-client.keys = new KeyManager();
-client.embed = require('../util/embed');
 client.sendIpc = (event, data) => process.send({ event, data, id: client.shard.id });
 
 // EVENTS //

@@ -16,7 +16,7 @@ module.exports = {
     if (types.length > 1) types = types.filter(t => t !== 'Thing')
     const title = `${kg.name} ${types.length === 0 ? '' : '(' + types.join(', ') + ')'}`;
     const description = `${kg.detailedDescription.articleBody} [Learn More...](${kg.detailedDescription.url})`;
-    msg.edit('', { embed: client.embed(kg.detailedDescription.url, title, description) }).catch(err => {
+    msg.edit('', { embed: client.util.embed(kg.detailedDescription.url, title, description) }).catch(err => {
       client.error(err.stack);
       client.commands.search.main(message, msg);
     });

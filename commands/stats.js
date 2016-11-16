@@ -3,12 +3,13 @@ const toHHMMSS = require('../util/toHHMMSS');
 module.exports = {
   main: async message => {
     const client = message.client;
+    const { users, channels, guilds } = await client.util.fetchStats();
     let final = `STATISTICS
 • Mem Usage    : ${process.memoryUsage().heapUsed / 1000000} MB
 • Uptime       : ${toHHMMSS(client.uptime / 1000)}
-• Users        : ${client.config.totalUsers}
-• Servers      : ${client.config.totalGuilds}
-• Channels     : ${client.config.totalChannels}
+• Users        : ${users}
+• Servers      : ${channels}
+• Channels     : ${guilds}
 • Discord.js   : v${require('../node_modules/discord.js/package.json').version}
 • Shard        : ${Number(client.shard.id) + 1}/${client.shard.count}`;
     message.channel.sendCode('xl', final);
