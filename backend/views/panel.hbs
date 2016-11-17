@@ -157,7 +157,7 @@
           if ($(this).val().length < 33) {
             NProgress.start();
             NProgress.inc();
-            $.get( "/setting/set/" + $(this).attr('guild_id') + "/nick/" + $(this).val(), function(){
+            $.get( "/setting/set/" + $(this).attr('guild_id') + "/nick/" + encodeURIComponent($(this).val()), function(){
               NProgress.done();
             });
           }
@@ -169,7 +169,7 @@
           if ($(this).val().length < 33) {
             NProgress.start();
             NProgress.inc();
-            $.get( "/setting/set/" + $(this).attr('guild_id') + "/prefix/" + $(this).val(), function(){
+            $.get( "/setting/set/" + $(this).attr('guild_id') + "/prefix/" + encodeURIComponent($(this).val()), function(){
               NProgress.done();
             });
           }
