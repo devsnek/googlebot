@@ -9,7 +9,7 @@ module.exports = {
     res = await superagent.get(`https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro=&explaintext=&titles=${encodeURIComponent(results[0].title)}`);
     const page = res.body.query.pages[Object.keys(res.body.query.pages)];
     const url = `https://wikipedia.org/wiki/${encodeURIComponent(page.title)}`;
-    const embed = message.client.util.embed(url, page.title, page.extract.substring(0, 500) + `... [Read more](${url})`);
+    const embed = message.client.util.embed(url, page.title, page.extract.substring(0, 500) + `... [Read more](${url.replace(/\(/, '%28').replace(/\)/, '%29')})`);
     msg.edit('', { embed });
   }
 }
