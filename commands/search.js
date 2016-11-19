@@ -19,7 +19,7 @@ const fallback = async (message, args, safe, client) => {
         return message.edit('`No results found!`');
       }
       result = `${result.protocol}${result.slashes ? '//' : ''}${result.host}${result.port ? result.port : ''}${result.pathname ? result.pathname : ''}`
-      message.edit('', { embed: client.util.embed(decodeURIComponent(result)) }).catch(() => message.edit('`No results found!`'));
+      message.edit(result).catch(() => message.edit('`No results found!`'));
     } catch (err) {
       message.edit('`No results found!`');
     }
@@ -40,7 +40,9 @@ module.exports = {
     superagent.get(url).end((err, res) => {
       if (err) return fallback(msg, args, safe, client);
       if (res.body.queries.request[0].totalResults === '0') return msg.edit('`No results found!`');
-      msg.edit('', { embed: client.util.embed(res.body.items[0].link) });
+      msg.edit(res.body.items[0].link).catch(() => {
+        fallback(msg, args, safe, client);
+      });
     });
   },
   args: '<query>',
