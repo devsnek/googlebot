@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-module.exports = async client => {
+module.exports = client => {
   const files = fs.readdirSync(path.resolve('./commands'));
   for (const file of files) {
     if (file.endsWith('.js')) {
