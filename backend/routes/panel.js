@@ -29,7 +29,7 @@ router.get('/logout', (req, res) => {
 });
 
 router.get('/callback', async (req, res) => {
-  let availGuilds = await r.raw.db('google').table('servers').run();
+  let availGuilds = await r.raw.db('google').table('servers').filter({status: 'active'}).run();
   let tokenUri = `https://discordapp.com/api/oauth2/token?grant_type=authorization_code&code=${req.query.code}&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&redirect_uri=${REDIR_URI}`;
   let tokenRes = await superagent.post(tokenUri);
   let token = `${tokenRes.body.token_type} ${tokenRes.body.access_token}`;
