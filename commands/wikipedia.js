@@ -11,5 +11,8 @@ module.exports = {
     const url = `https://wikipedia.org/wiki/${encodeURIComponent(page.title)}`;
     const embed = message.client.util.embed(url, page.title, page.extract.substring(0, 500) + `... [Read more](${url.replace(/\(/, '%28').replace(/\)/, '%29')})`);
     msg.edit('', { embed });
-  }
+  },
+  args: '<query>',
+  help: 'Search Wikipedia',
+  catagory: 'general'
 }
