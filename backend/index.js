@@ -25,6 +25,11 @@ app.use(require('express-session')({
   }
 }));
 
+app.use((req, res, next) => {
+  res.setHeader('X-Powered-By', 'blood, sweat, and tears');
+  next();
+});
+
 router.use('/', require('./routes/index'));
 router.use('/panel', require('./routes/panel'));
 router.use('/setting', require('./routes/setting'));
