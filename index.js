@@ -8,7 +8,7 @@ const manager = new Discord.ShardingManager('./bot/bot.js', {
   shardArgs: ['--ansi', '--color']
 });
 
-manager.log = (...args) => console.log('🔰', chalk.yellow.bold('MANAGER'), ...args);
+manager.log = (...args) => console.log('🔰', chalk.yellow.bold('MANAGER'), chalk.bold(...args));
 
 manager.stats = {
   guilds: 0,
