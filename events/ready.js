@@ -25,17 +25,17 @@ module.exports = async client => {
     });
   })
 
-  let top = client.shard ? `| — SHARD ${leftpad(client.shard.id + 1, 2, '0')} READY — |` : '| —  CLIENT READY  — |';
+  let top = client.shard ? `╔══ SHARD ${leftpad(client.shard.id + 1, 2, '0')} READY ══╗` : '╔═══ CLIENT READY ═══╗';
   let info = `${client.user.username.replace('\u1160', '')}#${client.user.discriminator}`;
   const final = [
     top,
-    `|${center(info, {columns: top.length - 2})}|`,
-    `|${center(client.user.id, {columns: top.length - 2})}|`,
-    `|   Guilds: ${pad(client.guilds.size)} |`,
-    `| Channels: ${pad(client.channels.size)} |`,
-    `|    Users: ${pad(client.users.size)} |`,
-    `|   Emojis: ${pad(client.emojis.size)} |`,
-    `|  —  —  —  —  —  —  |`
+    `║${center(info, {columns: top.length - 2})}║`,
+    `║${center(client.user.id, {columns: top.length - 2})}║`,
+    `║   Guilds: ${pad(client.guilds.size)} ║`,
+    `║ Channels: ${pad(client.channels.size)} ║`,
+    `║    Users: ${pad(client.guilds.map(g => g.memberCount).reduce((a, b) => a + b))} ║`,
+    `║   Emojis: ${pad(client.emojis.size)} ║`,
+    `╚════════════════════╝`
   ]
   console.log(final.map(f => chalk.bgMagenta.white.bold(f)).join('\n'));
   client.sendIpc('alive', client.shard.id);
