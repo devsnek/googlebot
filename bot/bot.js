@@ -31,7 +31,8 @@ client.util = {
   fetchStats: require('../util/fetchStats')(client),
   isStaff: require('../util/isStaff'),
   toHHMMSS: require('../util/toHHMMSS'),
-  pad: require('../util/pad')
+  pad: require('../util/pad'),
+  watching: require('../util/watching')(client)
 }
 
 // EVENTS //

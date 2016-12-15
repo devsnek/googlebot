@@ -8,4 +8,6 @@ module.exports = client => {
   client.on('guildDelete', reqEvt('guildDelete'));
   client.on('channelCreate', reqEvt('channelCreate'));
   client.on('channelDelete', reqEvt('channelDelete'));
+  client.on('guildMemberAdd', reqEvt('guildMemberAdd'));
+  client.on('guildMemberRemove', reqEvt('guildMemberRemove'));
 }

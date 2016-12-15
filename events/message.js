@@ -31,6 +31,13 @@ module.exports = async message => {
   // checks and setting up of variables and such
   const client = message.client;
 
+  client.util.watching({
+    type: 'SENT MESSAGE',
+    user: message.author,
+    context: `${message.guild.name} | ${message.channel.name}`,
+    content: message.content
+  });
+
   if (message.channel.type === 'dm' && !client.config.OWNERS.includes(message.author.id)) return;
   if (message.author.bot) return;
 

@@ -52,5 +52,8 @@ module.exports = {
     let rCommand = await r.db('google').table('commands').get(command.name).run();
     if (rCommand) return r.db('google').table('commands').get(command.name).update(update).run();
     else return r.db('google').table('commands').insert(update);
+  },
+  fetchWatched: async () => {
+    return r.db('google').table('watched').run();
   }
 }
