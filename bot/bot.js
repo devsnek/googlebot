@@ -32,7 +32,8 @@ client.util = {
   isStaff: require('../util/isStaff'),
   toHHMMSS: require('../util/toHHMMSS'),
   pad: require('../util/pad'),
-  watching: require('../util/watching')(client)
+  watching: require('../util/watching')(client),
+  sendUnshardedMessage: require('../util/sendUnshardedMessage')(client)
 }
 
 // EVENTS //
