@@ -6,9 +6,9 @@ module.exports = {
     let final = `STATISTICS
 • Mem Usage    : ${memUsage.toFixed(2)} MB
 • Uptime       : ${client.util.toHHMMSS(client.uptime / 1000)}
-• Users        : ${users}
-• Channels     : ${channels}
-• Guilds       : ${guilds}
+• Users        : ${users.toLocaleString()}
+• Channels     : ${channels.toLocaleString()}
+• Guilds       : ${guilds.toLocaleString()}
 • Discord.js   : v${require('../node_modules/discord.js/package.json').version}
 • Shard        : ${Number(client.shard.id) + 1}/${client.shard.count}`;
     message.channel.sendCode('xl', final);
