@@ -11,7 +11,7 @@ module.exports = {
 **• Guilds:** ${guilds.toLocaleString()}
 **• Library:** Discord.js v${require('../node_modules/discord.js/package.json').version}
 **• Shard:** ${Number(client.shard.id) + 1}/${client.shard.count}
-**• Uptimes:** ${uptimes}`;
+**• Uptimes:** ${uptimes.join(', ')}`;
     message.channel.sendMessage(final);
   },
   hide: true
