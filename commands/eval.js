@@ -1,7 +1,6 @@
 module.exports = {
   main: async message => {
     const client = message.client;
-    if (!client.config.OWNERS.includes(message.author.id)) return;
     const args = message.content;
     client.log('EVAL WAS RUN!');
     try {
@@ -14,5 +13,6 @@ module.exports = {
   },
   args: '',
   help: 'run some eval, bruh',
-  hide: true
+  hide: true,
+  owner: true
 };

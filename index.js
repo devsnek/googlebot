@@ -46,6 +46,10 @@ manager.on('message', async (shard, message) => {
       fetchUsers();
       break;
     }
+    case 'toggle': {
+      manager.broadcast(message);
+      break;
+    }
     default:
       break;
   }

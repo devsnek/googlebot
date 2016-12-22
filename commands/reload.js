@@ -4,7 +4,6 @@ module.exports = {
   main: async message => {
     const commands = message.client.commands;
     const command = message.content;
-    if (!message.client.config.OWNERS.includes(message.author.id)) return;
     try {
       delete commands[command];
       const pth = path.resolve(`./commands/${command}.js`)
@@ -15,5 +14,6 @@ module.exports = {
       message.channel.sendMessage('Command not found or error reloading\n`' + err.message + '`');
     }
   },
-  hide: true
+  hide: true,
+  owner: true
 }

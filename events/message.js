@@ -17,10 +17,12 @@ const checkCommand = message => {
   const client = message.client;
   const original = message.content;
   message.content = message.content.split(' ');
-  const command = message.content.shift().toLowerCase();
+  let command = message.content.shift().toLowerCase();
   message.content = message.content.join(' ');
   if (command in client.commands) {
-    client.commands[command].main(message);
+    command = client.commands[command];
+    if ((command.owner || command.disabled) && !client.config.OWNERS.includes(message.author.id)) return;
+    command.main(message);
   } else {
     message.content = original;
     client.commands.knowledgegraph.main(message);
