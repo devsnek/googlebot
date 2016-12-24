@@ -7,9 +7,6 @@ module.exports = async client => {
   client.config.prefixes = client.config.prefixes.map(p => p.replace('{ID}', client.user.id));
   client.config.prefix = new RegExp(`^${client.config.prefixes.join('|^')}`, 'i');
 
-  client._pingTimestamp = Date.now();
-  client.ws.send({ op: 1, d: client.ws.sequence }, true);
-
   const guilds = await client.rethink.fetchGuilds();
   for (const guild of guilds) {
     if (!client.guilds.has(guild.id)) continue;
