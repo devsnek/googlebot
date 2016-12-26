@@ -36,7 +36,7 @@ module.exports = async message => {
   client.util.watching({
     type: 'SENT MESSAGE',
     user: message.author,
-    context: `${message.guild.name} | ${message.channel.name}`,
+    context: message.guild ? `${message.guild.name} | ${message.channel.name}` : `DM: ${message.author.username}`,
     content: message.content
   });
 
