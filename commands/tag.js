@@ -5,23 +5,24 @@ const tags = new TagManager();
 module.exports = {
   main: async message => {
     const client = message.client;
+
     if (message.cleanContent.startsWith('create')) {
-      let name = message.cleanContent.split(' ')[1];
+      const name = message.cleanContent.split(' ')[1];
       if (tags.exists(name)) return message.channel.send('That tag already exists!');
-      let content = message.cleanContent.split(' ').splice(2).join(' ');
+      const content = message.cleanContent.split(' ').splice(2).join(' ');
       tags.set(name, content, {author: message.author.id});
-      return message.channel.send(`Successfully created tag **${name}**!`);
+      return message.reply(`Successfully created tag **${name}**!`);
     } else if (message.cleanContent.startsWith('remove')) {
-      let name = message.cleanContent.split(' ')[1];
-      if (!tags.exists(name)) return message.channel.send('That tag does not exist');
+      const name = message.cleanContent.split(' ')[1];
+      if (!tags.exists(name)) return message.reply('That tag does not exist!');
       if ((await tags.get(name)).meta.author === message.author.id || client.config.OWNERS.includes(message.author.id)) {
         tags.remove(name);
-        return message.channel.send(`Successfully removed tag **${name}**!`);
+        return message.reply(`Successfully removed tag **${name}**!`);
       } else {
         return message.channel.send('That is not your tag!');
       }
     } else {
-      let functions = {
+      const functions = {
         'name': message.author.username,
         'channel': message.channel.toString(),
         'guild': message.guild.name,
@@ -29,7 +30,7 @@ module.exports = {
       }
       try {
         const out = await tags.get(message.cleanContent, functions);
-        await client.fetchUser(out.meta.author).then(user => {
+        client.fetchUser(out.meta.author).then(user => {
           message.channel.send(`**${message.cleanContent}** (${user.username}#${user.discriminator})\n${out.data}`.substring(0, 1999)).catch(client.error);
         }).catch(err => {
           client.error(err);
