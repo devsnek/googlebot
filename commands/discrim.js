@@ -10,12 +10,12 @@ module.exports = {
         if (a.c === b.c) return parseInt(a.d) < parseInt(b.d);
         else return a.c < b.c;
       });
-      message.channel.sendMessage(final.slice(0, 10).map(f => `**${f.d}:** ${f.c}`).join('\n'));
+      message.channel.send(final.slice(0, 10).map(f => `**${f.d}:** ${f.c}`).join('\n'));
     } else {
       let res = await client.shard.broadcastEval(`this.users.filter(x => x.discriminator === "${message.content}").map(u => u.username)`);
       res = [].concat(...res);
       res = res.filter((e, i, a) => i === a.indexOf(e));
-      message.channel.sendMessage(`**${res.length} users with discrim ${message.content}:**\n${res.join(', ')}`);
+      message.channel.send(`**${res.length} users with discrim ${message.content}:**\n${res.join(', ')}`);
     }
   },
   hide: true

@@ -19,7 +19,7 @@ module.exports = {
     const res = await superagent.get(url);
     if (res.body.tuc.length === 0) return message.channel.sendMessage(`**Could not translate** \`${args.join(' ')}\` from \`${fromN}\` to \`${toN}\``);
     const translated = res.body.tuc[0].phrase.text;
-    message.channel.sendMessage(`**__Translation__**\n\n**In:** \`${args.join(' ')}\` ${fromN} (${from})\n\n**Out:** \`${translated}\` ${toN} (${to})`);
+    message.channel.send(`**__Translation__**\n\n**In:** \`${args.join(' ')}\` ${fromN} (${from})\n\n**Out:** \`${translated}\` ${toN} (${to})`);
   },
   help: 'Translate text.',
   args: '<sentence> <from lang> <to lang>',

@@ -12,7 +12,7 @@ module.exports = {
 **• Library:** Discord.js v${require('../node_modules/discord.js/package.json').version}
 **• Shard:** ${Number(client.shard.id) + 1}/${client.shard.count}
 **• Uptimes:** ${uptimes.join(', ')}`;
-    message.channel.sendMessage(final);
+    message.channel.send(final);
   },
   hide: true
 }

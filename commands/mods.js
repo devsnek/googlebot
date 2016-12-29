@@ -17,7 +17,7 @@ module.exports = {
   main: async message => {
     let mods = message.guild.members.array().filter(m => message.client.util.isStaff(m) && !m.user.bot).sort((a, b) => sortMap[getStatus(a, false)] > sortMap[getStatus(b, false)]);
     mods = mods.map(m => `${getStatus(m)} **${m.user.username}#${m.user.discriminator}**`)
-    message.channel.sendMessage([`Mods for **${message.guild.name}**`].concat(mods));
+    message.channel.send([`Mods for **${message.guild.name}**`].concat(mods));
   },
   args: '',
   help: 'list all mods and their statuses in a server',

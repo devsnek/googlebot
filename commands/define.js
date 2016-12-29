@@ -4,7 +4,7 @@ module.exports = {
   main: async message => {
     const client = message.client;
     client.log('DEFINE', message.content);
-    const msg = await message.channel.sendMessage('`Opening Dictionary...`');
+    const msg = await message.channel.send('`Opening Dictionary...`');
     const url = `https://glosbe.com/gapi/translate?from=en&dest=en&format=json&phrase=${message.content}`
     try {
       let res = await superagent.get(url);

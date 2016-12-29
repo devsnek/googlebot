@@ -9,9 +9,9 @@ module.exports = {
       const pth = path.resolve(`./commands/${command}.js`)
       delete require.cache[pth];
       commands[command] = require(pth);
-      message.channel.sendMessage('Reloaded ' + command);
+      message.channel.send('Reloaded ' + command);
     } catch (err) {
-      message.channel.sendMessage('Command not found or error reloading\n`' + err.message + '`');
+      message.channel.send('Command not found or error reloading\n`' + err.message + '`');
     }
   },
   hide: true,

@@ -4,7 +4,7 @@ module.exports = {
   main: async message => {
     const client = message.client;
     client.log('IDENTIFY', message.guild.name, message.guild.id, message.content);
-    const msg = await message.channel.sendMessage('`Identifying...`');
+    const msg = await message.channel.send('`Identifying...`');
     let res = await superagent.get('https://www.captionbot.ai/api/init');
     const cid = res.body;
     res = await superagent.post('https://www.captionbot.ai/api/message')

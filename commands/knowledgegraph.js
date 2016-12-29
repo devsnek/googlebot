@@ -5,7 +5,7 @@ module.exports = {
     const client = message.client;
     if (message.content.trim() === '') return;
     const args = message.content.replace(/(who|what|when|where) (was|is|were|are) /gi, '');
-    const msg = await message.channel.sendMessage('`Searching...`');
+    const msg = await message.channel.send('`Searching...`');
     client.log('KG: ', message.guild.name, message.guild.id, '|', args);
     const url = `https://kgsearch.googleapis.com/v1/entities:search?key=${client.config.google.kgKey}&limit=1&indent=True&query=${args.split(' ').join('+')}`;
     const res = await superagent.get(url);
@@ -16,7 +16,7 @@ module.exports = {
     if (types.length > 1) types = types.filter(t => t !== 'Thing')
     const title = `${kg.name} ${types.length === 0 ? '' : '(' + types.join(', ') + ')'}`;
     const description = `${kg.detailedDescription.articleBody} [Learn More...](${kg.detailedDescription.url.replace(/\(/, '%28').replace(/\)/, '%29')})`;
-    msg.edit('', { embed: client.util.embed(kg.detailedDescription.url, title, description) }).catch(err => {
+    msg.edit({ embed: client.util.embed(kg.detailedDescription.url, title, description) }).catch(err => {
       client.error(err.stack);
       client.commands.search.main(message, msg);
     });

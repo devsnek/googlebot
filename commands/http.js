@@ -13,7 +13,7 @@ module.exports = {
       description,
       url: `https://httpstatuses.com/${message.content}`
     }
-    message.channel.sendMessage('', { embed });
+    message.channel.send({ embed });
   },
   help: 'check an http status code',
   args: '<code>',

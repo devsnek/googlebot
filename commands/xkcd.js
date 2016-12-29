@@ -14,7 +14,7 @@ module.exports = {
     let final = `XKCD ${comic.num} **${comic.safe_title}**
 _*${comic.alt}*_
 ${comic.img}`;
-    message.channel.sendMessage(final);
+    message.channel.send(final);
   },
   args: '<search>',
   help: 'find xkcd comic using search',

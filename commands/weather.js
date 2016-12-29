@@ -16,7 +16,7 @@ module.exports = {
     const client = message.client;
     const mapsUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${message.content.split(' ').join('+')}&key=${client.config.google.mapsKey}`;
     let res = await superagent.get(mapsUrl);
-    if (!res.body.results[0]) return message.channel.sendMessage('`Invalid Location!`');
+    if (!res.body.results[0]) return message.channel.send('`Invalid Location!`');
     let geocode = [res.body.results[0].geometry.location.lat, res.body.results[0].geometry.location.lng].join(',');
     let fullName = res.body.results[0].formatted_address;
     res = await superagent.get(`https://api.darksky.net/forecast/${client.config.weather.forecastKey}/${geocode}?units=si`);
@@ -35,7 +35,7 @@ module.exports = {
 **Humidity**: ${humidity}%
 **Chance of Rain**: ${chanceofrain}%
 **Windspeed**: ${windspeed}Kts`;
-    message.channel.sendMessage(final);
+    message.channel.send(final);
   },
   help: 'Search for weather on the web',
   args: '<location>',

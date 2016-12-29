@@ -9,7 +9,7 @@ module.exports = {
     } catch (err) {
       res = err.message;
     }
-    message.channel.sendCode('js', res);
+    message.channel.send(res, { code: 'js' });
   },
   args: '',
   help: 'run some eval, bruh',

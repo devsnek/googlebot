@@ -10,7 +10,7 @@ module.exports = {
 **Status:** ${status.status}
 ${warnings.length ? `**Warnings:**\n${warnings}` : ''}
 ${errors.length ? `**Errors:**\n${errors}` : ''}`;
-    message.channel.sendMessage(final);
+    message.channel.send(final);
   },
   hide: true
 }
