@@ -60,7 +60,6 @@ manager.on('message', async (shard, message) => {
 const fetchGuilds = async () => {
   let res = await manager.broadcastEval('this.guilds.size');
   manager.stats.guilds = res = res.reduce((a, b) => a + b);
-  updateCount(res);
   manager.log('FETCHED GUILDS', res);
 }
 
@@ -86,6 +85,11 @@ setInterval(() => {
   manager.stats.shards = manager.shards.size;
   backend.sse.broadcast('stats', JSON.stringify(manager.stats));
 }, 2000);
+
+setInterval(async () => {
+  const count = (await manager.broadcastEval('this.guilds.size')).reduce((a, b) => a + b);
+  updateCount(count);
+}, 5 * 60e3);
 
 process.on('unhandledRejection', (reason, promise) => {
   manager.log(reason);
