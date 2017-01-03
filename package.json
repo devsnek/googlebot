@@ -22,7 +22,7 @@
     "rethinkdbdash": "^2.3.23",
     "sherlockjs": "0.0.9",
     "sse": "github:guscaplan/sse.js",
-    "superagent": "^2.3.0",
+    "superagent": "^3.3.1",
     "tagmanager": "github:guscaplan/tagmanager"
   }
 }
