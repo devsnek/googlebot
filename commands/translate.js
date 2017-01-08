@@ -22,6 +22,7 @@ module.exports = {
     });
   },
   help: 'Translate text.',
-  args: '<sentence> <from lang> <to lang>',
+  args: '<something> <to lang>',
+  usage: 'translate せんぱい ja',
   catagory: 'general'
 };
