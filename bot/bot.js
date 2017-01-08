@@ -1,5 +1,3 @@
-global.Promise = require('breach').Promise;
-
 const Discord = require('discord.js');
 const KeyManager = require('../util/KeyManager');
 
