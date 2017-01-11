@@ -4,8 +4,13 @@ module.exports = {
   main: async message => {
     let comicnum;
     if (isNaN(parseInt(message.content))) {
-      let res = await superagent.get(`https://relevantxkcd.appspot.com/process?action=xkcd&query=${message.content}`)
-      comicnum = res.text.split(' ')[2].replace('\n', '');
+      if (message.content === 'latest') {
+        const res = await superagent.get('https://xkcd.com/info.0.json');
+        comicnum = res.body.num;
+      } else {
+        const res = await superagent.get(`https://relevantxkcd.appspot.com/process?action=xkcd&query=${message.content}`)
+        comicnum = res.text.split(' ')[2].replace('\n', '');
+      }
     } else {
       comicnum = parseInt(message.content);
     }
