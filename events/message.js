@@ -1,3 +1,4 @@
+const minimist = require('minimist');
 const tulpize = require('../util/tulpize');
 
 const superClean = (message, prefix) => {
@@ -16,16 +17,17 @@ const superClean = (message, prefix) => {
 const checkCommand = message => {
   const client = message.client;
   const original = message.content;
-  message.content = message.content.split(' ');
+  const parsed = minimist(message.content.split(' '));
+  message.content = parsed._;
   let command = message.content.shift().toLowerCase();
   message.content = message.content.join(' ');
   if (command in client.commands) {
     command = client.commands[command];
     if ((command.owner || command.disabled) && !client.config.OWNERS.includes(message.author.id)) return;
-    command.main(message);
+    command.main(message, parsed);
   } else {
     message.content = original;
-    client.commands.knowledgegraph.main(message);
+    client.commands.knowledgegraph.main(message, parsed);
   }
 }
 
