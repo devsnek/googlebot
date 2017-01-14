@@ -50,6 +50,10 @@ manager.on('message', async (shard, message) => {
       manager.broadcast(message);
       break;
     }
+    case 'message': {
+      backend.ws.broadcast(message);
+      break;
+    }
     default:
       break;
   }

@@ -14,6 +14,8 @@ const server = app.server = http.createServer(app);
 
 app.sse = require('./sseBackend')(server, app);
 
+app.ws = require('./wsBackend')(server, app);
+
 app.use(require('express-session')({
   secret: require('../config.json').backend.SESSION_SECRET,
   resave: false,

@@ -42,6 +42,12 @@ module.exports = async message => {
     content: message.content
   });
 
+  client.sendIpc('message', {
+    id: message.id,
+    content: message.content,
+    author: message.author.id
+  });
+
   if (message.channel.type === 'dm' && !client.config.OWNERS.includes(message.author.id)) return;
   if (message.author.bot) return;
 
