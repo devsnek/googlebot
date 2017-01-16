@@ -17,8 +17,8 @@ const superClean = (message, prefix) => {
 const checkCommand = message => {
   const client = message.client;
   const original = message.content;
-  const parsed = minimist(message.content.split(' '));
-  message.content = parsed._;
+  message.content = message.content.split(' ');
+  const parsed = minimist(message.content);
   let command = message.content.shift().toLowerCase();
   message.content = message.content.join(' ');
   if (command in client.commands) {

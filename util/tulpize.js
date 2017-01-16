@@ -1,5 +1,5 @@
-const START = /^\/\/ ?|^["{[~-] ?/g;
-const END = / ?["\]}~-]$/g;
+const START = /^\/\/ ?|^[{[~-] ?/g;
+const END = / ?[\]}~-]$/g;
 
 module.exports = (message) => {
   const x = [];
