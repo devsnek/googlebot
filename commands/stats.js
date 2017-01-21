@@ -1,17 +1,14 @@
 module.exports = {
   main: async message => {
     const client = message.client;
-    const { users, channels, guilds, uptimes } = await client.util.fetchStats();
-    const memUsage = (await client.shard.broadcastEval('process.memoryUsage().heapUsed / 1024 / 1024')).reduce((a, b) => a + b);
     let final = `**STATISTICS**
-**• Mem Usage:** ${memUsage.toFixed(2)} MB
+**• Mem Usage:** ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB
 **• Uptime:** ${client.util.toHHMMSS(client.uptime / 1000)}
-**• Users:** ${users.toLocaleString()}
-**• Channels:** ${channels.toLocaleString()}
-**• Guilds:** ${guilds.toLocaleString()}
+**• Users:** ${client.users.size.toLocaleString()}
+**• Channels:** ${client.channels.size.toLocaleString()}
+**• Guilds:** ${client.guilds.size.toLocaleString()}
 **• Library:** Discord.js v${require('../node_modules/discord.js/package.json').version}
-**• Shard:** ${Number(client.shard.id) + 1}/${client.shard.count}
-**• Uptimes:** ${uptimes.join(', ')}`;
+**• Shard:** ${Number(message.guild.shardID) + 1}/${client.ws.shardCount}`;
     message.channel.send(final);
   },
   hide: true

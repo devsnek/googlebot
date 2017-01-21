@@ -21,13 +21,13 @@ const checkCommand = message => {
   const parsed = minimist(message.content);
   let command = message.content.shift().toLowerCase();
   message.content = message.content.join(' ');
-  if (command in client.commands) {
-    command = client.commands[command];
+  if (client.commands.has(command)) {
+    command = client.commands.get(command);
     if ((command.owner || command.disabled) && !client.config.OWNERS.includes(message.author.id)) return;
     command.main(message, parsed);
   } else {
     message.content = original;
-    client.commands.knowledgegraph.main(message, parsed);
+    client.commands.get('knowledgegraph').main(message, parsed);
   }
 }
 
@@ -42,12 +42,6 @@ module.exports = async message => {
     content: message.content
   });
 
-  client.sendIpc('message', {
-    id: message.id,
-    content: message.content,
-    author: message.author.id
-  });
-
   if (message.channel.type === 'dm' && !client.config.OWNERS.includes(message.author.id)) return;
   if (message.author.bot) return;
 
@@ -56,8 +50,8 @@ module.exports = async message => {
   [message.content, message.cleanContent] = tulpize(message);
 
   // message processing
-  if (client.config.prefix.test(message.content)) {
-    [message.content, message.cleanContent] = superClean(message, client.config.prefix);
+  if (client.prefix.test(message.content)) {
+    [message.content, message.cleanContent] = superClean(message, client.prefix);
     checkCommand(message);
   } else if (message.guild.settings) {
     if (!message.guild.settings.prefix) return;

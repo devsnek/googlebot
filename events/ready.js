@@ -3,10 +3,7 @@ const leftpad = (v, n, c = ' ') => String(v).length >= n ? '' + v : (String(c).r
 const pad = text => leftpad(text, 8);
 const center = require('center-text');
 
-module.exports = async client => {
-  client.config.prefixes = client.config.prefixes.map(p => p.replace('{ID}', client.user.id));
-  client.config.prefix = new RegExp(`^${client.config.prefixes.join('|^')}`, 'i');
-
+module.exports = async (client) => {
   const guilds = await client.rethink.fetchGuilds();
   for (const guild of guilds) {
     if (!client.guilds.has(guild.id)) continue;
@@ -23,22 +20,26 @@ module.exports = async client => {
       guild.settings = change.new_val;
       if (change.new_val.nick) guild.member(client.user).setNickname(change.new_val.nick).catch(err => client.error('NICKNAME', err.message));
     });
-  })
+  });
 
-  let top = client.shard ? `╔══ SHARD ${leftpad(client.shard.id + 1, 2, '0')} READY ══╗` : '╔═══ CLIENT READY ═══╗';
+  logReady(client);
+
+  client.user.setPresence({ status: 'online', game: { name: `@${client.user.username} help` } });
+}
+
+function logReady (client, shard) {
+  let top = shard ? `╔══ SHARD ${leftpad(shard + 1, 2, '0')} READY ══╗` : '╔═══ CLIENT READY ═══╗';
   let info = `${client.user.username.replace('\u1160', '')}#${client.user.discriminator}`;
+  const guilds = shard ? client.guilds.filter(g => g.shardID === shard) : client.guilds;
   const final = [
     top,
     `║${center(info, {columns: top.length - 2})}║`,
     `║${center(client.user.id, {columns: top.length - 2})}║`,
-    `║   Guilds: ${pad(client.guilds.size)} ║`,
+    `║   Guilds: ${pad(guilds.size)} ║`,
     `║ Channels: ${pad(client.channels.size)} ║`,
-    `║    Users: ${pad(client.guilds.map(g => g.memberCount).reduce((a, b) => a + b))} ║`,
+    `║    Users: ${pad(guilds.map(g => g.memberCount).reduce((a, b) => a + b))} ║`,
     `║   Emojis: ${pad(client.emojis.size)} ║`,
     `╚════════════════════╝`
   ]
   console.log(final.map(f => chalk.bgMagenta.white.bold(f)).join('\n'));
-  client.sendIpc('alive', client.shard.id);
-
-  client.user.setPresence({ status: 'online', game: { name: `@${client.user.username} help` } });
 }

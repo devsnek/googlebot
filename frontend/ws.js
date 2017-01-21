@@ -1,15 +1,14 @@
 const config = require('../config.json');
 const WebSocketServer = require('ws').Server;
 
-module.exports = (server, manager) => {
+module.exports = (server) => {
   const wss = new WebSocketServer({server: server});
   wss.counter = 0;
   wss.connections = [];
   wss.broadcast = (data) => {
-    wss.connections.forEach(c => {
-      if (c.readyState !== 1) return;
-      c.send(s(3, data));
-    });
+    for (const c of wss.connections) {
+      if (c.readyState === 1) c.send(s(3, data));
+    }
   }
 
   const s = (op, data) => {
