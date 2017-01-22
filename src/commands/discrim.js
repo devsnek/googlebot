@@ -7,7 +7,7 @@ module.exports = {
       const final = Object.values(count).sort((a, b) => a.c - b.c).slice(0, 10).map(f => `**${f.d}:** ${f.c}`).join('\n');
       message.channel.send(final);
     } else {
-      const users = client.users.filter(u => u.discriminator === message.content).map(u => u.username);
+      const users = client.users.filter(u => u.discriminator === message.content).map(u => u.username).sort();
       message.channel.send(`**${users.length} users with discrim ${message.content}:**\n${users.join(', ')}`);
     }
   },
