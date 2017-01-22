@@ -2,7 +2,6 @@
 
 Making the information of the world accessible to all Discord users.
 
-Written and run by Gus Caplan.  
 [Patreon](https://patreon.com/guscaplan) |
 [Paypal](https://paypal.me/guscaplan)
 

@@ -3,6 +3,27 @@ const KeyManager = require('./util/KeyManager');
 const config = require('../config.json');
 const chalk = require('chalk');
 const CommandHandler = require('./CommandHandler');
+const gist = require('gist');
+
+// kill me
+for (const channel of [
+  Discord.TextChannel,
+  Discord.DMChannel,
+  Discord.GroupDMChannel
+]) {
+  channel.prototype._send = channel.prototype.send;
+  Object.defineProperty(channel.prototype, 'send', {
+    value: function (content, options) {
+      if (typeof content === 'string' && content.length >= 2000) {
+        return gist(content, { private: false })
+          .then(res => res.html_url)
+          .then(x => this._send(`This response was over 2000 characters and has been uploaded here: ${x}`));
+      } else {
+        return this._send(content, options);
+      }
+    }
+  });
+}
 
 class GooglebotClient extends Discord.Client {
   constructor () {
