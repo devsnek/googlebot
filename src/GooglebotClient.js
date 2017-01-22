@@ -4,7 +4,7 @@ const config = require('../config.json');
 const chalk = require('chalk');
 const CommandHandler = require('./CommandHandler');
 const gist = require('gist');
-const shorten = require('./util/ShortenURL')(config.google.shortenKey)
+const shorten = require('./util/ShortenURL');
 
 // kill me
 for (const channel of [
