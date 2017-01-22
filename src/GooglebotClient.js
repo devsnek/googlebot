@@ -4,6 +4,7 @@ const config = require('../config.json');
 const chalk = require('chalk');
 const CommandHandler = require('./CommandHandler');
 const gist = require('gist');
+const shorten = require('./util/ShortenURL')(config.google.shortenKey)
 
 // kill me
 for (const channel of [
@@ -16,7 +17,7 @@ for (const channel of [
     value: function (content, options) {
       if (typeof content === 'string' && content.length >= 2000) {
         return gist(content, { private: false })
-          .then(res => res.html_url)
+          .then(res => shorten(res.html_url))
           .then(x => this._send(`This response was over 2000 characters and has been uploaded here: ${x}`));
       } else {
         return this._send(content, options);
@@ -51,7 +52,8 @@ class GooglebotClient extends Discord.Client {
       isStaff: require('./util/isStaff'),
       toHHMMSS: require('./util/toHHMMSS'),
       pad: require('./util/pad'),
-      watching: require('./util/watching')(this)
+      watching: require('./util/watching')(this),
+      shorten
     }
 
     require('./util/loadEvents')(this);
