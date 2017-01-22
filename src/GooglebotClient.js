@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const KeyManager = require('../util/KeyManager');
+const KeyManager = require('./util/KeyManager');
 const config = require('../config.json');
 const chalk = require('chalk');
 const CommandHandler = require('./CommandHandler');
@@ -22,18 +22,18 @@ class GooglebotClient extends Discord.Client {
 
     this.config = config;
 
-    this.rethink = require('../util/rethink');
+    this.rethink = require('./util/rethink');
 
     this.util = {
       keys: new KeyManager(),
-      embed: require('../util/embed'),
-      isStaff: require('../util/isStaff'),
-      toHHMMSS: require('../util/toHHMMSS'),
-      pad: require('../util/pad'),
-      watching: require('../util/watching')(this)
+      embed: require('./util/embed'),
+      isStaff: require('./util/isStaff'),
+      toHHMMSS: require('./util/toHHMMSS'),
+      pad: require('./util/pad'),
+      watching: require('./util/watching')(this)
     }
 
-    require('../util/loadEvents')(this);
+    require('./util/loadEvents')(this);
 
     this.on('raw', (packet) => {
       if (packet.t === 'READY') {

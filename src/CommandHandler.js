@@ -8,7 +8,7 @@ class CommandHandler extends Collection {
 
     this.client = client;
 
-    this.COMMAND_PATH = path.resolve(dirname, '../commands');
+    this.COMMAND_PATH = path.resolve(dirname, './commands');
 
     const files = fs.readdirSync(this.COMMAND_PATH);
     for (const file of files) {

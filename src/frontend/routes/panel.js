@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const superagent = require('superagent');
 const r = require('../../util/rethink');
-const config = require('../../config.json').backend;
+const config = require('../../../config.json').backend;
 
 const CLIENT_ID = config.CLIENT_ID;
 const CLIENT_SECRET = config.CLIENT_SECRET;

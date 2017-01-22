@@ -1,5 +1,5 @@
 const Client = require('./GooglebotClient');
-const Frontend = require('../frontend')
+const Frontend = require('./frontend')
 
 const client = new Client();
 const frontend = new Frontend(client);

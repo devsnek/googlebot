@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const config = require('../config.json').rethink;
+const config = require('../../config.json').rethink;
 const r = require('rethinkdbdash')({
   port: config.port,
   host: config.host

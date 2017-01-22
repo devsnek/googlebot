@@ -18,7 +18,7 @@ class Frontend {
     hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
 
     this.express.use(require('express-session')({
-      secret: require('../config.json').backend.SESSION_SECRET,
+      secret: require('../../config.json').backend.SESSION_SECRET,
       resave: false,
       saveUninitialized: true,
       cookie: {
