@@ -22,7 +22,7 @@ module.exports = {
     const description = `${kg.detailedDescription.articleBody} [Learn More...](${kg.detailedDescription.url.replace(/\(/, '%28').replace(/\)/, '%29')})`;
     msg.edit({ embed: client.util.embed(kg.detailedDescription.url, title, description) }).catch(err => {
       client.error(err.stack);
-      client.commands.search.main(message, msg);
+      client.commands.search.main(message, null, msg);
     });
   },
   hide: true
