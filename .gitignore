@@ -2,3 +2,4 @@ node_modules/*
 keys.txt
 config.json
 tags/*
+.vscode
