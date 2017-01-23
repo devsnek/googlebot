@@ -27,7 +27,7 @@ const fallback = async (message, args, safe, client) => {
 }
 
 module.exports = {
-  main: async (message, msg) => {
+  main: async (message, options, msg) => {
     const client = message.client;
     const args = message.content.trimLeft();
     if (!msg) msg = await message.channel.send('`Searching...`');
