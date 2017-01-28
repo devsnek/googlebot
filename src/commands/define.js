@@ -5,7 +5,7 @@ module.exports = {
     const client = message.client;
     client.log('DEFINE', message.content);
     const msg = await message.channel.send('`Opening Dictionary...`');
-    const url = `https://glosbe.com/gapi/translate?from=en&dest=en&format=json&phrase=${message.content}`
+    const url = `https://glosbe.com/gapi/translate?from=en&dest=en&format=json&phrase=${message.content}`;
     try {
       let res = await superagent.get(url);
       res = res.body;
@@ -21,5 +21,5 @@ module.exports = {
   },
   args: '<word>',
   help: 'Get a word definition.',
-  catagory: 'general'
+  catagory: 'general',
 };

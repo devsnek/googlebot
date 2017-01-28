@@ -5,5 +5,5 @@ module.exports = {
   },
   help: 'ping pong ping pong',
   args: '',
-  catagory: 'util'
+  catagory: 'util',
 };

@@ -11,4 +11,4 @@ module.exports = async guild => {
     guild.defaultChannel.sendMessage(`${guild.owner} ${client.messages.welcome}`).catch(client.error);
     client.rethink.createGuild(guild);
   }
-}
+};

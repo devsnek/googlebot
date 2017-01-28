@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = new express.Router();
 const r = require('../../util/rethink');
 const superagent = require('superagent');
 const entities = new require('html-entities').XmlEntities; // eslint-disable-line

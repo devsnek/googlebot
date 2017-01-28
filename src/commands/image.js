@@ -9,7 +9,7 @@ const fallback = (message, args, safe, client) => {
     const result = $('.images_table').find('img').first().attr('src');
     message.edit(result).catch(() => message.edit('`No results found!`'));
   });
-}
+};
 
 module.exports = {
   main: async message => {
@@ -18,23 +18,23 @@ module.exports = {
     const msg = await message.channel.send('`Searching...`');
     const key = client.util.keys.nextKey;
     const s = await client.rethink.fetchGuild(message.guild);
-    const safeSetting = s ? {1: 'off', 2: 'medium', 3: 'high'}[parseInt(s.nsfw)] : 'medium';
+    const safeSetting = s ? { 1: 'off', 2: 'medium', 3: 'high' }[parseInt(s.nsfw)] : 'medium';
     const safe = message.channel.name.includes('nsfw') ? 'off' : safeSetting;
     client.log('Image:', message.guild.name, message.guild.id, '|', args, '|', safe, '|', key, client.util.keys.last);
     let url = `https://www.googleapis.com/customsearch/v1?searchType=image&key=${key}&cx=${client.config.cxImg}&safe=${safe}&q=${encodeURI(args)}`;
     superagent.get(url).end((err, res) => {
       if (err) return fallback(msg, args, safe, client);
       try {
-        msg.edit(res.body.items[0].link).catch(err => {
-          client.error(err.stack);
+        msg.edit(res.body.items[0].link).catch(e => {
+          client.error(e.stack);
           fallback(msg, args, safe, client);
         });
-      } catch (err) {
+      } catch (e) {
         fallback(msg, args, safe, client);
       }
     });
   },
   args: '<query>',
   help: 'Search billions of web pages',
-  catagory: 'general'
+  catagory: 'general',
 };

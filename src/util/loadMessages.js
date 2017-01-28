@@ -9,4 +9,4 @@ module.exports = (client, dirname) => {
     }
   }
   client.log('———— All Messages Loaded! ————');
-}
+};

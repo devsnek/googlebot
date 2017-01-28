@@ -3,6 +3,6 @@ module.exports = async (member) => {
     type: 'LEFT GUILD',
     user: member.user,
     context: member.guild.name,
-    content: ''
+    content: '',
   });
-}
+};

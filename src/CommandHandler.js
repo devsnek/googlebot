@@ -3,10 +3,8 @@ const fs = require('fs');
 const path = require('path');
 
 class CommandHandler extends Collection {
-  constructor (client, dirname) {
+  constructor(client, dirname) {
     super();
-
-    this.client = client;
 
     this.COMMAND_PATH = path.resolve(dirname, './commands');
 

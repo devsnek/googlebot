@@ -12,5 +12,5 @@ module.exports = {
       message.author.send(final).catch(() => message.channel.send(`${message.author} ${final}`));
     }, relative);
   },
-  hide: true
-}
+  hide: true,
+};

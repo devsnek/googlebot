@@ -12,5 +12,5 @@ ${warnings.length ? `**Warnings:**\n${warnings}` : ''}
 ${errors.length ? `**Errors:**\n${errors}` : ''}`;
     message.channel.send(final);
   },
-  hide: true
-}
+  hide: true,
+};

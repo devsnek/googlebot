@@ -14,5 +14,5 @@ module.exports = {
   args: '',
   help: 'run some eval, bruh',
   hide: true,
-  owner: true
+  owner: true,
 };

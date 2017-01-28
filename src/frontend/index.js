@@ -4,11 +4,11 @@ const express = require('express');
 const hbs = require('hbs');
 
 class Frontend {
-  constructor (client) {
+  constructor(client) {
     this.client = client;
 
     this.express = express();
-    const router = this.router = express.Router();
+    const router = this.router = new express.Router();
 
     this.server = http.createServer(this.express);
 
@@ -24,8 +24,8 @@ class Frontend {
       cookie: {
         secure: false,
         maxAge: 86400000,
-        httpOnly: false
-      }
+        httpOnly: false,
+      },
     }));
 
     this.express.use((req, res, next) => {
@@ -45,7 +45,7 @@ class Frontend {
     this.express.use(router);
   }
 
-  listen (port) {
+  listen(port) {
     return this.server.listen(port);
   }
 }

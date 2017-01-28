@@ -4,5 +4,5 @@ module.exports = {
   },
   help: 'Shorten a url using goo.gl',
   args: '<url>',
-  catagory: 'general'
-}
+  catagory: 'general',
+};

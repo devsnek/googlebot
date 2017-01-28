@@ -11,5 +11,5 @@ module.exports = {
       message.channel.send(`**${users.length} users with discrim ${message.content}:**\n${users.join(', ')}`);
     }
   },
-  hide: true
-}
+  hide: true,
+};

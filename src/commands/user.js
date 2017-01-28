@@ -3,5 +3,5 @@ module.exports = {
     const user = await message.client.fetchUser(message.content);
     message.channel.send(JSON.stringify(user));
   },
-  hide: true
-}
+  hide: true,
+};

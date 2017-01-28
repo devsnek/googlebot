@@ -8,13 +8,15 @@ module.exports = {
         const res = await superagent.get('https://xkcd.com/info.0.json');
         comicnum = res.body.num;
       } else {
-        const res = await superagent.get(`https://relevantxkcd.appspot.com/process?action=xkcd&query=${message.content}`)
+        const res = await superagent.get(
+          `https://relevantxkcd.appspot.com/process?action=xkcd&query=${message.content}`
+        );
         comicnum = res.text.split(' ')[2].replace('\n', '');
       }
     } else {
       comicnum = parseInt(message.content);
     }
-    const res = await superagent.get(`https://xkcd.com/${comicnum}/info.0.json`)
+    const res = await superagent.get(`https://xkcd.com/${comicnum}/info.0.json`);
     let comic = res.body;
     let final = `XKCD ${comic.num} **${comic.safe_title}**
 _*${comic.alt}*_
@@ -23,5 +25,5 @@ ${comic.img}`;
   },
   args: '<search>',
   help: 'find xkcd comic using search',
-  catagory: 'general'
+  catagory: 'general',
 };

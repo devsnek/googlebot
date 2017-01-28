@@ -8,5 +8,5 @@ module.exports = {
   },
   args: '',
   catagory: 'general',
-  help: 'List all tags'
-}
+  help: 'List all tags',
+};

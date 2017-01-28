@@ -1,8 +1,8 @@
 /* NProgress, (c) 2013, 2014 Rico Sta. Cruz - http://ricostacruz.com/nprogress
  * @license MIT */
+ /* eslint-disable */
 
-;(function(root, factory) {
-
+(function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     define(factory);
   } else if (typeof exports === 'object') {
@@ -10,8 +10,7 @@
   } else {
     root.NProgress = factory();
   }
-
-})(this, function() {
+}(this, () => {
   var NProgress = {};
 
   NProgress.version = '0.2.0';
@@ -27,7 +26,7 @@
     barSelector: '[role="bar"]',
     spinnerSelector: '[role="spinner"]',
     parent: 'body',
-    template: '<div class="bar" role="bar"><div class="peg"></div></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div>'
+    template: '<div class="bar" role="bar"><div class="peg"></div></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div>',
   };
 
   /**
@@ -64,16 +63,16 @@
     var started = NProgress.isStarted();
 
     n = clamp(n, Settings.minimum, 1);
-    NProgress.status = (n === 1 ? null : n);
+    NProgress.status = n === 1 ? null : n;
 
     var progress = NProgress.render(!started),
-        bar      = progress.querySelector(Settings.barSelector),
-        speed    = Settings.speed,
-        ease     = Settings.easing;
+      bar = progress.querySelector(Settings.barSelector),
+      speed = Settings.speed,
+      ease = Settings.easing;
 
     progress.offsetWidth; /* Repaint */
 
-    queue(function(next) {
+    queue((next) => {
       // Set positionUsing if it hasn't already been set
       if (Settings.positionUsing === '') Settings.positionUsing = NProgress.getPositioningCSS();
 
@@ -84,16 +83,16 @@
         // Fade out
         css(progress, {
           transition: 'none',
-          opacity: 1
+          opacity: 1,
         });
         progress.offsetWidth; /* Repaint */
 
-        setTimeout(function() {
+        setTimeout(() => {
           css(progress, {
-            transition: 'all ' + speed + 'ms linear',
-            opacity: 0
+            transition: `all ${speed}ms linear`,
+            opacity: 0,
           });
-          setTimeout(function() {
+          setTimeout(() => {
             NProgress.remove();
             next();
           }, speed);
@@ -121,7 +120,7 @@
     if (!NProgress.status) NProgress.set(0);
 
     var work = function() {
-      setTimeout(function() {
+      setTimeout(() => {
         if (!NProgress.status) return;
         NProgress.trickle();
         work();
@@ -160,7 +159,7 @@
 
     if (!n) {
       return NProgress.start();
-    } else if(n > 1) {
+    } else if (n > 1) {
       return;
     } else {
       if (typeof amount !== 'number') {
@@ -201,7 +200,7 @@
     var initial = 0, current = 0;
 
     NProgress.promise = function($promise) {
-      if (!$promise || $promise.state() === "resolved") {
+      if (!$promise || $promise.state() === 'resolved') {
         return this;
       }
 
@@ -212,20 +211,19 @@
       initial++;
       current++;
 
-      $promise.always(function() {
+      $promise.always(() => {
         current--;
         if (current === 0) {
-            initial = 0;
-            NProgress.done();
+          initial = 0;
+          NProgress.done();
         } else {
-            NProgress.set((initial - current) / initial);
+          NProgress.set((initial - current) / initial);
         }
       });
 
       return this;
     };
-
-  })();
+  }());
 
   /**
    * (Internal) renders the progress bar markup based on the `template`
@@ -241,14 +239,14 @@
     progress.id = 'nprogress';
     progress.innerHTML = Settings.template;
 
-    var bar      = progress.querySelector(Settings.barSelector),
-        perc     = fromStart ? '-100' : toBarPerc(NProgress.status || 0),
-        parent   = document.querySelector(Settings.parent),
-        spinner;
+    var bar = progress.querySelector(Settings.barSelector),
+      perc = fromStart ? '-100' : toBarPerc(NProgress.status || 0),
+      parent = document.querySelector(Settings.parent),
+      spinner;
 
     css(bar, {
       transition: 'all 0 linear',
-      transform: 'translate3d(' + perc + '%,0,0)'
+      transform: `translate3d(${perc}%,0,0)`,
     });
 
     if (!Settings.showSpinner) {
@@ -292,15 +290,15 @@
     var bodyStyle = document.body.style;
 
     // Sniff prefixes
-    var vendorPrefix = ('WebkitTransform' in bodyStyle) ? 'Webkit' :
-                       ('MozTransform' in bodyStyle) ? 'Moz' :
-                       ('msTransform' in bodyStyle) ? 'ms' :
-                       ('OTransform' in bodyStyle) ? 'O' : '';
+    var vendorPrefix = 'WebkitTransform' in bodyStyle ? 'Webkit' :
+                       'MozTransform' in bodyStyle ? 'Moz' :
+                       'msTransform' in bodyStyle ? 'ms' :
+                       'OTransform' in bodyStyle ? 'O' : '';
 
-    if (vendorPrefix + 'Perspective' in bodyStyle) {
+    if (`${vendorPrefix}Perspective` in bodyStyle) {
       // Modern browsers with 3D support, e.g. Webkit, IE10
       return 'translate3d';
-    } else if (vendorPrefix + 'Transform' in bodyStyle) {
+    } else if (`${vendorPrefix}Transform` in bodyStyle) {
       // Browsers without 3D support, e.g. IE9
       return 'translate';
     } else {
@@ -338,14 +336,14 @@
     var barCSS;
 
     if (Settings.positionUsing === 'translate3d') {
-      barCSS = { transform: 'translate3d('+toBarPerc(n)+'%,0,0)' };
+      barCSS = { transform: `translate3d(${toBarPerc(n)}%,0,0)` };
     } else if (Settings.positionUsing === 'translate') {
-      barCSS = { transform: 'translate('+toBarPerc(n)+'%,0)' };
+      barCSS = { transform: `translate(${toBarPerc(n)}%,0)` };
     } else {
-      barCSS = { 'margin-left': toBarPerc(n)+'%' };
+      barCSS = { 'margin-left': `${toBarPerc(n)}%` };
     }
 
-    barCSS.transition = 'all '+speed+'ms '+ease;
+    barCSS.transition = `all ${speed}ms ${ease}`;
 
     return barCSS;
   }
@@ -368,7 +366,7 @@
       pending.push(fn);
       if (pending.length == 1) next();
     };
-  })();
+  }());
 
   /**
    * (Internal) Applies css properties to an element, similar to the jQuery
@@ -379,13 +377,13 @@
    */
 
   var css = (function() {
-    var cssPrefixes = [ 'Webkit', 'O', 'Moz', 'ms' ],
-        cssProps    = {};
+    var cssPrefixes = ['Webkit', 'O', 'Moz', 'ms'],
+      cssProps = {};
 
     function camelCase(string) {
-      return string.replace(/^-ms-/, 'ms-').replace(/-([\da-z])/gi, function(match, letter) {
-        return letter.toUpperCase();
-      });
+      return string.replace(/^-ms-/, 'ms-').replace(/-([\da-z])/gi, (match, letter) =>
+         letter.toUpperCase()
+      );
     }
 
     function getVendorProp(name) {
@@ -393,8 +391,8 @@
       if (name in style) return name;
 
       var i = cssPrefixes.length,
-          capName = name.charAt(0).toUpperCase() + name.slice(1),
-          vendorName;
+        capName = name.charAt(0).toUpperCase() + name.slice(1),
+        vendorName;
       while (i--) {
         vendorName = cssPrefixes[i] + capName;
         if (vendorName in style) return vendorName;
@@ -415,8 +413,8 @@
 
     return function(element, properties) {
       var args = arguments,
-          prop,
-          value;
+        prop,
+        value;
 
       if (args.length == 2) {
         for (prop in properties) {
@@ -426,8 +424,8 @@
       } else {
         applyCss(element, args[1], args[2]);
       }
-    }
-  })();
+    };
+  }());
 
   /**
    * (Internal) Determines if an element or space separated list of class names contains a class name.
@@ -435,7 +433,7 @@
 
   function hasClass(element, name) {
     var list = typeof element == 'string' ? element : classList(element);
-    return list.indexOf(' ' + name + ' ') >= 0;
+    return list.indexOf(` ${name} `) >= 0;
   }
 
   /**
@@ -444,7 +442,7 @@
 
   function addClass(element, name) {
     var oldList = classList(element),
-        newList = oldList + name;
+      newList = oldList + name;
 
     if (hasClass(oldList, name)) return;
 
@@ -458,12 +456,12 @@
 
   function removeClass(element, name) {
     var oldList = classList(element),
-        newList;
+      newList;
 
     if (!hasClass(element, name)) return;
 
     // Replace the class name.
-    newList = oldList.replace(' ' + name + ' ', ' ');
+    newList = oldList.replace(` ${name} `, ' ');
 
     // Trim the opening and closing spaces.
     element.className = newList.substring(1, newList.length - 1);
@@ -476,7 +474,7 @@
    */
 
   function classList(element) {
-    return (' ' + (element && element.className || '') + ' ').replace(/\s+/gi, ' ');
+    return ` ${element && element.className || ''} `.replace(/\s+/gi, ' ');
   }
 
   /**
@@ -488,4 +486,4 @@
   }
 
   return NProgress;
-});
+}));

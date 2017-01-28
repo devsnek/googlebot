@@ -12,19 +12,20 @@ const fallback = async (message, args, safe, client) => {
     if (href.indexOf('/url?q=') !== -1) {
       href = href.replace('/url?q=', '');
       href = href.slice(0, href.indexOf('&sa'));
-    };
+    }
     try {
       let result = url.parse(href.toString());
       if (result.protocol === null) {
         return message.edit('`No results found!`');
       }
-      result = `${result.protocol}${result.slashes ? '//' : ''}${result.host}${result.port ? result.port : ''}${result.pathname ? result.pathname : ''}`
+      // eslint-disable-next-line
+      result = `${result.protocol}${result.slashes ? '//' : ''}${result.host}${result.port ? result.port : ''}${result.pathname ? result.pathname : ''}`;
       message.edit(result).catch(() => message.edit('`No results found!`'));
-    } catch (err) {
+    } catch (e) {
       message.edit('`No results found!`');
     }
   });
-}
+};
 
 module.exports = {
   main: async (message, options, msg) => {
@@ -33,11 +34,12 @@ module.exports = {
     if (!msg) msg = await message.channel.send('`Searching...`');
     const key = client.util.keys.nextKey;
     const s = await client.rethink.fetchGuild(message.guild.id);
-    const safeSetting = s ? {1: 'off', 2: 'medium', 3: 'high'}[parseInt(s.nsfw)] : 'medium';
+    const safeSetting = s ? { 1: 'off', 2: 'medium', 3: 'high' }[parseInt(s.nsfw)] : 'medium';
     const safe = message.channel.name.includes('nsfw') ? 'off' : safeSetting;
     client.log('Search:', message.guild.name, message.guild.id, '|', args, '|', safe, '|', key, client.util.keys.last);
-    let url = `https://www.googleapis.com/customsearch/v1?key=${key}&cx=${client.config.google.cx}&safe=${safe}&q=${encodeURI(args)}`;
-    superagent.get(url).end((err, res) => {
+    superagent.get(
+      `https://www.googleapis.com/customsearch/v1?key=${key}&cx=${client.config.google.cx}&safe=${safe}&q=${encodeURI(args)}`
+    ).end((err, res) => {
       if (err) return fallback(msg, args, safe, client);
       if (res.body.queries.request[0].totalResults === '0') return msg.edit('`No results found!`');
       msg.edit(res.body.items[0].link).catch(() => {
@@ -47,5 +49,5 @@ module.exports = {
   },
   args: '<query>',
   help: 'Search billions of web pages',
-  catagory: 'general'
+  catagory: 'general',
 };

@@ -11,4 +11,4 @@ module.exports = client => {
     }
   }
   client.log('———— All Commands Loaded! ————');
-}
+};

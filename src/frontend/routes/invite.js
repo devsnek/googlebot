@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = new express.Router();
 const config = require('../../../config.json');
 const superagent = require('superagent');
 
@@ -19,7 +19,7 @@ ${req.query.state ? `&state=${req.query.state}` : ''}`.replace(/\n|%0A/g, '')
 router.get('/callback', async (req, res) => {
   try {
     const guild = (await superagent.get(`https://discordapp.com/api/guilds/${req.query.guild_id}`)
-    .set({'Authorization': `Bot ${config.discord[config.env]}`})).body;
+    .set({ Authorization: `Bot ${config.discord[config.env]}` })).body;
     res.render('invite', { guild });
   } catch (err) {
     res.redirect('/');

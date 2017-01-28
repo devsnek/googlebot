@@ -10,11 +10,11 @@ const shorten = require('./util/ShortenURL');
 for (const channel of [
   Discord.TextChannel,
   Discord.DMChannel,
-  Discord.GroupDMChannel
+  Discord.GroupDMChannel,
 ]) {
   channel.prototype._send = channel.prototype.send;
   Object.defineProperty(channel.prototype, 'send', {
-    value: function (content, options) {
+    value: function value(content, options) {
       if (typeof content === 'string' && content.length >= 2000) {
         return gist(content, { private: false })
           .then(res => shorten(res.html_url))
@@ -22,12 +22,12 @@ for (const channel of [
       } else {
         return this._send(content, options);
       }
-    }
+    },
   });
 }
 
 class GooglebotClient extends Discord.Client {
-  constructor () {
+  constructor() {
     super({
       fetchAllUsers: true,
       messageCacheMaxSize: 1,
@@ -37,9 +37,9 @@ class GooglebotClient extends Discord.Client {
         'TYPING_START',
         'VOICE_STATE_UPDATE',
         'FRIEND_ADD',
-        'FRIEND_REMOVE'
+        'FRIEND_REMOVE',
       ],
-      shardCount: config.discord.SHARD_COUNT
+      shardCount: config.discord.SHARD_COUNT,
     });
 
     this.config = config;
@@ -53,8 +53,8 @@ class GooglebotClient extends Discord.Client {
       toHHMMSS: require('./util/toHHMMSS'),
       pad: require('./util/pad'),
       watching: require('./util/watching')(this),
-      shorten
-    }
+      shorten,
+    };
 
     require('./util/loadEvents')(this);
 
@@ -68,15 +68,15 @@ class GooglebotClient extends Discord.Client {
     this.commands = new CommandHandler(this, __dirname);
   }
 
-  login () {
+  login() {
     return super.login(config.discord.TOKENS[config.env]);
   }
 
-  log (...args) {
+  log(...args) {
     console.log('🔧', chalk.green.bold(`INFO`), ...args);
   }
 
-  error (...args) {
+  error(...args) {
     console.error(chalk.bgRed.white.bold(`🔥  ERROR`), ...args);
   }
 }

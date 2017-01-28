@@ -11,5 +11,5 @@ module.exports = {
 **• Shard:** ${Number(message.guild.shardID) + 1}/${client.ws.shardCount}`;
     message.channel.send(final);
   },
-  hide: true
-}
+  hide: true,
+};

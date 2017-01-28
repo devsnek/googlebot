@@ -11,11 +11,11 @@ module.exports = {
     const embed = {
       title,
       description,
-      url: `https://httpstatuses.com/${message.content}`
-    }
+      url: `https://httpstatuses.com/${message.content}`,
+    };
     message.channel.send({ embed });
   },
   help: 'check an http status code',
   args: '<code>',
-  category: 'util'
-}
+  category: 'util',
+};

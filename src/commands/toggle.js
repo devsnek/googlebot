@@ -7,5 +7,5 @@ module.exports = {
     command.disabled = !command.disabled;
   },
   hide: true,
-  owner: true
-}
+  owner: true,
+};

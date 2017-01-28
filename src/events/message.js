@@ -1,8 +1,8 @@
 const minimist = require('minimist');
 const tulpize = require('../util/tulpize');
 
-const superClean = (message, prefix) => {
-  return [
+const superClean = (message, prefix) =>
+  [
     message.content
       .replace(prefix, '')
       .replace(/^,/, '')
@@ -10,9 +10,9 @@ const superClean = (message, prefix) => {
     message.cleanContent
       .replace(prefix, '')
       .replace(/^,/, '')
-      .trim()
+      .trim(),
   ]
-}
+;
 
 const checkCommand = message => {
   const client = message.client;
@@ -29,7 +29,7 @@ const checkCommand = message => {
     message.content = original;
     client.commands.get('knowledgegraph').main(message, parsed);
   }
-}
+};
 
 module.exports = async message => {
   // checks and setting up of variables and such
@@ -39,7 +39,7 @@ module.exports = async message => {
     type: 'SENT MESSAGE',
     user: message.author,
     context: message.guild ? `${message.guild.name} | ${message.channel.name}` : `DM: ${message.author.username}`,
-    content: message.content
+    content: message.content,
   });
 
   if (message.channel.type === 'dm' && !client.config.OWNERS.includes(message.author.id)) return;
@@ -59,4 +59,4 @@ module.exports = async message => {
     [message.content, message.cleanContent] = superClean(message, message.guild.settings.prefix);
     checkCommand(message);
   }
-}
+};

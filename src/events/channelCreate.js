@@ -1,1 +1,1 @@
-module.exports = channel => {}
+module.exports = channel => {}; // eslint-disable-line

@@ -9,7 +9,7 @@ module.exports = (url, title = url, description = 'ᅠ') => {
     image: { url },
     footer: {
       text: 'Powered by Google',
-      icon_url: 'https://google.com/favicon.ico'
-    }
-  }
-}
+      icon_url: 'https://google.com/favicon.ico',
+    },
+  };
+};

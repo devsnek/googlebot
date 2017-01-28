@@ -13,4 +13,4 @@ module.exports = (message) => {
     x.push(c.trim());
   }
   return x;
-}
+};
