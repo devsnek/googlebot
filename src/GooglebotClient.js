@@ -58,7 +58,20 @@ class GooglebotClient extends Discord.Client {
 
     require('./util/loadEvents')(this);
 
+    this.eventCounter = {
+      FREQUENCY: 0,
+      TOTAL: 0,
+    };
+
+    let start = 0;
+
     this.on('raw', (packet) => {
+      if (!this.eventCounter[packet.t]) this.eventCounter[packet.t] = 0;
+      this.eventCounter[packet.t]++;
+
+      if (!start) start = new Date;
+      this.eventCounter.FREQUENCY = ++this.eventCounter.TOTAL / (new Date - start) * 1000;
+
       if (packet.t === 'READY') {
         this.prefixes = config.prefixes.map(p => p.replace('{ID}', packet.d.user.id));
         this.prefix = new RegExp(`^${this.prefixes.join('|^')}`, 'i');

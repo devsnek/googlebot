@@ -11,7 +11,7 @@ module.exports = {
       res = res.body;
       var final = [`**Definitions for __${message.content}__:**`];
       for (const [index, item] of Object.entries(res.tuc.filter(t => t.meanings)[0].meanings.slice(0, 5))) {
-        final.push(`**${(parseInt(index) + 1)}:** ${item.text.replace(/<\/?i>/g, '_')}`);
+        final.push(`**${(parseInt(index) + 1)}:** ${item.text.replace(/\[(\w+)[^\]]*](.*?)\[\/\1]/g, '_')}`);
       }
       msg.edit(final);
     } catch (err) {

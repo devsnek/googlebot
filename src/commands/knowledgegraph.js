@@ -1,29 +1,39 @@
 const superagent = require('superagent');
+const querystring = require('querystring');
 
 module.exports = {
-  main: async message => {
+  main: async (message, options) => {
     const client = message.client;
     if (message.content.trim() === '') return;
-    const args = message.content
-      .replace(/(who|what|when|where) (was|is|were|are) /gi, '')
+    const query = message.content
+      .replace(/(who|what|when|where) ?(was|is|were|are) ?/gi, '')
       .split(' ')
       .map(x => encodeURIComponent(x))
       .join('+');
-    const msg = await message.channel.send('`Searching...`');
-    client.log('KG: ', message.guild.name, message.guild.id, '|', args);
-    const url = `https://kgsearch.googleapis.com/v1/entities:search?key=${client.config.google.kgKey}&limit=1&indent=True&query=${args.split(' ').join('+')}`;
-    const res = await superagent.get(url);
-    if (!res.body.itemListElement[0]) return client.commands.search.main(message, msg);
-    const kg = res.body.itemListElement[0].result;
-    if (!kg.detailedDescription) return client.commands.search.main(message, msg);
-    let types = kg['@type'].map(t => t.replace(/([a-z])([A-Z])/g, '$1 $2'));
-    if (types.length > 1) types = types.filter(t => t !== 'Thing');
-    const title = `${kg.name} ${types.length === 0 ? '' : `(${types.join(', ')})`}`;
-    const description = `${kg.detailedDescription.articleBody} [Learn More...](${kg.detailedDescription.url.replace(/\(/, '%28').replace(/\)/, '%29')})`;
-    msg.edit({ embed: client.util.embed(kg.detailedDescription.url, title, description) }).catch(err => {
-      client.error(err.stack);
-      client.commands.search.main(message, null, msg);
-    });
+    const msg = await message.channel.send('**Searching...**');
+    client.log('KG: ', message.guild.name, message.guild.id, '|', query);
+    const QUERY_PARAMS = {
+      key: client.config.google.kgKey,
+      limit: 1,
+      indent: true,
+      query,
+    };
+    superagent.get(`https://kgsearch.googleapis.com/v1/entities:search?${querystring.stringify(QUERY_PARAMS)}`)
+      .then((res) => {
+        let result = res.body.itemListElement[0];
+        if (!result) return Promise.reject('NO RESULT');
+        result = result.result;
+        let types = result['@type'].map(t => t.replace(/([a-z])([A-Z])/g, '$1 $2'));
+        if (types.length > 1) types = types.filter(t => t !== 'Thing');
+        const title = `${result.name} ${types.length === 0 ? '' : `(${types.join(', ')})`}`;
+        const LEARN_MORE_URL = result.detailedDescription.url.replace(/\(/, '%28').replace(/\)/, '%29');
+        const description = `${result.detailedDescription.articleBody} [Learn More...](${LEARN_MORE_URL})`;
+        return msg.edit({ embed: client.util.embed(result.detailedDescription.url, title, description) });
+      })
+      .catch((err) => {
+        client.error(err);
+        client.commands.get('search').main(message, options, msg);
+      });
   },
   hide: true,
 };
