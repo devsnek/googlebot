@@ -1,8 +1,8 @@
 const reqEvt = (event) => require(`../events/${event}`);
 
 module.exports = client => {
-  client.on('ready', () => reqEvt('ready')(client));
-  client.on('disconnect', () => reqEvt('disconnect')(client));
+  client.on('ready', reqEvt('ready').bind(this, client));
+  client.on('disconnect', reqEvt('disconnect').bind(this, client));
   client.on('message', reqEvt('message'));
   client.on('guildCreate', reqEvt('guildCreate'));
   client.on('guildDelete', reqEvt('guildDelete'));

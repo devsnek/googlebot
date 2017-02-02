@@ -1,3 +1,3 @@
-module.exports = client => {
-  client.error('————      DISCONNECT      ————');
+module.exports = (client, event, shardID) => {
+  client.error('————      DISCONNECT      ————', event, shardID);
 };
