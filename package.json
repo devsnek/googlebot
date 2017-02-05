@@ -21,7 +21,6 @@
     "marked": "^0.3.6",
     "minimist": "^1.2.0",
     "moment": "^2.15.1",
-    "rethinkdbdash": "^2.3.23",
     "sherlockjs": "0.0.9",
     "sse": "github:guscaplan/sse.js",
     "superagent": "^3.3.1",

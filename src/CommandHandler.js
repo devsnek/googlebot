@@ -13,8 +13,8 @@ class CommandHandler extends Collection {
       if (file.endsWith('.js')) {
         const command = require(path.join(this.COMMAND_PATH, file));
         command.name = file.slice(0, -3);
+        command.usage = `@Google ${command.name} ${command.args}`;
         this.set(command.name, command);
-        client.rethink.updateCommand(command);
       }
     }
 

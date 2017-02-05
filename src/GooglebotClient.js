@@ -44,15 +44,12 @@ class GooglebotClient extends Discord.Client {
 
     this.config = config;
 
-    this.rethink = require('./util/rethink');
-
     this.util = {
       keys: new KeyManager(),
       embed: require('./util/embed'),
       isStaff: require('./util/isStaff'),
       toHHMMSS: require('./util/toHHMMSS'),
       pad: require('./util/pad'),
-      watching: require('./util/watching')(this),
       shorten,
     };
 
@@ -72,6 +69,7 @@ class GooglebotClient extends Discord.Client {
       if (!start) start = new Date;
       this.eventCounter.FREQUENCY = ++this.eventCounter.TOTAL / (new Date - start) * 1000;
 
+      // race conditions you say?
       if (packet.t === 'READY') {
         this.prefixes = config.prefixes.map(p => p.replace('{ID}', packet.d.user.id));
         this.prefix = new RegExp(`^${this.prefixes.join('|^')}`, 'i');

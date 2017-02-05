@@ -6,8 +6,7 @@ module.exports = {
   main: async (message) => {
     const client = message.client;
     const msg = await message.channel.send('**Searching...**');
-    const guild = await client.rethink.fetchGuild(message.guild.id);
-    const safe = message.channel.name.includes('nsfw') ? 'off' : guild ? { 1: 'off', 2: 'medium', 3: 'high' }[parseInt(guild.nsfw)] : 'medium';
+    const safe = message.channel.name.includes('nsfw') ? 'off' : 'medium';
     const QUERY_PARAMS = {
       searchType: 'image',
       key: client.util.keys.nextKey,
