@@ -1,7 +1,6 @@
 const path = require('path');
 const http = require('http');
 const express = require('express');
-const hbs = require('hbs');
 
 class Frontend {
   constructor(client) {
@@ -15,7 +14,6 @@ class Frontend {
     this.express.set('view engine', 'hbs');
     this.express.set('views', path.join(__dirname, 'views'));
     this.express.use(express.static(path.join(__dirname, 'public')));
-    hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
 
     this.express.use(require('express-session')({
       secret: require('../../config.json').backend.SESSION_SECRET,

@@ -45,34 +45,7 @@
     </head>
     <body>
         <div class="container">
-            <div class="row">
-                <div class="col s16">
-                    <h2>Command Reference</h2>
-                </div>
-                <a class="patreon" href="https://patreon.com/guscaplan">Become a Patron!</a>
-                <div class="col s12">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th data-field="command">Command</th>
-                                <th data-field="description">Description</th>
-                                <th data-field="usage">Usage</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {{#each commands}}
-                        <tr id="{{this.id}}">
-                        <td>{{this.id}}</td>
-                        <td>{{this.description}}</td>
-                        <td><pre>{{this.usage}}</pre></td>
-                        </tr>
-                        {{/each}}
-                        </tbody>
-                    </table>
-                    <hr>
-                    {{{compliance}}}
-                </div>
-            </div>
+          {{{compliance}}}
         </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
