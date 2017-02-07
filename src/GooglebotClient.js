@@ -5,6 +5,8 @@ const chalk = require('chalk');
 const CommandHandler = require('./CommandHandler');
 const gist = require('gist');
 const shorten = require('./util/ShortenURL');
+const Raven = require('raven');
+Raven.config(config.raven.DSNs[config.env]).install();
 
 // kill me
 for (const channel of [
@@ -43,6 +45,7 @@ class GooglebotClient extends Discord.Client {
     });
 
     this.config = config;
+    this.raven = Raven;
 
     this.util = {
       keys: new KeyManager(),

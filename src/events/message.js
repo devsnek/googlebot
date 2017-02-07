@@ -24,10 +24,11 @@ const checkCommand = message => {
   if (client.commands.has(command)) {
     command = client.commands.get(command);
     if ((command.owner || command.disabled) && !client.config.OWNERS.includes(message.author.id)) return;
-    command.main(message, parsed);
+    client.raven.context(command.main.bind(command.main, message, parsed));
   } else {
     message.content = original;
-    client.commands.get('knowledgegraph').main(message, parsed);
+    command = client.commands.get('knowledgegraph');
+    client.raven.context(command.main.bind(command.main, message, parsed));
   }
 };
 
