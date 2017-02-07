@@ -15,13 +15,7 @@ module.exports = {
     const toN = iso.getName(to);
     if (to === '') return message.channel.sendMessage('`to` is not a real language!');
     translate(args.join(' '), { to: toN }).then(res => {
-      message.channel.send(
-`**__Translation__**
-
-**In:** \`${args.join(' ')}\` ${res.from.language.iso}
-
-**Out:** \`${res.text}\` ${toN} (${to})`
-      );
+      message.channel.send(`**__Translation__**\n\n**In:** \`${args.join(' ')}\` ${res.from.language.iso}\n\n**Out:** \`${res.text}\` ${toN} (${to})`);
     }).catch(() => {
       message.channel.send('Translation failed!');
     });
