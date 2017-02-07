@@ -1,25 +1,29 @@
 const superagent = require('superagent');
 
 module.exports = {
-  main: async message => {
+  main: message => {
     const client = message.client;
     client.log('DEFINE', message.content);
-    const msg = await message.channel.send('`Opening Dictionary...`');
-    const url = `https://glosbe.com/gapi/translate?from=en&dest=en&format=json&phrase=${message.content}`;
-    try {
-      let res = await superagent.get(url);
-      res = res.body;
-      var final = [`**Definitions for __${message.content}__:**`];
-      for (const [index, item] of Object.entries(res.tuc.filter(t => t.meanings)[0].meanings.slice(0, 5))) {
-        final.push(`**${(parseInt(index) + 1)}:** ${item.text.replace(/\[(\w+)[^\]]*](.*?)\[\/\1]/g, '_')}`);
-      }
-      msg.edit(final);
-    } catch (err) {
-      client.error(err.stack);
-      msg.edit('`No results found!`');
-    }
+    message.channel.send('**Opening Dictionary...**')
+      .then((msg) => {
+        superagent.get(`https://glosbe.com/gapi/translate?from=en&dest=en&format=json&phrase=${message.content}`)
+          .then((res) => res.body)
+          .then((res) => {
+            const final = [`**Definitions for __${message.content}__:**`];
+            for (let [index, item] of Object.entries(res.tuc.filter(t => t.meanings)[0].meanings.slice(0, 5))) {
+              item = item.text
+                .replace(/\[(\w+)[^\]]*](.*?)\[\/\1]/g, '_')
+                .replace(/<i>|<\/i>/g, '');
+              final.push(`**${(parseInt(index) + 1)}:** ${item}`);
+            }
+            return msg.edit(final);
+          })
+          .catch((err) => {
+            client.error(err);
+            msg.edit('**No results found!**');
+          });
+      });
   },
   args: '<word>',
   help: 'Get a word definition.',
-  catagory: 'general',
 };

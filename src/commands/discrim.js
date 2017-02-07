@@ -1,5 +1,5 @@
 module.exports = {
-  main: async (message) => {
+  main: (message) => {
     const client = message.client;
     if (message.content === 'top') {
       const count = {};

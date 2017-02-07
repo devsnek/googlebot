@@ -9,14 +9,15 @@ const STATUS_MAP = {
 const SORT_MAP = { online: 1, idle: 2, streaming: 3, dnd: 4, offline: 5, invisible: 6 };
 
 module.exports = {
-  main: async message => {
+  main: (message) => {
     const client = message.client;
-    await message.guild.fetchMembers();
-    const mods = message.guild.members.array()
-      .filter(m => !m.user.bot && client.util.isStaff(m))
-      .sort((a, b) => SORT_MAP[a.presence.status] - SORT_MAP[b.presence.status])
-      .map(m => `${STATUS_MAP[m.presence.status]} **${m.user.username}#${m.user.discriminator}**`);
-    message.channel.send([`Mods for **${message.guild.name}**`].concat(mods));
+    message.guild.fetchMembers().then(() => {
+      const mods = message.guild.members.array()
+        .filter(m => !m.user.bot && client.util.isStaff(m))
+        .sort((a, b) => SORT_MAP[a.presence.status] - SORT_MAP[b.presence.status])
+        .map(m => `${STATUS_MAP[m.presence.status]} **${m.user.username}#${m.user.discriminator}**`);
+      message.channel.send([`Mods for **${message.guild.name}**`].concat(mods));
+    });
   },
   args: '',
   help: 'list all mods and their statuses in a server',

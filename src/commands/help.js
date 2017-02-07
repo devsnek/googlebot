@@ -1,5 +1,5 @@
 module.exports = {
-  main: async (message) => {
+  main: (message) => {
     const client = message.client;
     const list = client.commands
       .filter(x => !(x.owner || x.disabled))

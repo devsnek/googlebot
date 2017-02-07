@@ -8,7 +8,7 @@ const getISO = (x) => {
 };
 
 module.exports = {
-  main: async (message) => {
+  main: (message) => {
     const args = message.content.split(' ');
     let to = getISO(args.pop());
     if (args[args.length - 1].toLowerCase() === 'to') args.pop();

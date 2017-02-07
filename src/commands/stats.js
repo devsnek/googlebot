@@ -1,5 +1,5 @@
 module.exports = {
-  main: async message => {
+  main: (message) => {
     const client = message.client;
     let final = `**STATISTICS**
 **• Mem Usage:** ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB

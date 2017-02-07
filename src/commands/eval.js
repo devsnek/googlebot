@@ -1,10 +1,10 @@
 module.exports = {
-  main: async message => {
+  main: (message) => {
     const client = message.client;
-    const args = message.content;
     client.log('EVAL WAS RUN!');
+    let res;
     try {
-      var res = eval(args); // eslint-disable-line no-eval
+      res = eval(message.content); // eslint-disable-line no-eval
       if (typeof res !== 'string') res = require('util').inspect(res);
     } catch (err) {
       res = err.message;

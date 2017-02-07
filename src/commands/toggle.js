@@ -1,5 +1,5 @@
 module.exports = {
-  main: async (message) => {
+  main: (message) => {
     let command = message.content;
     const commands = message.client.commands;
     if (!commands.has(command)) return;

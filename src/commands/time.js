@@ -2,10 +2,11 @@ const superagent = require('superagent');
 const cheerio = require('cheerio');
 
 module.exports = {
-  main: async message => {
-    const res = await superagent.get(`http://time.is/${message.content.replace(/^in/, '')}`);
-    const $ = cheerio.load(res.text);
-    message.channel.send(`${$('#msgdiv > h1').text()} is ${$('#dd').text()}, ${$('#twd').text()}`);
+  main: (message) => {
+    superagent.get(`http://time.is/${message.content.replace(/^in/, '')}`)
+      .then((res) => cheerio.load(res.text))
+      .then(($) => `${$('#msgdiv > h1').text()} is ${$('#dd').text()}, ${$('#twd').text()}`)
+      .then((content) => message.channel.send(content));
   },
   help: 'Get time of location',
   args: '<location>',

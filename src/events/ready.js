@@ -3,7 +3,7 @@ const leftpad = (v, n, c = ' ') => String(v).length >= n ? `${v}` : (String(c).r
 const pad = text => leftpad(text, 8);
 const center = require('center-text');
 
-module.exports = async (client, shard) => {
+module.exports = (client, shard) => {
   logReady(client, shard);
 
   client.user.setPresence({ status: 'online', game: { name: `@${client.user.username} help` } });

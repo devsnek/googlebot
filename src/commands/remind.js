@@ -2,7 +2,7 @@ const Sherlock = require('sherlockjs');
 const moment = require('moment');
 
 module.exports = {
-  main: async message => {
+  main: message => {
     const s = Sherlock.parse(message.content);
     const relative = s.startDate.getTime() - Date.now();
     s.eventTitle = s.eventTitle.replace(/^me to ?|^me ?|^to ?/, '');

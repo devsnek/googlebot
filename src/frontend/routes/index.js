@@ -15,10 +15,12 @@ router.get('/', (req, res) => {
   res.render('index');
 });
 
-router.get('/compliance', async (req, res) => {
-  let compliance = await superagent.get('https://raw.githubusercontent.com/Roadcrosser/Compliance/master/enduser.md');
-  res.locals.compliance = marked(compliance.text.replace('**- for end users**\n', '').replace(/\+a/g, '@Google search'));
-  res.render('compliance');
+router.get('/compliance', (req, res) => {
+  superagent.get('https://raw.githubusercontent.com/Roadcrosser/Compliance/master/enduser.md')
+    .then((compliance) => {
+      res.locals.compliance = marked(compliance.text.replace('**- for end users**\n', '').replace(/\+a/g, '@Google search'));
+      res.render('compliance');
+    });
 });
 
 module.exports = router;

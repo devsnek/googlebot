@@ -31,7 +31,7 @@ const checkCommand = message => {
   }
 };
 
-module.exports = async message => {
+module.exports = (message) => {
   // checks and setting up of variables and such
   const client = message.client;
 

@@ -1,29 +1,24 @@
 const superagent = require('superagent');
 
 module.exports = {
-  main: async message => {
-    let comicnum;
-    if (isNaN(parseInt(message.content))) {
+  main: message => {
+    const comicnum = parseInt(message.content);
+    let request = superagent.get(`https://xkcd.com/${comicnum}/info.0.json`);
+    if (isNaN(comicnum)) {
       if (message.content === 'latest') {
-        const res = await superagent.get('https://xkcd.com/info.0.json');
-        comicnum = res.body.num;
+        request = superagent.get('https://xkcd.com/info.0.json');
       } else {
-        const res = await superagent.get(
-          `https://relevantxkcd.appspot.com/process?action=xkcd&query=${message.content}`
-        );
-        comicnum = res.text.split(' ')[2].replace('\n', '');
+        request = superagent.get(`https://relevantxkcd.appspot.com/process?action=xkcd&query=${message.content}`)
+          .then((res) => res.text.split(' ')[2].replace('\n', ''))
+          .then((num) => superagent.get(`https://xkcd.com/${num}/info.0.json`));
       }
-    } else {
-      comicnum = parseInt(message.content);
     }
-    const res = await superagent.get(`https://xkcd.com/${comicnum}/info.0.json`);
-    let comic = res.body;
-    let final = `XKCD ${comic.num} **${comic.safe_title}**
-_*${comic.alt}*_
-${comic.img}`;
-    message.channel.send(final);
+    request.then((res) => res.body)
+      .then((comic) => {
+        message.channel.send(`XKCD ${comic.num} **${comic.safe_title}**\n_*${comic.alt}*_\n${comic.img}`);
+      });
   },
-  args: '<search>',
+  args: '<search|number>',
   help: 'find xkcd comic using search',
   catagory: 'general',
 };
