@@ -24,4 +24,7 @@ client.login().then(() => {
   setInterval(sseStats, 2000);
 });
 
-process.on('unhandledRejection', (reason) => client.error(reason));
+process.on('unhandledRejection', (reason, promise) => {
+  if (client.raven) client.raven.captureError(reason, { extra: { promise } });
+  client.error(promise, reason);
+});
