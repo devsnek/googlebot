@@ -7,7 +7,7 @@ const marked = require('marked');
 // AGHH
 // router.use(async (req, res, next) => {
 //   const quote = await superagent.get('http://quotesondesign.com/wp-json/posts?filter[orderby]=rand');
-//   res.locals.quote = entities.decode(quote.body[0].content).replace(/<\/?p>/g, '');
+//   res.locals.quote = entities.decode(quote.body[0].content).replace(/<\/?p>/g, '').trim();
 //   return next();
 // });
 

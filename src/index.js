@@ -7,8 +7,6 @@ const frontend = new Frontend(client);
 client.on('error', client.error.bind(null, '[CLIENT ERROR]'));
 client.ws.on('close', (event, shardID) => client.error('[WS CLOSE]', event.code, shardID));
 
-client.on('shardReady', (id) => client.log(`[SHARD ${id} READY]`));
-
 frontend.listen(1337);
 
 function sseStats(sender = frontend.sse.broadcast) {
