@@ -16,7 +16,7 @@ for (const channel of [
   Object.defineProperty(channel.prototype, 'send', {
     value: function value(content, options) {
       if (typeof content === 'string' && content.length >= 2000) {
-        return gist(content, { private: false })
+        return gist([{ name: 'message.txt', content }], { private: false })
           .then(res => shorten(res.html_url))
           .then(x => this._send(`This response was over 2000 characters and has been uploaded here: ${x}`));
       } else {
