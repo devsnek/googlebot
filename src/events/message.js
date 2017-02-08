@@ -22,10 +22,12 @@ const checkCommand = message => {
   let command = message.content.shift().toLowerCase();
   message.content = message.content.join(' ');
   if (client.commands.has(command)) {
+    client.commands.eventCounter.trigger(command);
     command = client.commands.get(command);
     if ((command.owner || command.disabled) && !client.config.OWNERS.includes(message.author.id)) return;
     client.raven.context(command.main.bind(command.main, message, parsed));
   } else {
+    client.commands.eventCounter.trigger('fallback');
     message.content = original;
     command = client.commands.get('knowledgegraph');
     client.raven.context(command.main.bind(command.main, message, parsed));

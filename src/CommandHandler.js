@@ -1,6 +1,7 @@
 const Collection = require('discord.js').Collection;
 const fs = require('fs');
 const path = require('path');
+const EventCounter = require('./util/EventCounter');
 
 class CommandHandler extends Collection {
   constructor(client, dirname) {
@@ -17,6 +18,8 @@ class CommandHandler extends Collection {
         this.set(command.name, command);
       }
     }
+
+    this.eventCounter = new EventCounter();
 
     client.log('———— All Commands Loaded! ————');
   }

@@ -6,6 +6,7 @@ const CommandHandler = require('./CommandHandler');
 const gist = require('gist');
 const shorten = require('./util/ShortenURL');
 const raven = require('raven');
+const EventCounter = require('./util/EventCounter');
 raven.config(config.raven.DSNs[config.env]).install();
 
 // kill me
@@ -58,19 +59,10 @@ class GooglebotClient extends Discord.Client {
 
     require('./util/loadEvents')(this);
 
-    this.eventCounter = {
-      FREQUENCY: 0,
-      TOTAL: 0,
-    };
-
-    let start = 0;
+    this.eventCounter = new EventCounter();
 
     this.on('raw', (packet) => {
-      if (!this.eventCounter[packet.t]) this.eventCounter[packet.t] = 0;
-      this.eventCounter[packet.t]++;
-
-      if (!start) start = new Date;
-      this.eventCounter.FREQUENCY = ++this.eventCounter.TOTAL / (new Date - start) * 1000;
+      this.eventCounter.trigger(packet.t);
 
       // race conditions you say?
       if (packet.t === 'READY') {
@@ -87,11 +79,11 @@ class GooglebotClient extends Discord.Client {
   }
 
   log(...args) {
-    console.log('🔧', chalk.green.bold(`INFO`), ...args);
+    console.log('🔧', chalk.green.bold('INFO'), ...args);
   }
 
   error(...args) {
-    console.error(chalk.bgRed.white.bold(`🔥  ERROR`), ...args);
+    console.error(chalk.bgRed.white.bold('🔥  ERROR'), ...args);
   }
 }
 
