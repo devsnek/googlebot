@@ -24,6 +24,12 @@
     "sherlockjs": "0.0.9",
     "sse": "github:guscaplan/sse.js",
     "superagent": "^3.3.1",
-    "tagmanager": "github:guscaplan/tagmanager"
-  }
+    "tagmanager": "github:guscaplan/tagmanager",
+    "snyk": "^1.25.0"
+  },
+  "scripts": {
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
