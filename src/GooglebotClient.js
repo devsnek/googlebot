@@ -5,8 +5,8 @@ const chalk = require('chalk');
 const CommandHandler = require('./CommandHandler');
 const gist = require('gist');
 const shorten = require('./util/ShortenURL');
-const raven = require('raven');
 const EventCounter = require('./util/EventCounter');
+const raven = require('./util/raven');
 raven.config(config.raven.DSNs[config.env]).install();
 
 // kill me

@@ -25,6 +25,6 @@ client.login().then(() => {
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  if (client.raven) client.raven.captureError(reason, { extra: { promise } });
+  client.raven.captureException(reason, { extra: { promise } });
   client.error(promise, reason);
 });
