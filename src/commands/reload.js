@@ -6,7 +6,7 @@ module.exports = {
     const command = message.content;
     try {
       delete commands[command];
-      const pth = path.resolve(`./commands/${command}.js`);
+      const pth = path.resolve(`./src/commands/${command}.js`);
       delete require.cache[pth];
       commands[command] = require(pth);
       message.channel.send(`**Reloaded ${command}**`);
