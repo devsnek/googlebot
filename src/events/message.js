@@ -12,8 +12,14 @@ const superClean = (message, prefix) => {
     .trim();
 };
 
-const checkCommand = message => {
+module.exports = (message) => {
   const client = message.client;
+  if (message.channel.type === 'dm' && !client.config.OWNERS.includes(message.author.id)) return;
+  if (message.author.bot) return;
+  tulpize(message);
+  if (!client.prefix.test(message.content)) return;
+  superClean(message, client.prefix);
+
   const original = message.content;
   message.content = message.content.split(' ');
   const parsed = minimist(message.content);
@@ -29,16 +35,5 @@ const checkCommand = message => {
     message.content = original;
     command = client.commands.get('knowledgegraph');
     client.raven.context(command.main.bind(command.main, message, parsed));
-  }
-};
-
-module.exports = (message) => {
-  const client = message.client;
-  if (message.channel.type === 'dm' && !client.config.OWNERS.includes(message.author.id)) return;
-  if (message.author.bot) return;
-  tulpize(message);
-  if (client.prefix.test(message.content)) {
-    superClean(message, client.prefix);
-    checkCommand(message);
   }
 };
