@@ -9,6 +9,10 @@ module.exports = {
         superagent.get(`https://glosbe.com/gapi/translate?from=en&dest=en&format=json&phrase=${message.content}`)
           .then((res) => res.body)
           .then((res) => {
+            if (res.tuc == undefined) {
+              msg.edit('**No results found!**')
+              return;
+            }
             const final = [`**Definitions for __${message.content}__:**`];
             for (let [index, item] of Object.entries(res.tuc.filter(t => t.meanings)[0].meanings.slice(0, 5))) {
               item = item.text
