@@ -1,63 +1,81 @@
-@-webkit-keyframes tada {
-  from {
-    -webkit-transform: scale3d(1, 1, 1) rotate3d(0, 0, 1, 15deg);
-    transform: scale3d(1, 1, 1) rotate3d(0, 0, 1, 15deg);
-  }
-
-  10%, 20% {
-    -webkit-transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, 12deg);
-    transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, 12deg);
-  }
-
-  30%, 50%, 70%, 90% {
-    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 18deg);
-    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 18deg);
-  }
-
-  40%, 60%, 80% {
-    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 12deg);
-    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 12deg);
-  }
-
-  to {
-    -webkit-transform: scale3d(1, 1, 1) rotate3d(0, 0, 1, 15deg);
-    transform: scale3d(1, 1, 1) rotate3d(0, 0, 1, 15deg);
-  }
+@font-face {
+  font-family: uniSans;
+  src: url(https://gus.host/uni_sans_thin.otf);
 }
 
-@keyframes tada {
-  from {
-    -webkit-transform: scale3d(1, 1, 1) rotate3d(0, 0, 1, 15deg);
-    transform: scale3d(1, 1, 1) rotate3d(0, 0, 1, 15deg);
-  }
-
-  10%, 20% {
-    -webkit-transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, 12deg);
-    transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, 12deg);
-  }
-
-  30%, 50%, 70%, 90% {
-    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 18deg);
-    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 18deg);
-  }
-
-  40%, 60%, 80% {
-    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 12deg);
-    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 12deg);
-  }
-
-  to {
-    -webkit-transform: scale3d(1, 1, 1) rotate3d(0, 0, 1, 15deg);
-    transform: scale3d(1, 1, 1) rotate3d(0, 0, 1, 15deg);
-  }
+html,
+body {
+  height: 100%;
+  min-height: 100%;
+  padding: 0px;
+  margin: 0px;
 }
 
-h1::after {
-  -webkit-animation-duration: 1s;
-  animation-duration: 1s;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
-  -webkit-animation-name: tada;
-  animation-name: tada;
+body {
+  background-color: #23272A;
+  font-family: uniSans;
+  text-align: center;
+  color: #7289DA;
+  text-transform: uppercase;
 }
 
+a {
+  color: #7289DA;
+  font-size: 5vmin;
+  padding: 1vmin;
+}
+
+.app {
+  position: relative;
+  height: 100%;
+  margin: 0 auto;
+}
+
+.container {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+}
+
+h1 {
+  font-size: 15vmin;
+  margin-bottom: 0;
+}
+
+h5 {
+  font-size: 5vmin;
+}
+
+#guilds {
+  margin-top: 0;
+  font-size: 3vmin;
+}
+
+pre, code{
+  display: inline;
+  white-space: pre-wrap;
+  background-color: #fcfcfc;
+  padding: 1px;
+  padding-left: 3px;
+  padding-right: 3px;
+  border: 0px solid;
+  border-radius: 5px;
+  text-transform: none !important;
+}
+
+table {
+  table-layout: fixed;
+}
+
+td {
+  width: 33%;
+}
+
+ul {
+  padding-left: 0;
+}
+
+ul li {
+  list-style-type: none;
+}

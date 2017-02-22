@@ -3,164 +3,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0">
   <title>Google for Discord</title>
   <meta name="theme-color" content="#7289DA">
-  <!-- CSS  -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
   <link rel="stylesheet" href="css/main.css">
-  <style>
-  @font-face {
-    font-family: uniSans;
-    src: url(https://gus.host/uni_sans_thin.otf);
-  }
-  h1{
-    margin-left: 8rem;
-    font-family: uniSans;
-  }
-  h1::after {
-    content: attr(data-content);
-    font-family: uniSans;
-    background-color: yellow;
-    color: red;
-    font-size: 1.3rem;
-    font-weight: bold;
-    -webkit-transform: rotate(15deg);
-    -moz-transform: rotate(15deg);
-    -ms-transform: rotate(15deg);
-    -o-transform: rotate(15deg);
-    display: inline-block;
-    position: relative;
-    top:-2.3em;
-    left: -3.6em;
-    line-height: 1em;
-    padding: 2;
-    padding-bottom:1;
-  }
-  #center{
-    position: absolute;
-    overflow: hidden;
-    width:100%;
-    margin-left: auto;
-    margin-right: auto;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
-    top: 0px;
-    position: relative;
-    top: 52%;
-    transform: translateY(-60%);
-    background-color: rgba(44,47,51, 0.8);
-    box-shadow: 0px 0px 6px rgba(44,47,51, 0.8);
-    max-width: 70em;
-    border-radius: 3px;
-  }
-  h5 {
-      margin: 0 auto
-      text-align: center;
-      vertical-align: middle;
-      text-align: center;
-  }
-  .waves-effect.waves-blue .waves-ripple {
-    //background-color: rgba(33, 150, 243, 0.6);
-    background-color: rgba(114,137,218, 1.0);
-  }
-  .stuff {
-      color: #7289DA;
-  }
-  footer {
-      padding: 0.5em;
-  }
-  body {
-     background-color: #23272A;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-    background: url("https://unsplash.it/1920/1080?random") center center no-repeat fixed;
-   }
-   .login {
-       position:absolute;
-       top:0;
-       right:0;
-       padding-top: 1em;
-       padding-right: 0.5em;
-   }
-  @media only screen and (max-width: 510px) {
-      h1::after {
-          display: none;
-      }
-      h1 { margin-left: 0; }
-   }
-   @media only screen and (max-width: 600px) {
-      #center {
-          top: 59%;
-      }
-      .login {
-          padding-top: 0.7em;
-      }
-   }
-  </style>
 </head>
 <body cz-shortcut-listen="true">
+  <div class=app>
+    <div class=container id=center>
+      <h1>Google</h1>
+      <h2 id=guilds>Serving in many Servers!</h2>
+      <h5>Useful Information for any Discord Server</h5>
 
-<div class="login">
-<a class="stuff waves-effect waves-blue btn-flat" href="/panel/login">Login</a>
-</div>
+      <a href=/invite>Invite</a>
 
-<div class="container" id="center">
-  <div class="section no-pad-bot" id="index-banner">
-    <div class="container">
-      <br><br>
-      <h1 class="header center stuff">Google</h1>
-      <div class="row center">
-        <h5 class="header col s12 light stuff">Useful Information for any Discord Server</h5>
-      </div>
-      <br><br>
+      <a href=https://www.patreon.com/guscaplan>Donate</a>
+
+      <a href=https://gus.host/discord>Help Server</a>
     </div>
   </div>
 
-  <div class="container">
-    <div class="section">
-
-      <div class="row">
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h5><a class="stuff waves-effect waves-blue btn-flat" href="/invite">Invite</a></h5>
-          </div>
-        </div>
-
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h5><a class="stuff waves-effect waves-blue btn-flat" href="https://www.patreon.com/guscaplan">Donate</a></h5>
-          </div>
-        </div>
-
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h5><a class="stuff waves-effect waves-blue btn-flat" href="https://gus.host/discord">Help Server</a></h5>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-  </div>
-
-
-  <!--  Scripts-->
-  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
   <script>
-    (function($){$(function(){$('.button-collapse').sideNav()})})(jQuery);
+    new EventSource('/events').addEventListener('stats', (e) => {
+      const data = JSON.parse(e.data);
+      document.querySelector('#guilds').innerHTML = `Serving ${data.guilds} Servers!`;
+    });
   </script>
-  <script>
-  new EventSource('/events').addEventListener('stats', function (e) {
-    var data = JSON.parse(e.data);
-    $('h1').attr('data-content', data.guilds + " Servers!");
-  });
-  </script>
-  <script src="https://gus.host/nojoke.js"></script>
-
-<div class="hiddendiv common"></div><div class="drag-target" style="left: 0px; touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div>
-<footer id="footer" style="position:absolute;bottom:0;"></footer>
 </body>
 </html>

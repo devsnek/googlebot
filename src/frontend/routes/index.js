@@ -4,13 +4,6 @@ const superagent = require('superagent');
 const entities = new require('html-entities').XmlEntities; // eslint-disable-line
 const marked = require('marked');
 
-// AGHH
-// router.use(async (req, res, next) => {
-//   const quote = await superagent.get('http://quotesondesign.com/wp-json/posts?filter[orderby]=rand');
-//   res.locals.quote = entities.decode(quote.body[0].content).replace(/<\/?p>/g, '').trim();
-//   return next();
-// });
-
 router.get('/', (req, res) => {
   res.render('index');
 });
