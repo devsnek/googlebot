@@ -54,6 +54,7 @@ class GooglebotClient extends Discord.Client {
       isStaff: require('./util/isStaff'),
       toHHMMSS: require('./util/toHHMMSS'),
       pad: require('./util/pad'),
+      bbcodeToMarkdown: require('./util/bbcodeToMarkdown'),
       shorten,
     };
 

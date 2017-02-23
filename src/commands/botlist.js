@@ -5,13 +5,12 @@ module.exports = {
     const { left, right } = message.client.util.pad;
     superagent.get('https://www.carbonitex.net/discord/api/listedbots')
       .then((res) => res.body
-          .sort((a, b) => b.servercount - a.servercount)
-          .filter(b => b.servercount !== '0' && b.botid > 10)
-          .map(b => {
-            b.name = b.name.replace(/[^a-z0-9]/gmi, '').replace(/\s+/g, '');
-            return b;
-          })
-      )
+        .sort((a, b) => b.servercount - a.servercount)
+        .filter(b => b.servercount !== '0' && b.botid > 10)
+        .map(b => {
+          b.name = b.name.replace(/[^a-z0-9]/gmi, '').replace(/\s+/g, '');
+          return b;
+        }))
       .then((bots) => {
         const chunks = [];
         while (bots.length > 0) chunks.push(bots.splice(0, 10));
