@@ -1,10 +1,12 @@
 const path = require('path');
 const http = require('http');
 const express = require('express');
+const hbs = require('hbs');
 
 class Frontend {
   constructor(client) {
     this.client = client;
+    client.frontend = this;
 
     this.express = express();
     const router = this.router = new express.Router();
@@ -13,6 +15,7 @@ class Frontend {
 
     this.express.set('view engine', 'hbs');
     this.express.set('views', path.join(__dirname, 'views'));
+    hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
     this.express.use(express.static(path.join(__dirname, 'public')));
 
     this.express.use(require('express-session')({
@@ -31,9 +34,9 @@ class Frontend {
       next();
     });
 
-    this.sse = require('./sse')(this.server);
+    this.sse = require('./sse')(this);
 
-    this.ws = require('./ws')(this.server);
+    this.ws = require('./ws')(this);
 
     router.use('/', require('./routes/index'));
     router.use('/invite', require('./routes/invite'));
@@ -43,6 +46,10 @@ class Frontend {
 
   listen(port) {
     return this.server.listen(port);
+  }
+
+  get connected() {
+    return this.ws.connections.length;
   }
 }
 

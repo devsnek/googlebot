@@ -1,7 +1,7 @@
 const SSE = require('sse');
 
-module.exports = (server) => {
-  const sse = new SSE(server, {
+module.exports = (frontend) => {
+  const sse = new SSE(frontend.server, {
     path: '/events',
     headers: {
       'X-Powered-By': 'Hard work, dammit!',
