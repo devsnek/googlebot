@@ -20,11 +20,12 @@ module.exports = (message) => {
   if (!client.prefix.test(message.content)) return;
   superClean(message, client.prefix);
 
-  const original = message.content;
-  message.content = message.content.split(' ');
-  message.options = minimist(message.content);
-  let command = message.content.shift().toLowerCase();
-  message.content = message.content.join(' ');
+  const parsed = minimist(message.content.split(' '));
+  const original = parsed._.join(' ').trim();
+  let command = parsed._.shift().toLowerCase().trim();
+  message.content = parsed._.join(' ').trim();
+  delete parsed._;
+  message.options = parsed;
   if (client.commands.has(command)) {
     client.commands.eventCounter.trigger(command);
     command = client.commands.get(command);
