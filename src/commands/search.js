@@ -3,7 +3,7 @@ const cheerio = require('cheerio');
 const querystring = require('querystring');
 
 module.exports = {
-  main: async (message, options, msg) => {
+  main: async (message, msg) => {
     const client = message.client;
     if (!msg) msg = await message.channel.send('**Searching...**');
     const safe = message.channel.name.includes('nsfw') ? 'off' : 'medium';

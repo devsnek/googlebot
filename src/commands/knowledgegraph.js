@@ -2,7 +2,7 @@ const superagent = require('superagent');
 const querystring = require('querystring');
 
 module.exports = {
-  main: async (message, options) => {
+  main: async (message) => {
     const client = message.client;
     if (message.content.trim() === '') return;
     const query = message.content
@@ -32,7 +32,7 @@ module.exports = {
       })
       .catch((err) => {
         client.error(err);
-        return client.commands.get('search').main(message, options, msg);
+        return client.commands.get('search').main(message, msg);
       });
   },
   hide: true,
