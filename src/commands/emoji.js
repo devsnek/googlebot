@@ -7,4 +7,5 @@ module.exports = {
       .then((final) => message.channel.send(final));
   },
   hide: true,
+  args: '<query>',
 };

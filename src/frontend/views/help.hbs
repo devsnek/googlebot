@@ -1,0 +1,31 @@
+<html lang="en"><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0">
+  <title>Google for Discord | Help</title>
+  <meta name="theme-color" content="#7289DA">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body cz-shortcut-listen="true">
+  <div class=app>
+    <div class=container id=center>
+
+      {{#if commands}}
+      <h1>Commands</h1>
+      <ul>
+        {{#each commands}}
+        <li><a href="/help/{{this.name}}">{{this.name}}</a>: {{this.help}}</li>
+        {{/each}}
+      </ul>
+      {{/if}}
+
+      {{#if command}}
+      <h1>{{command.name}}</h1>
+      <h2 id=guilds>{{command.help}}</h2>
+      Example Usage: <code>{{command.usage}}</code>
+     {{/if}}
+
+    </div>
+  </div>
+  {{> tracker }}
+</body>
+</html>

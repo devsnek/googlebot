@@ -40,6 +40,7 @@ class Frontend {
 
     router.use('/', require('./routes/index'));
     router.use('/invite', require('./routes/invite'));
+    router.use('/help', require('./routes/help')(this.client));
 
     this.express.use(router);
   }

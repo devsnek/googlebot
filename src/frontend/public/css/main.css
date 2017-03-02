@@ -78,4 +78,9 @@ ul {
 
 ul li {
   list-style-type: none;
+  padding-bottom: 10px;
+}
+
+li a {
+  font-size: 3vmin !important;
 }

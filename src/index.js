@@ -18,8 +18,6 @@ function sseStats(sender = frontend.sse.broadcast) {
   }));
 }
 
-frontend.sse.on('connection', (c) => sseStats(c.send.bind(c)));
-
 client.login().then(() => {
   setInterval(sseStats, 2000);
 });

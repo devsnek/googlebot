@@ -23,7 +23,7 @@
   <script>
     new EventSource('/events').addEventListener('stats', (e) => {
       const data = JSON.parse(e.data);
-      document.querySelector('#guilds').innerHTML = `Serving ${data.guilds} Servers!`;
+      document.querySelector('#guilds').innerHTML = `Serving in ${data.guilds} Servers!`;
     });
   </script>
   {{> tracker }}
