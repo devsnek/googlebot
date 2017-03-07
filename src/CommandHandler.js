@@ -1,4 +1,4 @@
-const Collection = require('discord.js').Collection;
+const { Collection } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 const EventCounter = require('./util/EventCounter');
