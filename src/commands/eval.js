@@ -9,8 +9,7 @@ module.exports = {
     } catch (err) {
       res = err.message;
     }
-    message.channel.sendCode('js', res, { split: true })
-  },
+    message.channel.sendCode('js', res);
   args: '',
   help: 'run some eval, bruh',
   hide: true,
