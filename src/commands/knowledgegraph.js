@@ -21,7 +21,7 @@ module.exports = {
     return superagent.get(`https://kgsearch.googleapis.com/v1/entities:search?${querystring.stringify(QUERY_PARAMS)}`)
       .then((res) => {
         let result = res.body.itemListElement[0];
-        if (!result) return Promise.reject('NO RESULT');
+        if (!result || !result.result || !result.result.detailedDescription) return Promise.reject('NO RESULT');
         result = result.result;
         let types = result['@type'].map(t => t.replace(/([a-z])([A-Z])/g, '$1 $2'));
         if (types.length > 1) types = types.filter(t => t !== 'Thing');
