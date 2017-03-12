@@ -14,7 +14,7 @@ class CommandHandler extends Collection {
       if (file.endsWith('.js')) {
         const command = require(path.join(this.COMMAND_PATH, file));
         command.name = file.slice(0, -3);
-        command.example = `@Google ${command.usage}`;
+        command.example = command.usage ? `@Google ${command.usage}` : null;
         command.usage = `@Google ${command.name} ${command.args || ''}`.trim();
         this.set(command.name, command);
       }

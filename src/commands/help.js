@@ -22,7 +22,7 @@ module.exports = {
       **${command.help}**
 
       \`${command.usage}\`
-      \`${command.example}\`
+      ${command.example ? `\`${command.example}\`` : ''}
     `);
   },
   help: 'get help',
