@@ -12,7 +12,7 @@ module.exports = {
       .then((res) => {
         if (!res.tuc) return Promise.reject();
         const final = [`**Definitions for __${message.content}__:**`];
-        for (let [index, item] of Object.entries(res.tuc.filter(t => t.meanings)[0].meanings.slice(0, 5))) {
+        for (let [index, item] of Object.entries(res.tuc.filter(t => t && t.meanings)[0].meanings.slice(0, 5))) {
           item = client.util.bbcodeToMarkdown(htmlDecode(item.text.replace(/<\/?i>/g, '')));
           final.push(`**${(parseInt(index) + 1)}:** ${item}`);
         }
