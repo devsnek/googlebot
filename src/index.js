@@ -9,17 +9,21 @@ client.ws.on('close', (event, shardID) => client.error('[WS CLOSE]', event.code,
 
 frontend.listen(1337);
 
-function sseStats(sender = frontend.sse.broadcast) {
-  sender('stats', JSON.stringify({
+function generateSSEStats() {
+  return JSON.stringify({
     guilds: client.guilds.size,
     channels: client.channels.size,
     users: client.users.size,
     shards: client.ws.shardCount,
-  }));
+  });
 }
 
+frontend.sse.on('connection', (c) => c.send(generateSSEStats()));
+
 client.login().then(() => {
-  setInterval(sseStats, 2000);
+  setInterval(() => {
+    frontend.sse.broadcast(generateSSEStats());
+  }, 2000);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
