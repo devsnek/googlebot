@@ -18,11 +18,11 @@ function generateSSEStats() {
   });
 }
 
-frontend.sse.on('connection', (c) => c.send(generateSSEStats()));
+frontend.sse.on('connection', (c) => c.send('stats', generateSSEStats()));
 
 client.login().then(() => {
   setInterval(() => {
-    frontend.sse.broadcast(generateSSEStats());
+    frontend.sse.broadcast('stats', generateSSEStats());
   }, 2000);
 });
 
