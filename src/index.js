@@ -4,7 +4,7 @@ const Frontend = require('./frontend');
 const client = new Client();
 const frontend = new Frontend(client);
 
-const updateStats = require('./util/updateStats');
+const updateCount = require('./util/updateCount');
 
 client.on('error', client.error.bind(null, '[CLIENT ERROR]'));
 client.ws.on('close', (event, shardID) => client.error('[WS CLOSE]', event.code, shardID));
@@ -23,8 +23,8 @@ function generateSSEStats() {
 frontend.sse.on('connection', (c) => c.send('stats', generateSSEStats()));
 
 client.login().then(() => {
-  updateStats(client);
-  setInterval(updateStats, 5 * 60e3, client);
+  updateCount(client);
+  setInterval(updateCount, 5 * 60e3, client);
 });
 
 setInterval(() => {
