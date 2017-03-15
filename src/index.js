@@ -20,11 +20,9 @@ function generateSSEStats() {
 
 frontend.sse.on('connection', (c) => c.send('stats', generateSSEStats()));
 
-client.login().then(() => {
-  setInterval(() => {
-    frontend.sse.broadcast('stats', generateSSEStats());
-  }, 2000);
-});
+setInterval(() => {
+  frontend.sse.broadcast('stats', generateSSEStats());
+}, 2000);
 
 process.on('unhandledRejection', (reason, promise) => {
   client.raven.captureException(reason, { extra: { promise } });
