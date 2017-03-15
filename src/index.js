@@ -20,6 +20,8 @@ function generateSSEStats() {
 
 frontend.sse.on('connection', (c) => c.send('stats', generateSSEStats()));
 
+client.login();
+
 setInterval(() => {
   frontend.sse.broadcast('stats', generateSSEStats());
 }, 2000);
