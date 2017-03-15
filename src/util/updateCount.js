@@ -1,27 +1,27 @@
 const superagent = require('superagent');
 const config = require('../config');
 
-module.exports = count => {
-  updateCarbon(count);
-  updateAbal(count);
+module.exports = (client) => {
+  updateCarbon(client);
+  updateAbal(client);
 };
 
-const updateCarbon = count => {
-  if (config.stats.carbon === '') return;
+const updateCarbon = (client) => {
+  if (!config.stats.carbon) return;
   console.log('updating carbon');
   superagent.post('https://www.carbonitex.net/discord/data/botdata.php')
     .set({ 'Content-Type': 'application/json', 'cache-control': 'no-cache' })
-    .send({ servercount: count, key: config.stats.carbon }).end((err) => {
-      if (!err) console.log('SUCCESSFUL CARBON UPDATE', count);
+    .send({ servercount: client.guilds.size, key: config.stats.carbon }).end((err) => {
+      if (!err) console.log('SUCCESSFUL CARBON UPDATE', client.guilds.size);
     });
 };
 
-const updateAbal = count => {
-  if (config.stats.abal === '') return;
+const updateAbal = (client) => {
+  if (!config.stats.abal) return;
   console.log('updating abal');
-  superagent.post('https://bots.discord.pw/api/bots/187406062989606912/stats')
+  superagent.post(`https://bots.discord.pw/api/bots/${client.user.id}/stats`)
     .set({ 'Content-Type': 'application/json', Authorization: config.stats.abal })
-    .send({ server_count: count }).end((err) => {
-      if (!err) console.log('SUCCESSFUL ABAL UPDATE', count);
+    .send({ server_count: client.guilds.size }).end((err) => {
+      if (!err) console.log('SUCCESSFUL ABAL UPDATE', client.guilds.size);
     });
 };
