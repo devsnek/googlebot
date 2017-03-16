@@ -1,4 +1,4 @@
-const minimist = require('minimist');
+const snekparse = require('snekparse');
 const tulpize = require('../util/tulpize');
 
 const superClean = (message, prefix) => {
@@ -23,10 +23,10 @@ module.exports = (message) => {
   message.content = message.content.split(' ');
   let command = message.content.shift().toLowerCase().trim();
   message.originalContent = message.content.join(' ');
-  const parsed = minimist(message.content);
-  const original = parsed._.join(' ').trim();
-  message.content = parsed._.join(' ').trim();
-  delete parsed._;
+  const parsed = snekparse(message.content);
+  const original = parsed['🐍'].join(' ').trim();
+  message.content = parsed['🐍'].join(' ').trim();
+  delete parsed['🐍'];
   message.options = parsed;
   if (client.commands.has(command)) {
     client.commands.eventCounter.trigger(command);
