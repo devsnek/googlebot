@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
   const QUERY_PARAMS = {
     client_id: config.backend.CLIENT_ID,
     permissions: config.backend.PERMISSIONS,
-    redirect_uri: encodeURIComponent(INVITE_REDIR),
+    redirect_uri: INVITE_REDIR,
     scope: 'bot',
     response_type: 'code',
   };
