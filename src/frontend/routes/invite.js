@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
     permissions: config.backend.PERMISSIONS,
     redirect_uri: encodeURIComponent(INVITE_REDIR),
     scope: 'bot',
-    respons_type: 'code',
+    response_type: 'code',
   };
   if (req.query.state) QUERY_PARAMS.state = req.query.state;
   res.redirect(`https://discordapp.com/oauth2/authorize?${querystring.stringify(QUERY_PARAMS)}`);
