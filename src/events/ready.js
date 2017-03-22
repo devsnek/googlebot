@@ -10,7 +10,7 @@ module.exports = (client, shard) => {
 };
 
 function logReady(client, shard) {
-  let top = shard !== undefined ? `╔══ SHARD ${leftpad(shard + 1, 2, '0')} READY ══╗` : '╔═══ CLIENT READY ═══╗';
+  let top = shard !== undefined ? `╔══ SHARD ${leftpad(shard, 2, '0')} READY ══╗` : '╔═══ CLIENT READY ═══╗';
   let info = `${client.user.username.replace('\u1160', '')}#${client.user.discriminator}`;
   const guilds = shard ? client.guilds.filter(g => g.shardID === shard) : client.guilds;
   const final = [
