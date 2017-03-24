@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const { Client } = require('discord.js');
 const KeyManager = require('./util/KeyManager');
 const config = require('../config.json');
 const chalk = require('chalk');
@@ -29,7 +29,7 @@ for (const channel of [
   });
 }
 
-class GooglebotClient extends Discord.Client {
+class GooglebotClient extends Client {
   constructor() {
     super({
       fetchAllUsers: true,
