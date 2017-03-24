@@ -18,7 +18,7 @@ module.exports = {
     } catch (err) {
       res = err.message;
     }
-    message.channel.send(res, { code: 'js' });
+    message.channel.sendCode('js', res, { split: true })
   },
   args: '',
   help: 'run some eval, bruh',
