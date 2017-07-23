@@ -1,6 +1,6 @@
 const EventEmitter = require('events');
 const WebSocketConnection = require('./WebSocketConnection');
-const router = require('./Router');
+const Router = require('./rest/Router');
 
 class Client extends EventEmitter {
   constructor(options = {}) {
@@ -10,10 +10,12 @@ class Client extends EventEmitter {
     this.token = null;
 
     this.shard_queue = [];
+
+    this.rest = new Router(this);
   }
 
   get api() {
-    return router(this);
+    return router.api();
   }
 
   login(token) {
