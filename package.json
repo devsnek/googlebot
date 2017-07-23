@@ -1,0 +1,26 @@
+{
+  "name": "googlebot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "erlpack": "^0.1.0",
+    "snekfetch": "^3.2.4",
+    "uws": "^8.14.0",
+    "ws": "^3.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devsnek/googlebot.git"
+  },
+  "author": "snek <me@gus.host>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/devsnek/googlebot/issues"
+  },
+  "homepage": "https://github.com/devsnek/googlebot#readme"
+}
