@@ -3,6 +3,7 @@ const erlpack = require('erlpack');
 const EventEmitter = require('events');
 const Package = require('../../package.json');
 const handle = require('./PacketHandler');
+const logger = require('../util/logger');
 
 class WebSocketConnection extends EventEmitter {
   constructor(client, options) {
@@ -45,6 +46,7 @@ class WebSocketConnection extends EventEmitter {
     } else if (packet.op === 1) {
       this.send(1, this.cache.seq);
     } else if (packet.op === 9) {
+      logger.log('SESSION INVALIDATION', this.options.shard_id);
       this.cache.session_id = null;
       setTimeout(() => this.identify(), 1e3);
     }
@@ -70,8 +72,10 @@ class WebSocketConnection extends EventEmitter {
 
   identify() {
     if (this.cache.session_id) {
+      logger.log('RESUME', this.options.shard_id);
       this.send(6, this.cache);
     } else {
+      logger.log('IDENTIFY', this.options.shard_id);
       const uniq = `${Package.name}/${Package.version}`;
       const d = {
         token: this.client.token,
