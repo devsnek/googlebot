@@ -3,7 +3,7 @@ const erlpack = require('erlpack');
 const EventEmitter = require('events');
 const Package = require('../../package.json');
 const handle = require('./PacketHandler');
-const logger = require('../util/logger');
+const logger = require('../util/Logger');
 
 class WebSocketConnection extends EventEmitter {
   constructor(client, options) {

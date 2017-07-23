@@ -14,7 +14,7 @@ const commands = client.commands = require('./commands');
 
 client.on('READY', (packet, shard_id) => {
   logger.log('Client', 'READY', shard_id);
-  prefix = new RegExp(`^(<@!?${packet.user.id}>|!${packet.user.username}bot)`, 'i');
+  prefix = new RegExp(`^(<@!?${packet.user.id}>|!${packet.user.username}bot|ok ${packet.user.username}(bot)?)`, 'i');
 });
 
 client.on('MESSAGE_CREATE', (message) => {
