@@ -15,7 +15,7 @@ class Client extends EventEmitter {
   }
 
   get api() {
-    return router.api();
+    return this.rest.api();
   }
 
   login(token) {

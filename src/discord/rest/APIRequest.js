@@ -1,5 +1,5 @@
-const Constants = require('../Constants');
-const Package = require('../../package.json');
+const Constants = require('../../Constants');
+const Package = require('../../../package.json');
 const querystring = require('querystring');
 const snekfetch = require('snekfetch');
 
