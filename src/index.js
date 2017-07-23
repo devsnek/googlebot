@@ -1,5 +1,5 @@
 const Discord = require('./discord');
-const logger = require('./util/logger');
+const logger = require('./util/Logger');
 const config = require('../config');
 
 const client = new Discord.Client({
