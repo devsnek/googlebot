@@ -5,7 +5,7 @@ const config = require('../config');
 const client = new Discord.Client({
   presence: (shard_id) => ({
     status: 'online',
-    game: { name: `@Google help | ${shard_id}` },
+    game: { name: `@Google help | S${shard_id}` },
   }),
 });
 

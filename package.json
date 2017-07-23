@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "erlpack": "^0.1.0",
+    "promise_util": "^1.0.1",
     "snekfetch": "^3.2.4",
     "uws": "^8.14.0",
     "ws": "^3.0.0"
