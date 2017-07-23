@@ -24,7 +24,7 @@ class Client extends EventEmitter {
       this.shard_queue.push(...Array.from({ length: res.shards }, (_, i) => i));
       (function loop() {
         const shard_id = this.shard_queue.shift();
-        if (shard_id == null) return;
+        if (shard_id == null) return; // eslint-disable-line eqeqeq
         const shard = new WebSocketConnection(this, {
           shard_id,
           shard_count: res.shards,

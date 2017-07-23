@@ -1,7 +1,6 @@
 const WebSocket = require('uws');
 const erlpack = require('erlpack');
 const EventEmitter = require('events');
-const Constants = require('../Constants');
 const Package = require('../../package.json');
 const handle = require('./PacketHandler');
 
@@ -10,6 +9,8 @@ class WebSocketConnection extends EventEmitter {
     super();
     this.client = client;
     this.options = options;
+
+    this.gateway = null;
 
     this.cache = {
       seq: 0,
@@ -51,20 +52,25 @@ class WebSocketConnection extends EventEmitter {
     handle(this.client, this, packet);
     if (this.listenerCount('raw')) this.emit('raw', packet);
     const handled = handle(this.client, this, packet);
-    if (handled) this.emit('packet', {
-      t: packet.t,
-      d: handled,
-      shard_id: this.options.shard_id,
-    });
+    if (handled) {
+      this.emit('packet', {
+        t: packet.t,
+        d: handled,
+        shard_id: this.options.shard_id,
+      });
+    }
   }
 
-  onOpen() {}
+  onOpen() {} // eslint-disable-line no-empty-function
 
-  onError() {}
+  onError() {
+    if (![WebSocket.CLOSED, WebSocket.CLOSING].includes(this.ws.readyState)) this.ws.close();
+    setTimeout(() => this.connect(), 1e3);
+  }
 
   identify() {
     if (this.cache.session_id) {
-      send(6, this.cache);
+      this.send(6, this.cache);
     } else {
       const uniq = `${Package.name}/${Package.version}`;
       const d = {
@@ -77,7 +83,7 @@ class WebSocketConnection extends EventEmitter {
           $browser: uniq,
           $device: uniq,
           $referrer: '',
-          $referring_domain: ''
+          $referring_domain: '',
         },
       };
       if (this.client.options.presence) {
@@ -87,7 +93,8 @@ class WebSocketConnection extends EventEmitter {
     }
   }
 
-  connect(gateway) {
+  connect(gateway = this.gateway) {
+    this.gateway = gateway;
     const ws = this.ws = new WebSocket(`${gateway}/?v=6&encoding=etf`);
     ws.onmessage = this.onMessage.bind(this);
     ws.onopen = this.onOpen.bind(this);
