@@ -16,7 +16,7 @@ client.on('READY', (packet, shard_id) => {
 client.on('MESSAGE_CREATE', (message) => {
   if (message.author.id !== '173547401905176585') return;
   if (message.content === '!ping') {
-    message.reply(`Pong! ${Date.now() - message.timestamp}ms`);
+    message.reply(`Pong! ${Date.now() - message.createdAt.getTime()}ms`);
   } else if (message.content.startsWith('!eval')) {
     let ret;
     try {

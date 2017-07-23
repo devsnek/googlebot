@@ -1,13 +1,29 @@
-function wrapMessage(client, packet) {
-  return Object.assign(packet, {
-    reply(options) {
-      if (typeof options === 'string') options = { content: options };
-      return client.api.channels(packet.channel_id).messages.post({
-        data: options,
-      });
-    },
-    timestamp: new Date(packet.timestamp).getTime(),
-  });
+class Message {
+  constructor(client, packet) {
+    this.client = client;
+
+    this.patch(packet);
+  }
+
+  patch(packet) {
+    Object.assign(this, packet);
+    // more soon(tm)
+  }
+
+  get createdAt() {
+    return new Date(this.timestamp);
+  }
+
+  get editedAt() {
+    return new Date(this.editedTimestamp);
+  }
+
+  reply(options) {
+    if (typeof options === 'string') options = { content: options };
+    return this.client.api.channels(this.channel_id).messages.post({
+      data: options,
+    });
+  }
 }
 
-module.exports = wrapMessage;
+module.exports = Message;
