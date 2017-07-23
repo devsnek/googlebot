@@ -7,7 +7,7 @@ class Message {
 
   patch(packet) {
     Object.assign(this, packet);
-    // more soon(tm)
+    this.channel = this.client.channels[packet.channel_id];
   }
 
   get createdAt() {

@@ -12,6 +12,13 @@ class Client extends EventEmitter {
     this.shard_queue = [];
 
     this.rest = new Router(this);
+
+    this.guilds = {
+      get size() { return Object.keys(this).length; },
+    };
+    this.channels = {
+      get size() { return Object.keys(this).length; },
+    };
   }
 
   get api() {
