@@ -18,8 +18,13 @@ class Message {
     return new Date(this.editedTimestamp);
   }
 
-  reply(options) {
-    if (typeof options === 'string') options = { content: options };
+  reply(content, options = {}) {
+    if (typeof content === 'string') options.content = content;
+    else options = content;
+
+    if (options.content && !options.code && options.bold !== false) options.content = `**${options.content}**`;
+    if (options.code) options.content = `\`\`\`${options.code}\n${options.content}\n\`\`\``;
+
     return this.client.api.channels(this.channel_id).messages.post({
       data: options,
     });

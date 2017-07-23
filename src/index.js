@@ -9,22 +9,24 @@ const client = new Discord.Client({
   }),
 });
 
+let prefix;
+const commands = require('./commands');
+
 client.on('READY', (packet, shard_id) => {
   logger.log('Client', 'READY', shard_id);
+  prefix = new RegExp(`^(<@!?${packet.user.id}>|!${packet.user.username}bot)`, 'i');
 });
 
 client.on('MESSAGE_CREATE', (message) => {
   if (message.author.id !== '173547401905176585') return;
-  if (message.content === '!ping') {
-    message.reply(`Pong! ${Date.now() - message.createdAt.getTime()}ms`);
-  } else if (message.content.startsWith('!eval')) {
-    let ret;
-    try {
-      ret = eval(message.content.replace('!eval', '').trim());
-    } catch (err) {
-      ret = err.message;
-    }
-    message.reply(`\`\`\`js\n${ret}\n\`\`\``);
+  if (!prefix || !prefix.test(message.content)) return;
+  let [command, ...args] = message.content.replace(prefix, '').trim().split(' ');
+  message.content = args.join(' ');
+  if (command in commands) {
+    command = commands[command];
+    if (command.owner && message.author.id !== '173547401905176585') return;
+    logger.log('COMMAND', command.name, `nsfw=${message.channel.nsfw}`);
+    command(message);
   }
 });
 

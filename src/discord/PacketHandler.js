@@ -64,6 +64,7 @@ function handle(client, ws, packet) {
         id: packet.d.id,
         name: packet.d.name,
         type: packet.d.type,
+        nsfw: packet.d.nsfw || false,
         recipients: packet.d.recipients,
         get guild() { return client.guilds[packet.d.guild_id]; },
       };
@@ -73,6 +74,7 @@ function handle(client, ws, packet) {
       if (!channel) return;
       const n = packet.d;
       if (n.name) channel.name = n.name;
+      if (n.nsfw != null) channel.nsfw = n.nsfw; // eslint-disable-line eqeqeq
       return channel;
     }
     case 'CHANNEL_DELETE': {
