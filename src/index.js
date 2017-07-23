@@ -14,7 +14,7 @@ const commands = client.commands = require('./commands');
 
 client.on('READY', (packet, shard_id) => {
   logger.log('Client', 'READY', shard_id);
-  prefix = new RegExp(`^(<@!?${packet.user.id}>|!${packet.user.username}bot|ok ${packet.user.username}(bot)?)`, 'i');
+  prefix = new RegExp(`^(<@!?${packet.user.id}>|!${packet.user.username}bot|ok ${packet.user.username}(bot)?,?)`, 'i');
 });
 
 client.on('MESSAGE_CREATE', (message) => {
@@ -24,9 +24,12 @@ client.on('MESSAGE_CREATE', (message) => {
   if (command in commands) {
     command = commands[command];
     if (command.owner && message.author.id !== '173547401905176585') return;
-    logger.log('COMMAND', command.name, `nsfw=${message.channel.nsfw}`);
-    command(message);
+  } else {
+    message.content = `${command} ${message.content}`;
+    command = commands.search;
   }
+  logger.log('COMMAND', command.name, `nsfw=${message.channel.nsfw}`);
+  command(message);
 });
 
 client.login(config.token);

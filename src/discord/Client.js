@@ -28,21 +28,33 @@ class Client extends EventEmitter {
   login(token) {
     this.token = token;
     return this.api.gateway.bot.get().then((res) => {
+      this.gateway = res.url;
       this.shard_queue.push(...Array.from({ length: res.shards }, (_, i) => i));
-      (function loop() {
-        const shard_id = this.shard_queue.shift();
-        if (shard_id == null) return; // eslint-disable-line eqeqeq
-        const shard = new WebSocketConnection(this, {
-          shard_id,
-          shard_count: res.shards,
-        });
-        shard.on('packet', (packet) => {
-          if (packet.t) this.emit(packet.t, packet.d, packet.shard_id);
-          if (packet.t === 'READY') setTimeout(loop.bind(this), 5e3);
-        });
-        shard.connect(res.url);
-      }.bind(this)());
+      this.shard_queue.shard_count = res.shards;
+      this.spawn();
     });
+  }
+
+  spawn(id) {
+    if (id) {
+      this.shard_queue.push(id);
+      if (this.hard_queue.length === 1) return;
+    }
+    const shard_id = this.shard_queue.shift();
+    if (shard_id == null) return; // eslint-disable-line eqeqeq
+    if (typeof shard_id === 'function') {
+      shard_id();
+    } else {
+      const shard = new WebSocketConnection(this, {
+        shard_id,
+        shard_count: this.shard_queue.shard_count,
+      });
+      shard.on('packet', (packet) => {
+        if (packet.t) this.emit(packet.t, packet.d, packet.shard_id);
+        if (packet.t === 'READY') setTimeout(this.spawn.bind(this), 5e3);
+      });
+      shard.connect(this.gateway);
+    }
   }
 }
 
