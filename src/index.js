@@ -10,7 +10,7 @@ const client = new Discord.Client({
 });
 
 let prefix;
-const commands = require('./commands');
+const commands = client.commands = require('./commands');
 
 client.on('READY', (packet, shard_id) => {
   logger.log('Client', 'READY', shard_id);
@@ -18,7 +18,6 @@ client.on('READY', (packet, shard_id) => {
 });
 
 client.on('MESSAGE_CREATE', (message) => {
-  if (message.author.id !== '173547401905176585') return;
   if (!prefix || !prefix.test(message.content)) return;
   let [command, ...args] = message.content.replace(prefix, '').trim().split(' ');
   message.content = args.join(' ');
