@@ -65,9 +65,11 @@ class WebSocketConnection extends EventEmitter {
 
   onOpen() {} // eslint-disable-line no-empty-function
 
-  onError() {
+  onError(e) {
+    logger.log('CONNECTION ERROR', this.options.shard_id, e.reason || e.message, e.code);
     if (![WebSocket.CLOSED, WebSocket.CLOSING].includes(this.ws.readyState)) this.ws.close();
-    this.client.spawn(this.connect.bind(this));
+    if (this.cache.session_id) setTimeout(() => this.connect(), 500);
+    else this.client.spawn(this.connect.bind(this));
   }
 
   identify() {

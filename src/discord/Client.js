@@ -60,6 +60,9 @@ class Client extends EventEmitter {
         if (packet.t) this.emit(packet.t, packet.d, packet.shard_id);
         if (packet.t === 'READY') setTimeout(() => this.spawn(), 5e3);
       });
+      // shard.on('raw', (packet) => {
+      //   this.eventCounter.trigger(packet.t ? packet.t : `OP_${packet.op}`);
+      // });
       shard.connect(this.gateway);
     }
   }
