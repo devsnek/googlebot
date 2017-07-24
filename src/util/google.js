@@ -1,6 +1,5 @@
 const request = require('snekfetch');
 const cheerio = require('cheerio');
-const logger = require('./Logger');
 
 let setCookie = [];
 const HEADERS = {
