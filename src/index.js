@@ -2,6 +2,8 @@ const Discord = require('./discord');
 const logger = require('./util/Logger');
 const config = require('../config');
 
+if (!process.env.NODE_ENV) process.env.NODE_ENV = 'production';
+
 const client = new Discord.Client({
   presence: (shard_id) => ({
     status: 'online',
@@ -32,4 +34,4 @@ client.on('MESSAGE_CREATE', (message) => {
   command(message);
 });
 
-client.login(config.token);
+client.login(config.tokens[process.env.NODE_ENV]);
