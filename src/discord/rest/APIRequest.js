@@ -10,6 +10,7 @@ function request(client, method, path, options = {}) {
     const qs = (querystring.stringify(options.query).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
     path += `?${qs}`;
   }
+
   return () => {
     const req = snekfetch[method](`${API}${path}`);
 
