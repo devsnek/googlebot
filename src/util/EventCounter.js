@@ -5,17 +5,21 @@ class EventCounter {
 
   reset() {
     this.events = {};
-    this.frequency = 0;
-    this.total = 0;
     this.start = null;
   }
 
   trigger(event) {
+    if (!this.start) this.start = new Date();
     if (!this.events[event]) this.events[event] = 0;
     this.events[event]++;
+  }
 
-    if (!this.start) this.start = new Date();
-    this.frequency = ++this.total / (new Date() - this.start) * 1000;
+  get total() {
+    return Object.values(this.events).reduce((a, b) => a + b, 0);
+  }
+
+  get frequency() {
+    return this.total / (new Date() - this.start) * 1000;
   }
 
   inspect() {

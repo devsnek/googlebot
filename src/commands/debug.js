@@ -1,6 +1,7 @@
 const util = require('util');
 
 module.exports = async function debug(message) {
+  const client = message.client; // eslint-disable-line no-unused-vars
   let res;
   try {
     res = eval(message.content);

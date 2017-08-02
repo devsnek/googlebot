@@ -1,6 +1,6 @@
 const Message = require('./structures/Message');
 
-function handle(client, ws, packet) {
+function handle(client, ws, packet) { // eslint-disable-line complexity
   switch (packet.t) {
     case 'READY':
       return packet.d;
@@ -64,8 +64,9 @@ function handle(client, ws, packet) {
         id: packet.d.id,
         name: packet.d.name,
         type: packet.d.type,
-        nsfw: packet.d.nsfw || false,
+        nsfw: packet.d.nsfw || /^nsfw(-|$)/.test(packet.d.name) || false,
         recipients: packet.d.recipients,
+        last_message_id: packet.d.last_message_id,
         get guild() { return client.guilds[packet.d.guild_id]; },
       };
     }

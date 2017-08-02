@@ -22,6 +22,7 @@ client.on('READY', (packet, shard_id) => {
 client.on('MESSAGE_CREATE', (message) => {
   if (!prefix || !prefix.test(message.content)) return;
   let [command, ...args] = message.content.replace(prefix, '').trim().split(' ');
+  if (!command) return;
   message.content = args.join(' ');
   if (command in commands) {
     command = commands[command];
