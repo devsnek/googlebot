@@ -76,6 +76,7 @@ function handle(client, ws, packet) { // eslint-disable-line complexity
       const n = packet.d;
       if (n.name) channel.name = n.name;
       if (n.nsfw != null) channel.nsfw = n.nsfw; // eslint-disable-line eqeqeq
+      if (n.recipients) channel.recipients = n.recipients;
       return channel;
     }
     case 'CHANNEL_DELETE': {
