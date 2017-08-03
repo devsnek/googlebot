@@ -1,5 +1,4 @@
 const Constants = require('../../Constants');
-const Package = require('../../../package.json');
 const querystring = require('querystring');
 const snekfetch = require('snekfetch');
 
@@ -15,7 +14,7 @@ function request(client, method, path, options = {}) {
     const req = snekfetch[method](`${API}${path}`);
 
     req.set('Authorization', `Bot ${client.token}`);
-    req.set('User-Agent', `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version})`);
+    req.set('User-Agent', Constants.USER_AGENT);
 
     if (options.reason) req.set('X-Audit-Log-Reason', encodeURIComponent(options.reason));
 

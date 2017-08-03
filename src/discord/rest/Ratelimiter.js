@@ -1,5 +1,6 @@
 require('promise_util');
 const request = require('./APIRequest');
+const logger = require('../../util/Logger');
 
 class Ratelimiter {
   constructor(client) {
