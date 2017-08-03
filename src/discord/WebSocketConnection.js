@@ -85,11 +85,9 @@ class WebSocketConnection extends EventEmitter {
         large_threshold: 150,
         compress: true,
         properties: {
-          $os: process.platform,
+          $os: uniq,
           $browser: uniq,
           $device: uniq,
-          $referrer: '',
-          $referring_domain: '',
         },
       };
       if (this.client.options.presence) {
