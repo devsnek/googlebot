@@ -1,5 +1,6 @@
 const raven = require('raven');
 const request = require('snekfetch');
+const logger = require('./Logger');
 
 function getGlobalServer() {
   const d = raven.dsn;
@@ -20,7 +21,14 @@ function makeReport(id, { name, email, comments }) {
 }
 
 module.exports = (token) => {
-  raven.config(token).install();
+  raven.config(token).install((err, sendErrFailed, eventId) => {
+    if (sendErrFailed) {
+      logger.error('SENTRY FAIL', eventId, err.stack);
+    } else {
+      logger.error('SENTRY', eventId);
+    }
+    process.exit(1);
+  });
   return Object.assign(raven, {
     getGlobalServer,
     makeReport,

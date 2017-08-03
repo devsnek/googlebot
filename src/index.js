@@ -25,10 +25,8 @@ client.on('READY', (packet, shard_id) => {
 client.on('MESSAGE_CREATE', (message) => {
   if (!prefix || !prefix.test(message.content)) return;
   const raven_context = {
-    user: message.author,
-    content: message.content,
+    message,
     command: null,
-    nsfw: message.channel.nsfw,
   };
   try {
     let [command, ...args] = message.content.replace(prefix, '').trim().split(' ');
@@ -45,8 +43,9 @@ client.on('MESSAGE_CREATE', (message) => {
     logger.log('COMMAND', command.name, `nsfw=${message.channel.nsfw}`);
     command(message);
   } catch (err) {
-    logger.error('COMMAND ERROR', err.stack);
-    client.raven.captureException(err, { extra: raven_context });
+    client.raven.captureException(err, {
+      extra: raven_context,
+    });
   }
 });
 

@@ -29,6 +29,22 @@ class Message {
       data: options,
     });
   }
+
+  toJSON() {
+    const ret = Object.assign({}, this);
+    ret.client = undefined;
+    ret.channel = {
+      id: this.channel.id,
+      name: this.channel.name,
+      nsfw: this.channel.nsfw,
+      type: this.channel.type,
+    };
+    ret.guild = this.channel.guild ? {
+      id: this.channel.guild.id,
+      name: this.channel.guild.name,
+    } : null;
+    return ret;
+  }
 }
 
 module.exports = Message;
