@@ -51,8 +51,8 @@ class WebSocketConnection extends EventEmitter {
       this.client.spawn(this.identify.bind(this));
     }
 
-    const handled = handle(this.client, this, packet);
     if (this.listenerCount('raw')) this.emit('raw', packet);
+    const handled = handle(this.client, this, packet);
     if (handled) {
       this.emit('packet', {
         t: packet.t,

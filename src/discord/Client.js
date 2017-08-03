@@ -42,7 +42,7 @@ class Client extends EventEmitter {
 
   spawn(id) {
     if (id) {
-      this.shard_queue.push(id);
+      if (!this.shard_queue.includes(id)) this.shard_queue.push(id);
       if (this.shard_queue.length > 1) return;
     }
     const shard_id = this.shard_queue.shift();
