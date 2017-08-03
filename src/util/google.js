@@ -31,7 +31,7 @@ function search(query, nsfw = false) {
       if (!href) return false;
       href = href.replace(/^\/url\?q=/, '');
       href = href.slice(0, href.indexOf('&sa='));
-      if (href.startsWith('/')) {
+      if (/^(images|news|\/)/.test(href)) {
         $('body p a').first().remove();
         return findInBody($);
       }
