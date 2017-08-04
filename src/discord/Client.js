@@ -47,22 +47,33 @@ class Client extends EventEmitter {
     }
     const shard_id = this.shard_queue.shift();
     if (shard_id == null) return; // eslint-disable-line eqeqeq
-    logger.log('SPAWNING', shard_id);
-    if (typeof shard_id === 'function') {
-      shard_id();
+    if (shard_id.options) {
+      logger.log('RESPAWNING', shard_id.options.shard_id);
+    } else {
+      logger.log('SPAWNING', shard_id);
+    }
+    if (shard_id instanceof WebSocketConnection) {
+      shard_id.connect();
     } else {
       const shard = new WebSocketConnection(this, {
         shard_id,
         shard_count: this.shard_count,
       });
-      shard.on('packet', (packet) => {
-        this.eventCounter.trigger(packet.t ? packet.t : `OP_${packet.op}`);
+      const handlePacket = (packet) => {
         if (packet.t) this.emit(packet.t, packet.d, packet.shard_id);
         if (packet.t === 'READY') setTimeout(() => this.spawn(), 5e3);
-      });
-      shard.on('raw', (packet) => {
+      };
+      const handleRaw = (packet) => {
         this.eventCounter.trigger(packet.t ? packet.t : `OP_${packet.op}`);
-      });
+      };
+      const handleDisconnect = () => {
+        shard.removeListener('packet', handlePacket);
+        shard.removeListener('raw', handleRaw);
+        setTimeout(() => this.spawn(), 5e3);
+      };
+      shard.on('packet', handlePacket);
+      shard.on('raw', handleRaw);
+      shard.once('disconnect', handleDisconnect);
       shard.connect(this.gateway);
     }
   }

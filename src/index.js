@@ -17,8 +17,7 @@ client.raven = raven(config.sentry[process.env.NODE_ENV]);
 let prefix;
 const commands = client.commands = require('./commands');
 
-client.on('READY', (packet, shard_id) => {
-  logger.log('Client', 'READY', shard_id);
+client.on('READY', (packet) => {
   prefix = new RegExp(`^(<@!?${packet.user.id}>|!${packet.user.username}bot|ok ${packet.user.username}(bot)?,?)`, 'i');
 });
 
