@@ -105,7 +105,7 @@
     "new-cap": "off",
     "newline-per-chained-call": ["error", { "ignoreChainWithDepth": 3 }],
     "no-array-constructor": "error",
-    "no-inline-comments": "error",
+    "no-inline-comments": "off",
     "no-lonely-if": "error",
     "no-mixed-operators": "error",
     "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1, "maxBOF": 0 }],

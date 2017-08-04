@@ -76,6 +76,7 @@ class WebSocketConnection extends EventEmitter {
   onOpen() {} // eslint-disable-line no-empty-function
 
   onClose(e) {
+    if (!e.code) return; // fuck you uWS
     logger.log('CONNECTION CLOSE', this.options.shard_id, e.reason, e.code);
     this.emit('disconnect');
     this.reconnect();
