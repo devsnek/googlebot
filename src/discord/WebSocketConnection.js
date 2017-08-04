@@ -54,11 +54,9 @@ class WebSocketConnection extends EventEmitter {
       this.reconnect();
     } else if (packet.op === 9) {
       logger.log('SESSION INVALIDATION', this.options.shard_id);
-      if (!packet.d) {
+      if (packet.d === false) {
         this.cache.session_id = null;
-        setTimeout(() => {
-          this.client.spawn(this);
-        }, 2e3);
+        setTimeout(() => this.client.spawn(this), 2e3);
       } else {
         setTimeout(() => this.connect(), 2e3);
       }
@@ -77,10 +75,14 @@ class WebSocketConnection extends EventEmitter {
 
   onOpen() {} // eslint-disable-line no-empty-function
 
-  onError(e) {
-    logger.log('CONNECTION ERROR', this.options.shard_id, e.reason || e.message, e.code);
+  onClose(e) {
+    logger.log('CONNECTION CLOSE', this.options.shard_id, e.reason, e.code);
     this.emit('disconnect');
     this.reconnect();
+  }
+
+  onError(e) {
+    logger.log('CONNECTION ERROR', this.options.shard_id, e.message);
   }
 
   reconnect() {
@@ -116,9 +118,10 @@ class WebSocketConnection extends EventEmitter {
 
   connect(gateway = this.client.gateway) {
     const ws = this.ws = new WebSocket(`${gateway}/?v=6&encoding=etf`);
+    ws.onclose = this.onClose.bind(this);
+    ws.onerror = this.onError.bind(this);
     ws.onmessage = this.onMessage.bind(this);
     ws.onopen = this.onOpen.bind(this);
-    ws.onclose = ws.onerror = this.onError.bind(this);
   }
 }
 
