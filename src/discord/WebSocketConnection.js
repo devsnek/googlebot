@@ -35,7 +35,7 @@ class WebSocketConnection extends EventEmitter {
       return;
     }
 
-    if (packet.s) this.cache.seq = packet.s;
+    if (packet.s > this.cache.seq) this.cache.seq = packet.s;
 
     if (packet.t === 'READY') {
       logger.log('READY', this.options.shard_id);
@@ -54,10 +54,14 @@ class WebSocketConnection extends EventEmitter {
       this.reconnect();
     } else if (packet.op === 9) {
       logger.log('SESSION INVALIDATION', this.options.shard_id);
-      if (!packet.d) this.cache.session_id = null;
-      setTimeout(() => {
-        this.client.spawn(this);
-      }, 2e3);
+      if (!packet.d) {
+        this.cache.session_id = null;
+        setTimeout(() => {
+          this.client.spawn(this);
+        }, 2e3);
+      } else {
+        setTimeout(() => this.connect(), 2e3);
+      }
     }
 
     if (this.listenerCount('raw')) this.emit('raw', packet);
