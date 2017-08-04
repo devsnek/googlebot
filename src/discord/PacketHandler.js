@@ -11,6 +11,7 @@ function handle(client, ws, packet) { // eslint-disable-line complexity
         handle(client, ws, { t: 'CHANNEL_CREATE', d: channel });
       }
       return client.guilds[packet.d.id] = {
+        unavailable: packet.d.unavailable || false,
         id: packet.d.id,
         name: packet.d.name,
         get channels() {
@@ -27,7 +28,8 @@ function handle(client, ws, packet) { // eslint-disable-line complexity
       const guild = client.guilds[packet.d.id];
       if (!guild) return;
       const n = packet.d;
-      if (n.name) guild.name = n.name;
+      if (Reflect.has(n, 'unavailable')) guild.unavailable = n.unavailable;
+      if (Reflect.has(n, 'name')) guild.name = n.name;
       return guild;
     }
     case 'GUILD_DELETE': {
@@ -74,9 +76,9 @@ function handle(client, ws, packet) { // eslint-disable-line complexity
       const channel = client.channels[packet.d.id];
       if (!channel) return;
       const n = packet.d;
-      if (n.name) channel.name = n.name;
-      if (n.nsfw != null) channel.nsfw = n.nsfw; // eslint-disable-line eqeqeq
-      if (n.recipients) channel.recipients = n.recipients;
+      if (Reflect.has(n, 'name')) channel.name = n.name;
+      if (Reflect.has(n, 'nsfw')) channel.nsfw = n.nsfw; // eslint-disable-line eqeqeq
+      if (Reflect.has(n, 'recipients')) channel.recipients = n.recipients;
       return channel;
     }
     case 'CHANNEL_DELETE': {
