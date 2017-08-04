@@ -21,7 +21,7 @@ client.on('READY', (packet) => {
   prefix = new RegExp(`^(<@!?${packet.user.id}>|!${packet.user.username}bot|ok ${packet.user.username}(bot)?,?)`, 'i');
 });
 
-client.on('MESSAGE_CREATE', (message) => {
+client.on('MESSAGE_CREATE', (message, shard_id) => {
   if (!prefix || !prefix.test(message.content)) return;
   const raven_context = {
     message,
@@ -39,7 +39,7 @@ client.on('MESSAGE_CREATE', (message) => {
       command = commands.search;
     }
     raven_context.command = { command: command.name, args };
-    logger.log('COMMAND', command.name, `nsfw=${message.channel.nsfw}`);
+    logger.log('COMMAND', shard_id, command.name, `nsfw=${message.channel.nsfw}`);
     command(message);
   } catch (err) {
     client.raven.captureException(err, {
