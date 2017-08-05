@@ -12,7 +12,7 @@ const client = new Discord.Client({
   }),
 });
 
-client.raven = raven(config.sentry[process.env.NODE_ENV]);
+client.raven = raven(config.sentry);
 
 let prefix;
 const commands = client.commands = require('./commands');
@@ -42,9 +42,10 @@ client.on('MESSAGE_CREATE', (message, shard_id) => {
     logger.log('COMMAND', shard_id, command.name, `nsfw=${message.channel.nsfw}`);
     command(message);
   } catch (err) {
-    client.raven.captureException(err, {
+    const event = client.raven.captureException(err, {
       extra: raven_context,
     });
+    logger.log('SENTRY EXCEPTION', event);
   }
 });
 

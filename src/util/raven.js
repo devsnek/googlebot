@@ -1,3 +1,4 @@
+const childProcess = require('child_process');
 const raven = require('raven');
 const request = require('snekfetch');
 const logger = require('./Logger');
@@ -21,7 +22,10 @@ function makeReport(id, { name, email, comments }) {
 }
 
 module.exports = (token) => {
-  raven.config(token).install((err, sendErrFailed, eventId) => {
+  raven.config(token, {
+    release: childProcess.execSync('git rev-parse HEAD').toString().trim(),
+    environment: process.env.NODE_ENV,
+  }).install((err, sendErrFailed, eventId) => {
     if (sendErrFailed) {
       logger.error('SENTRY FAIL', eventId, err.stack);
     } else {
