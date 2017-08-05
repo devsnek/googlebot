@@ -1,8 +1,6 @@
 const Discord = require('./discord');
 const logger = require('./util/Logger');
 const config = require('../config');
-const raven = require('./util/raven');
-
 if (!process.env.NODE_ENV) process.env.NODE_ENV = 'production';
 
 const client = new Discord.Client({
@@ -12,7 +10,7 @@ const client = new Discord.Client({
   }),
 });
 
-client.raven = raven(config.sentry);
+client.raven = require('./util/raven');
 
 let prefix;
 const commands = client.commands = require('./commands');
