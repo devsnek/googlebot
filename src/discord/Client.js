@@ -75,6 +75,8 @@ class Client extends EventEmitter {
         if (packet.t === 'READY') {
           setTimeout(() => this.spawn(), 5e3);
           this.set_shard_status(shard_id, 0);
+        } else if (packet.t === 'RESUMED') {
+          this.set_shard_status(shard_id, 0);
         }
       };
       const handleRaw = (packet) => {
