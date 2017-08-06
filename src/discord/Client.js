@@ -42,6 +42,7 @@ class Client extends EventEmitter {
       this.gateway = res.url;
       this.shard_queue.push(...Array.from({ length: res.shards }, (_, i) => i));
       this.shard_count = res.shards;
+      this.emit('CONNECTING', this.shard_count);
       this.spawn();
     });
   }
