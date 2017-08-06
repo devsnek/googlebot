@@ -54,15 +54,17 @@ client.on('MESSAGE_CREATE', (message, shard_id) => {
 client.on('CONNECTING', () => {
   logger.log('SPAWNING COUNT', client.shard_count);
   setTimeout(() => {
-    updateGuildCount();
-    setInterval(() => updateGuildCount(), 60e3);
+    updateStats();
+    setInterval(() => updateStats(), 60e3);
   }, client.shard_count * 6e3);
 });
 
-function updateGuildCount() {
+function updateStats() {
   if (client.unavailable > 0.07) return;
   logger.log('GUILD COUNT', client.guilds.size);
+  logger.log('CHANNEL COUNT', client.channels.size);
   client.stats.gauge('guilds', client.guilds.size);
+  client.stats.gauge('channels', client.channels.size);
 }
 
 client.login(config.tokens[process.env.NODE_ENV]);
