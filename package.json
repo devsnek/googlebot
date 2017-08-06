@@ -10,6 +10,7 @@
     "raven": "^2.1.1",
     "rethinkdbdash": "^2.3.31",
     "snekfetch": "^3.2.4",
+    "universal-analytics": "^0.4.13",
     "uws": "^8.14.0"
   },
   "devDependencies": {

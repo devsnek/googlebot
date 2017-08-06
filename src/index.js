@@ -11,6 +11,7 @@ const client = new Discord.Client({
 });
 
 client.raven = require('./util/raven');
+client.ua = require('./util/ua');
 
 let prefix;
 const commands = client.commands = require('./commands');
@@ -38,6 +39,7 @@ client.on('MESSAGE_CREATE', (message, shard_id) => {
     }
     raven_context.command = { command: command.name, args };
     logger.log('COMMAND', shard_id, command.name, `nsfw=${message.channel.nsfw}`);
+    // client.ua(message.author.id, { command: command.name });
     command(message);
   } catch (err) {
     const event = client.raven.captureException(err, {
