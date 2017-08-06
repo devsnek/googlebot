@@ -41,7 +41,7 @@ function handle(client, ws, packet) { // eslint-disable-line complexity
     }
     case 'GUILD_MEMBER_UPDATE': {
       const guild = client.guilds[packet.d.guild_id];
-      if (!guild) return;
+      if (!guild || !guild.members) return;
       const member = guild.members[packet.d.user.id];
       if (!member) return;
       member.nick = packet.d.nick;
@@ -49,12 +49,12 @@ function handle(client, ws, packet) { // eslint-disable-line complexity
     }
     case 'GUILD_MEMBER_ADD': {
       const guild = client.guilds[packet.d.guild_id];
-      if (!guild) return;
+      if (!guild || !guild.members) return;
       return guild.members[packet.d.user.id] = { nick: packet.d.nick };
     }
     case 'GUILD_MEMBER_REMOVE': {
       const guild = client.guilds[packet.d.guild_id];
-      if (!guild) return;
+      if (!guild || !guild.members) return;
       const member = guild.members[packet.d.user.id];
       delete guild.members[packet.d.user.id];
       return member;
