@@ -53,6 +53,7 @@ client.on('MESSAGE_CREATE', (message, shard_id) => {
 
 client.on('CONNECTING', () => {
   logger.log('SPAWNING COUNT', client.shard_count);
+  client.stats.gauge('shard_count', client.shard_count);
   setTimeout(() => {
     updateStats();
     setInterval(() => updateStats(), 60e3);
