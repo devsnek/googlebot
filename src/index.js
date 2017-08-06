@@ -51,12 +51,12 @@ client.on('MESSAGE_CREATE', (message, shard_id) => {
   }
 });
 
-function updateGuildCount() {
-  if (client.unavailable > 0.07) return;
-  client.stats.gauge('guilds', client.guilds.size);
-}
-
-client.on('GUILD_CREATE', updateGuildCount);
-client.on('GUILD_DELETE', updateGuildCount);
+// function updateGuildCount() {
+//   if (client.unavailable > 0.07) return;
+//   client.stats.gauge('guilds', client.guilds.size);
+// }
+//
+// client.on('GUILD_CREATE', updateGuildCount);
+// client.on('GUILD_DELETE', updateGuildCount);
 
 client.login(config.tokens[process.env.NODE_ENV]);

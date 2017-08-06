@@ -83,7 +83,7 @@ class WebSocketConnection extends EventEmitter {
   }
 
   onError(e) {
-    logger.log('CONNECTION ERROR', this.options.shard_id, e.message);
+    logger.log('CONNECTION ERROR', this.options.shard_id, e.stack);
     this.emit('disconnect');
     this.reconnect();
   }
