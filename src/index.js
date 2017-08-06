@@ -1,7 +1,8 @@
+if (!process.env.NODE_ENV) process.env.NODE_ENV = 'production';
+
 const Discord = require('./discord');
 const logger = require('./util/Logger');
 const config = require('../config');
-if (!process.env.NODE_ENV) process.env.NODE_ENV = 'production';
 
 const client = new Discord.Client({
   presence: (shard_id) => ({
@@ -49,5 +50,13 @@ client.on('MESSAGE_CREATE', (message, shard_id) => {
     logger.log('SENTRY EXCEPTION', event);
   }
 });
+
+function updateGuildCount() {
+  if (client.unavailable > 0.07) return;
+  client.stats.gauge('guilds', client.guilds.size);
+}
+
+client.on('GUILD_CREATE', updateGuildCount);
+client.on('GUILD_DELETE', updateGuildCount);
 
 client.login(config.tokens[process.env.NODE_ENV]);

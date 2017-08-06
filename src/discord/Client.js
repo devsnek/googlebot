@@ -26,6 +26,12 @@ class Client extends EventEmitter {
     this.eventCounter = new EventCounter();
   }
 
+  get unavailable() {
+    let unavailable = 0;
+    for (const g of Object.values(this.guilds)) if (g.unavailable) unavailable++;
+    return unavailable / this.guilds.size;
+  }
+
   get api() {
     return this.rest.api();
   }
