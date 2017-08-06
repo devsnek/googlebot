@@ -59,6 +59,10 @@ client.on('CONNECTING', () => {
   }, client.shard_count * 6e3);
 });
 
+client.on('SHARD_STATUS', (id, status) => {
+  client.stats.gauge(`shards.${id}`, status);
+});
+
 function updateStats() {
   if (client.unavailable > 0.07) return;
   logger.log('GUILD COUNT', client.guilds.size);

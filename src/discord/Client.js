@@ -23,7 +23,9 @@ class Client extends EventEmitter {
       get size() { return Object.keys(this).length; },
     };
 
-    this.eventCounter = new EventCounter();
+    this.event_counter = new EventCounter();
+
+    this.shard_statuses = [];
   }
 
   get unavailable() {
@@ -42,6 +44,7 @@ class Client extends EventEmitter {
       this.gateway = res.url;
       this.shard_queue.push(...Array.from({ length: res.shards }, (_, i) => i));
       this.shard_count = res.shards;
+      for (let i = 0; i < this.shard_count; i++) this.set_shard_status(i, -1);
       this.emit('CONNECTING', this.shard_count);
       this.spawn();
     });
@@ -66,14 +69,19 @@ class Client extends EventEmitter {
         shard_id,
         shard_count: this.shard_count,
       });
+      this.set_shard_status(shard_id, 1);
       const handlePacket = (packet) => {
         if (packet.t) this.emit(packet.t, packet.d, packet.shard_id);
-        if (packet.t === 'READY') setTimeout(() => this.spawn(), 5e3);
+        if (packet.t === 'READY') {
+          setTimeout(() => this.spawn(), 5e3);
+          this.set_shard_status(shard_id, 0);
+        }
       };
       const handleRaw = (packet) => {
-        this.eventCounter.trigger(packet.t ? packet.t : `OP_${packet.op}`);
+        this.event_counter.trigger(packet.t ? packet.t : `OP_${packet.op}`);
       };
       const handleDisconnect = () => {
+        this.set_shard_status(shard_id, 2);
         shard.removeListener('packet', handlePacket);
         shard.removeListener('raw', handleRaw);
         setTimeout(() => this.spawn(), 5e3);
@@ -83,6 +91,11 @@ class Client extends EventEmitter {
       shard.once('disconnect', handleDisconnect);
       shard.connect(this.gateway);
     }
+  }
+
+  set_shard_status(id, status) {
+    this.emit('SHARD_STATUS', id, status);
+    this.shard_statuses[id] = status;
   }
 }
 
