@@ -3,6 +3,7 @@ const Message = require('./structures/Message');
 function handle(client, ws, packet) { // eslint-disable-line complexity
   switch (packet.t) {
     case 'READY':
+      for (const guild of packet.d.guilds) handle(client, ws, { t: 'GUILD_CREATE', d: guild });
       return packet.d;
     case 'GUILD_CREATE':
       if (packet.d.unavailable) return client.guilds[packet.d.id] = packet.d;
