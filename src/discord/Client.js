@@ -84,8 +84,8 @@ class Client extends EventEmitter {
       };
       const handleDisconnect = () => {
         this.set_shard_status(shard_id, 2);
-        shard.removeListener('packet', handlePacket);
-        shard.removeListener('raw', handleRaw);
+        // shard.removeListener('packet', handlePacket);
+        // shard.removeListener('raw', handleRaw);
         setTimeout(() => this.spawn(), 5e3);
       };
       shard.on('packet', handlePacket);

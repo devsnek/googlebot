@@ -11,6 +11,8 @@ const client = new Discord.Client({
   }),
 });
 
+require('./util/blocked')((n) => logger.error('UV BLOCK', n));
+
 client.raven = require('./util/raven');
 client.ua = require('./util/ua');
 client.stats = require('./util/statsd');
@@ -41,8 +43,8 @@ client.on('MESSAGE_CREATE', (message, shard_id) => {
     }
     raven_context.command = { command: command.name, args };
     logger.log('COMMAND', shard_id, command.name, `nsfw=${message.channel.nsfw}`);
-    client.stats.increment(`commands.${command.name}`);
     command(message);
+    client.stats.increment(`commands.${command.name}`);
   } catch (err) {
     const event = client.raven.captureException(err, {
       extra: raven_context,

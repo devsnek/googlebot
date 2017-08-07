@@ -39,7 +39,7 @@ class Message {
       nsfw: this.channel.nsfw,
       type: this.channel.type,
     };
-    ret.guild = this.channel.guild ? {
+    ret.channel.guild = this.channel.guild ? {
       id: this.channel.guild.id,
       name: this.channel.guild.name,
     } : null;
