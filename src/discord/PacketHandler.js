@@ -29,14 +29,14 @@ function handle(client, ws, packet) { // eslint-disable-line complexity
       const guild = client.guilds[packet.d.id];
       if (!guild) return;
       const n = packet.d;
-      if (Reflect.has(n, 'unavailable')) guild.unavailable = n.unavailable;
       if (Reflect.has(n, 'name')) guild.name = n.name;
       return guild;
     }
     case 'GUILD_DELETE': {
       const guild = client.guilds[packet.d.id];
       if (!guild) return;
-      delete client.guilds[packet.d.id];
+      if (packet.d.unavailable) guild.unavaiable = true;
+      else delete client.guilds[packet.d.id];
       return guild;
     }
     case 'GUILD_MEMBER_UPDATE': {
