@@ -1,4 +1,4 @@
-function blocked(fn, { time = 50, interval = 100 } = {}) {
+function blocked(fn, { time = 150, interval = 100 } = {}) {
   let start = process.hrtime();
   return setInterval(() => {
     let delta = process.hrtime(start);
