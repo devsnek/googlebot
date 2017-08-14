@@ -12,7 +12,9 @@
     "rethinkdbdash": "^2.3.31",
     "snekfetch": "^3.2.4",
     "universal-analytics": "^0.4.13",
-    "uws": "^8.14.0"
+    "uws": "^8.14.0",
+    "xmldom": "^0.1.27",
+    "xpath": "0.0.24"
   },
   "devDependencies": {
     "eslint": "^4.3.0"

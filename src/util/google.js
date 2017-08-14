@@ -1,43 +1,24 @@
 const request = require('snekfetch');
 const cheerio = require('cheerio');
+const xpath = require('xpath');
+const DOM = require('xmldom').DOMParser;
+
+const UA = 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) Gecko/20100101 Firefox/53.0';
 
 let setCookie = [];
-const HEADERS = {
-  Accept: 'text/html, text/plain, text/sgml, text/css, application/xhtml+xml, */*;q=0.01',
-  'Accept-Encoding': 'gzip, compress, bzip2',
-  'Accept-Language': 'en',
-  'User-Agent': 'Lynx/2.8.8rel.2 libwww-FM/2.14 SSL-MM/1.4.1 OpenSSL/1.0.2l',
-  get 'Set-Cookie'() { return setCookie; },
-};
-
-// let setCookie;
 function req(url) {
   return request.get(url)
-    .set(HEADERS)
+    .set({
+      Accept: 'text/html, text/plain, text/sgml, text/css, application/xhtml+xml, */*;q=0.01',
+      'Accept-Encoding': 'gzip, compress, bzip2',
+      'Accept-Language': 'en',
+      'User-Agent': 'Lynx/2.8.8rel.2 libwww-FM/2.14 SSL-MM/1.4.1 OpenSSL/1.0.2l',
+      get 'Set-Cookie'() { return setCookie; },
+    })
     .then((res) => {
       setCookie = res.headers['set-cookie'];
       return res.text;
     });
-}
-
-function search(query, nsfw = false) {
-  // eslint-disable-next-line max-len
-  return req(`https://www.google.com/search?ie=ISO-8859-1&hl=en&source=hp&q=${query}&btnG=Google+Search&gbv=1&safe=${nsfw ? 'disabled' : 'active'}`)
-    .then((body) => cheerio.load(body))
-    .then(function findInBody($) {
-      const element = $('body p a').first();
-      if (!element) return false;
-      let href = element.attr('href');
-      if (!href) return false;
-      href = href.replace(/^\/url\?q=/, '');
-      href = href.slice(0, href.indexOf('&sa='));
-      if (/^(images|news|\/)/.test(href)) {
-        $('body p a').first().remove();
-        return findInBody($);
-      }
-      return decodeURIComponent(href);
-    })
-    .catch(() => false);
 }
 
 function image(query, nsfw = false) {
@@ -56,6 +37,62 @@ function image(query, nsfw = false) {
       return decodeURIComponent(src);
     })
     .catch(() => false);
+}
+
+async function search(query, nsfw) {
+  const params = {
+    q: query,
+    safe: nsfw ? 'off' : 'on',
+    lr: 'lang_en',
+    hl: 'en',
+  };
+  const headers = { 'User-Agent': UA };
+  const res = await request.get('https://www.google.com/search')
+    .query(params)
+    .set(headers);
+
+  let card;
+  let results = [];
+  if (res.status !== 200) return { card, results };
+
+  const root = new DOM({ errorHandler: () => {} }).parseFromString(res.text); // eslint-disable-line no-empty-function
+
+  // eslint-disable-next-line max-len
+  const cardNode = xpath.select(`.//div[@id='rso']/div[@class='_NId']//div[contains(@class, 'vk_c') or @class='g mnr-c g-blk' or @class='kp-blk']`, root);
+  const entries = xpath.select(`.//div[@class='rc']`, root);
+
+  if (cardNode.length) card = parseGoogleCard(cardNode[0]);
+
+  for (const node of entries) {
+    const link = xpath.select("./h3[@class='r']/a", node)[0];
+    results.push({
+      text: link.firstChild.data,
+      link: link.getAttribute('href'),
+    });
+    // console.log(link);
+  }
+  return { card, results };
+}
+
+function parseGoogleCard(node) {
+  // const calculator = xpath.select(`.//span[@class='cwclet']`, node)[0];
+  // if (calculator) {}
+  //
+  // const unitConversions = xpath.select(`.//input[contains(@class, '_eif') and @value]`, node);
+  // if (unitConversions.length === 2) {}
+
+  if (node.getAttribute('class').includes('currency')) {
+    const currencySelectors = xpath.select(`.//div[@class='ccw_unit_selector_cnt']`, node);
+    if (currencySelectors.length === 2) {
+      const first = xpath.select(`.//div[@class='vk_sh vk_gy cursrc']`, node)[0];
+      const second = xpath.select(`.//div[@class='vk_ans vk_bk curtgt']`, node)[0];
+      const text = [
+        first.firstChild.childNodes[0].data, first.lastChild.data,
+        ' ', second.firstChild.childNodes[0].data, second.lastChild.lastChild.data,
+      ].join('').replace(/&.+?;/g, ' ');
+      return `Currency Conversion: ${text}`;
+    }
+  }
 }
 
 module.exports = { search, image };
