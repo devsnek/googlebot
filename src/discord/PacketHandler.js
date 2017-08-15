@@ -5,6 +5,8 @@ function handle(client, ws, packet) { // eslint-disable-line complexity
     case 'READY':
       for (const guild of packet.d.guilds) handle(client, ws, { t: 'GUILD_CREATE', d: guild });
       return packet.d;
+    case 'RESUMED':
+      return packet.d;
     case 'GUILD_CREATE':
       if (packet.d.unavailable) return client.guilds[packet.d.id] = packet.d;
       for (const channel of packet.d.channels) {

@@ -69,7 +69,6 @@ async function search(query, nsfw) {
       text: link.firstChild.data,
       link: link.getAttribute('href'),
     });
-    // console.log(link);
   }
   return { card, results };
 }
