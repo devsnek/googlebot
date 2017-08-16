@@ -17,7 +17,8 @@
     "xpath": "0.0.24"
   },
   "devDependencies": {
-    "eslint": "^4.3.0"
+    "eslint": "^4.3.0",
+    "sonarqube-scanner": "^2.0.1"
   },
   "scripts": {
     "lint": "eslint -c ./.eslintrc.json src"
