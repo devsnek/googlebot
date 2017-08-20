@@ -17,6 +17,7 @@ function req(url) {
     })
     .then((res) => {
       setCookie = res.headers['set-cookie'];
+      // if (agent && agent.encryptedSocket) agent.encryptedSocket.end();
       return res.text;
     });
 }
