@@ -75,22 +75,27 @@ async function search(query, nsfw) {
 }
 
 function parseGoogleCard(node) {
-  // const calculator = xpath.select(`.//span[@class='cwclet']`, node)[0];
-  // if (calculator) {}
-  //
-  // const unitConversions = xpath.select(`.//input[contains(@class, '_eif') and @value]`, node);
-  // if (unitConversions.length === 2) {}
+  const calculator = xpath.select(`.//span[@class='cwclet']`, node)[0];
+  if (calculator) {
+    const query = xpath.select(`.//span[@id='cwles']/text()`, node)[0];
+    const answer = xpath.select(`.//span[@id='cwos']/text()`, node)[0];
+    return `Calculation: \`${query.data.trim()} ${answer.data.trim()}\``;
+  }
+
+  const unitConversions = xpath.select(`.//input[contains(@class, '_eif') and @value]`, node);
+  if (unitConversions.length === 2) {
+    const [firstValue, secondValue] = unitConversions.map((n) => n.getAttribute('value'));
+    const unitSelector = `parent::div/select/option[@selected='1']/text()`;
+    const [firstUnit, secondUnit] = unitConversions.map((n) => xpath.select(unitSelector, n)[0]);
+    return `Unit Conversion: ${firstValue} ${firstUnit} = ${secondValue} ${secondUnit}`;
+  }
 
   if (node.getAttribute('class').includes('currency')) {
     const currencySelectors = xpath.select(`.//div[@class='ccw_unit_selector_cnt']`, node);
     if (currencySelectors.length === 2) {
-      const first = xpath.select(`.//div[@class='vk_sh vk_gy cursrc']`, node)[0];
-      const second = xpath.select(`.//div[@class='vk_ans vk_bk curtgt']`, node)[0];
-      const text = [
-        first.firstChild.childNodes[0].data, first.lastChild.data,
-        ' ', second.firstChild.childNodes[0].data, second.lastChild.lastChild.data,
-      ].join('').replace(/&.+?;/g, ' ');
-      return `Currency Conversion: ${text}`;
+      const first = xpath.select(`.//div[@class='vk_sh vk_gy cursrc']/text()`, node)[0];
+      const second = xpath.select(`.//div[@class='vk_ans vk_bk curtgt']/text()`, node)[0];
+      return `Currency Conversion: ${first} ${second}`;
     }
   }
 }
