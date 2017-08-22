@@ -7,7 +7,11 @@ const config = require('../config');
 const client = new Discord.Client({
   presence: (shard_id) => ({
     status: 'online',
-    game: { name: `@Google help | S${shard_id}` },
+    game: {
+      name: `@Google help | S${shard_id}`,
+      type: 0,
+      url: 'https://google.gus.host',
+    },
   }),
 });
 
@@ -61,9 +65,9 @@ client.on('CONNECTING', () => {
   }, client.shard_count * 6e3);
 });
 
-client.on('SHARD_STATUS', (id, status) => {
-  // client.stats.gauge(`shards.${id}`, status);
-});
+// client.on('SHARD_STATUS', (id, status) => {
+//   client.stats.gauge(`shards.${id}`, status);
+// });
 
 function updateStats() {
   if (client.unavailable > 0.07) return;
