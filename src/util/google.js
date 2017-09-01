@@ -98,6 +98,12 @@ function parseGoogleCard(node) {
       return `Currency Conversion: ${first} ${second}`;
     }
   }
+
+  const time = xpath.select(`.//div[contains(@class, 'vk_bk vk_ans')]/text()`, node)[0];
+  if (time) {
+    const location = xpath.select('.//span[not(@class)]/text()', node)[0].data.trim();
+    return `${location}: ${time.data.trim()}`;
+  }
 }
 
 module.exports = { search, image };
