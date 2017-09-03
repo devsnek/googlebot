@@ -3,6 +3,7 @@ config.js
 config.old.json
 node_modules
 package-lock.json
+package-cache.json
 *.swp
 sonar-project.properties
 .scannerwork

@@ -1,5 +1,7 @@
 if (!process.env.NODE_ENV) process.env.NODE_ENV = 'production';
 
+require('fastboot');
+
 const Discord = require('./discord');
 const logger = require('./util/Logger');
 const config = require('../config');
@@ -63,7 +65,7 @@ client.on('CONNECTING', () => {
   setTimeout(() => {
     updateStats();
     setInterval(() => updateStats(), 60e3);
-  }, client.shard_count * 6e3);
+  }, client.shard_count * 6e3).unref();
 });
 
 client.on('SHARD_STATUS', (id, status) => {
