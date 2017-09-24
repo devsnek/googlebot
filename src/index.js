@@ -31,7 +31,7 @@ client.on('READY', (packet) => {
 });
 
 client.on('MESSAGE_CREATE', (message, shard_id) => {
-  if (!prefix || !prefix.test(message.content)) return;
+  if (message.author.bot || !prefix || !prefix.test(message.content)) return;
   const raven_context = {
     message,
     command: null,
