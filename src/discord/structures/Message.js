@@ -33,13 +33,13 @@ class Message {
   toJSON() {
     const ret = Object.assign({}, this);
     ret.client = undefined;
-    ret.channel = {
+    ret.channel = this.channel ? {
       id: this.channel.id,
       name: this.channel.name,
       nsfw: this.channel.nsfw,
       type: this.channel.type,
-    };
-    ret.channel.guild = this.channel.guild ? {
+    } : { id: this.channel_id };
+    ret.channel.guild = this.channel && this.channel.guild ? {
       id: this.channel.guild.id,
       name: this.channel.guild.name,
     } : null;

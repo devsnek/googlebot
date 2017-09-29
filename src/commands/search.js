@@ -1,7 +1,7 @@
 const google = require('../util/google');
 
 module.exports = function search(message) {
-  google.search(message.content, message.channel.nsfw)
+  google.search(message.content, message.channel && message.channel.nsfw)
     .then(({ card, results }) => {
       if (card) {
         message.reply(card);

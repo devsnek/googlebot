@@ -48,7 +48,7 @@ client.on('MESSAGE_CREATE', (message, shard_id) => {
       command = commands.search;
     }
     raven_context.command = { command: command.name, args };
-    logger.log('COMMAND', shard_id, command.name, `nsfw=${message.channel.nsfw}`);
+    logger.log('COMMAND', shard_id, command.name);
     command(message);
     client.stats.increment(`commands.${command.name}`);
   } catch (err) {

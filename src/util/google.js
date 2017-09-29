@@ -79,7 +79,7 @@ function parseGoogleCard(node) {
   if (calculator) {
     const query = xpath.select(`.//span[@id='cwles']/text()`, node)[0];
     const answer = xpath.select(`.//span[@id='cwos']/text()`, node)[0];
-    return `Calculation: \`${query.data.trim()} ${answer.data.trim()}\``;
+    return `${query.data.trim()} ${answer.data.trim()}`.replace('=', 'equals');
   }
 
   const unitConversions = xpath.select(`.//input[contains(@class, '_eif') and @value]`, node);
@@ -87,7 +87,7 @@ function parseGoogleCard(node) {
     const [firstValue, secondValue] = unitConversions.map((n) => n.getAttribute('value'));
     const unitSelector = `parent::div/select/option[@selected='1']/text()`;
     const [firstUnit, secondUnit] = unitConversions.map((n) => xpath.select(unitSelector, n)[0]);
-    return `Unit Conversion: ${firstValue} ${firstUnit} = ${secondValue} ${secondUnit}`;
+    return `${firstValue} ${firstUnit} = ${secondValue} ${secondUnit}`;
   }
 
   if (node.getAttribute('class').includes('currency')) {
@@ -95,14 +95,14 @@ function parseGoogleCard(node) {
     if (currencySelectors.length === 2) {
       const first = xpath.select(`.//div[@class='vk_sh vk_gy cursrc']/text()`, node)[0];
       const second = xpath.select(`.//div[@class='vk_ans vk_bk curtgt']/text()`, node)[0];
-      return `Currency Conversion: ${first} ${second}`;
+      return `${first} ${second}`;
     }
   }
 
   const time = xpath.select(`.//div[contains(@class, 'vk_bk vk_ans')]/text()`, node)[0];
   if (time) {
     const location = xpath.select('.//span[not(@class)]/text()', node)[0].data.trim();
-    return `${location}: ${time.data.trim()}`;
+    return `It is ${time.data.trim()} in ${location}`;
   }
 }
 

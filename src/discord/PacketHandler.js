@@ -7,7 +7,7 @@ function handle(client, ws, packet) { // eslint-disable-line complexity
       return packet.d;
     case 'RESUMED':
       return packet.d;
-    case 'GUILD_CREATE':
+    /*case 'GUILD_CREATE':
       if (packet.d.unavailable) return client.guilds[packet.d.id] = packet.d;
       for (const channel of packet.d.channels) {
         channel.guild_id = packet.d.id;
@@ -60,7 +60,7 @@ function handle(client, ws, packet) { // eslint-disable-line complexity
       const member = guild.members[packet.d.user.id];
       delete guild.members[packet.d.user.id];
       return member;
-    }
+    }*/
     case 'CHANNEL_CREATE': {
       const channel = client.channels[packet.d.id];
       if (channel) return;
