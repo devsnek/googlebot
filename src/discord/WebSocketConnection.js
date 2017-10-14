@@ -29,7 +29,7 @@ class WebSocketConnection extends EventEmitter {
     return this.ws.send(erlpack.pack({ op, d }));
   }
 
-  onMessage({ data }) {
+  onMessage(data) {
     const end = data.length >= 4 && data.readUInt32BE(data.length - 4) === 0xFFFF;
     this.inflate.write(data);
     if (end) this.inflate.flush(zlib.Z_SYNC_FLUSH, this.onInflateFlush.bind(this));
@@ -142,11 +142,12 @@ class WebSocketConnection extends EventEmitter {
       finishFlush: zlib.Z_SYNC_FLUSH,
       chunkSize: 65535,
     });
+    inflate.setMaxListeners(250);
     inflate.on('data', (chunk) => this.inflateBuffer.push(chunk));
-    ws.onclose = this.onClose.bind(this);
-    ws.onerror = this.onError.bind(this);
-    ws.onmessage = this.onMessage.bind(this);
-    ws.onopen = this.onOpen.bind(this);
+    ws.on('close', this.onClose.bind(this));
+    ws.on('error', this.onError.bind(this));
+    ws.on('message', this.onMessage.bind(this));
+    ws.on('open', this.onOpen.bind(this));
   }
 }
 
