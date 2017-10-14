@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "bufferutil": "^3.0.2",
     "cheerio": "^1.0.0-rc.2",
     "erlpack": "^0.1.0",
     "fastboot": "gist:658baf5e5581c6deeab256d6bdd9e7bb",
@@ -13,7 +14,7 @@
     "rethinkdbdash": "^2.3.31",
     "snekfetch": "^3.2.4",
     "universal-analytics": "^0.4.13",
-    "uws": "^8.14.0",
+    "ws": "^3.2.0",
     "xmldom": "^0.1.27",
     "xpath": "0.0.24"
   },

@@ -1,4 +1,5 @@
-const WebSocket = require('uws');
+const zlib = require('zlib');
+const WebSocket = require('ws');
 const erlpack = require('erlpack');
 const EventEmitter = require('events');
 const Package = require('../../package.json');
@@ -20,6 +21,8 @@ class WebSocketConnection extends EventEmitter {
     };
 
     this.heartbeat = null;
+    this.inflate = null;
+    this.inflateBuffer = null;
   }
 
   send(op, d) {
@@ -27,14 +30,26 @@ class WebSocketConnection extends EventEmitter {
   }
 
   onMessage({ data }) {
-    if (Array.isArray(data)) data = Buffer.concat(data);
-    let packet;
+    const end = data.length >= 4 && data.readUInt32BE(data.length - 4) === 0xFFFF;
+    this.inflate.write(data);
+    if (end) this.inflate.flush(zlib.Z_SYNC_FLUSH, this.onInflateFlush.bind(this));
+  }
+
+  onInflateFlush() {
+    if (this.inflateBuffer.length === 0) return;
+    const data = this.inflateBuffer.length === 1 ?
+      this.inflateBuffer[0] :
+      Buffer.concat(this.inflateBuffer);
+    this.inflateBuffer.length = 0;
     try {
-      packet = erlpack.unpack(Buffer.from(data));
+      var unpacked = erlpack.unpack(data);
     } catch (err) {
       return;
     }
+    this.onPacket(unpacked);
+  }
 
+  onPacket(packet) {
     if (packet.s > this.cache.seq) this.cache.seq = packet.s;
 
     if (packet.t === 'READY') {
@@ -120,7 +135,14 @@ class WebSocketConnection extends EventEmitter {
   }
 
   connect(gateway = this.client.gateway) {
-    const ws = this.ws = new WebSocket(`${gateway}/?v=6&encoding=etf`);
+    const ws = this.ws = new WebSocket(`${gateway}/?v=6&encoding=etf&compress=zlib-stream`);
+    this.inflateBuffer = [];
+    const inflate = this.inflate = zlib.createInflate({
+      flush: zlib.Z_SYNC_FLUSH,
+      finishFlush: zlib.Z_SYNC_FLUSH,
+      chunkSize: 65535,
+    });
+    inflate.on('data', (chunk) => this.inflateBuffer.push(chunk));
     ws.onclose = this.onClose.bind(this);
     ws.onerror = this.onError.bind(this);
     ws.onmessage = this.onMessage.bind(this);
