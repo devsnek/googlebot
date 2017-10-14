@@ -1,6 +1,9 @@
 const Constants = require('../../Constants');
 const querystring = require('querystring');
 const snekfetch = require('snekfetch');
+const { Agent } = require('https');
+
+const agent = new Agent();
 
 function request(client, method, path, options = {}) {
   const API = `${Constants.Http.API}/v${Constants.Http.VERSION}`;
@@ -11,7 +14,7 @@ function request(client, method, path, options = {}) {
   }
 
   return () => {
-    const req = snekfetch[method](`${API}${path}`);
+    const req = snekfetch[method](`${API}${path}`, { agent });
 
     req.set('Authorization', `Bot ${client.token}`);
     req.set('User-Agent', Constants.USER_AGENT);
