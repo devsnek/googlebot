@@ -17,7 +17,7 @@ class Client extends EventEmitter {
     this.rest = new Router(this);
 
     this.guilds = {
-      get size() { return Object.keys(this).length; },
+      size: 0,
     };
     this.channels = {
       get size() { return Object.keys(this).length; },

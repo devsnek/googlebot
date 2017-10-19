@@ -7,60 +7,13 @@ function handle(client, ws, packet) { // eslint-disable-line complexity
       return packet.d;
     case 'RESUMED':
       return packet.d;
-    /*case 'GUILD_CREATE':
-      if (packet.d.unavailable) return client.guilds[packet.d.id] = packet.d;
-      for (const channel of packet.d.channels) {
-        channel.guild_id = packet.d.id;
-        handle(client, ws, { t: 'CHANNEL_CREATE', d: channel });
-      }
-      return client.guilds[packet.d.id] = {
-        unavailable: packet.d.unavailable || false,
-        id: packet.d.id,
-        name: packet.d.name,
-        get channels() {
-          return client.channels.filter((c) => c.guild.id === packet.d.id);
-        },
-        members: packet.d.members
-          .reduce((o, m) => {
-            if (m.nick) o[m.user.id] = { nick: m.nick };
-            return o;
-          }, {}),
-        shard_id: ws.options.shard_id,
-      };
-    case 'GUILD_UPDATE': {
-      const guild = client.guilds[packet.d.id];
-      if (!guild) return;
-      const n = packet.d;
-      if (Reflect.has(n, 'name')) guild.name = n.name;
-      return guild;
-    }
-    case 'GUILD_DELETE': {
-      const guild = client.guilds[packet.d.id];
-      if (!guild) return;
-      if (packet.d.unavailable) guild.unavaiable = true;
-      else delete client.guilds[packet.d.id];
-      return guild;
-    }
-    case 'GUILD_MEMBER_UPDATE': {
-      const guild = client.guilds[packet.d.guild_id];
-      if (!guild || !guild.members) return;
-      const member = guild.members[packet.d.user.id];
-      if (!member) return;
-      member.nick = packet.d.nick;
-      return member;
-    }
-    case 'GUILD_MEMBER_ADD': {
-      const guild = client.guilds[packet.d.guild_id];
-      if (!guild || !guild.members) return;
-      return guild.members[packet.d.user.id] = { nick: packet.d.nick };
-    }
-    case 'GUILD_MEMBER_REMOVE': {
-      const guild = client.guilds[packet.d.guild_id];
-      if (!guild || !guild.members) return;
-      const member = guild.members[packet.d.user.id];
-      delete guild.members[packet.d.user.id];
-      return member;
-    }*/
+    case 'GUILD_CREATE':
+      if (!packet.d.unavailable) client.guilds.size++;
+      break;
+    // case 'GUILD_UPDATE': {}
+    case 'GUILD_DELETE':
+      if (!packet.d.unavailable) client.guilds.size--;
+      break;
     case 'CHANNEL_CREATE': {
       const channel = client.channels[packet.d.id];
       if (channel) return;
