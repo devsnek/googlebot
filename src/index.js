@@ -19,7 +19,6 @@ const client = new Discord.Client({
 
 require('./util/blocked')((n) => logger.error('UV BLOCK', n));
 
-client.raven = require('./util/raven');
 client.ua = require('./util/ua');
 client.stats = require('./util/stats');
 

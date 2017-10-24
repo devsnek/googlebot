@@ -1,4 +1,4 @@
-const zlib = require('zlib');
+const zlib = require('zlib-sync');
 const WebSocket = require('ws');
 const erlpack = require('erlpack');
 const EventEmitter = require('events');
@@ -22,7 +22,6 @@ class WebSocketConnection extends EventEmitter {
 
     this.heartbeat = null;
     this.inflate = null;
-    this.inflateBuffer = null;
   }
 
   send(op, d) {
@@ -30,23 +29,24 @@ class WebSocketConnection extends EventEmitter {
   }
 
   onMessage(data) {
-    const end = data.length >= 4 && data.readUInt32BE(data.length - 4) === 0xFFFF;
-    this.inflate.write(data);
-    if (end) this.inflate.flush(zlib.Z_SYNC_FLUSH, this.onInflateFlush.bind(this));
-  }
+    const l = data.length;
+    const flush = l >= 4 &&
+      data[l - 4] === 0x00 &&
+      data[l - 3] === 0x00 &&
+      data[l - 2] === 0xFF &&
+      data[l - 1] === 0xFF;
 
-  onInflateFlush() {
-    if (this.inflateBuffer.length === 0) return;
-    const data = this.inflateBuffer.length === 1 ?
-      this.inflateBuffer[0] :
-      Buffer.concat(this.inflateBuffer);
-    this.inflateBuffer.length = 0;
+    this.inflate.push(data, flush && zlib.Z_SYNC_FLUSH);
+    if (!flush) return;
+
     try {
-      var unpacked = erlpack.unpack(data);
+      const unpacked = erlpack.unpack(this.inflate.result);
+      this.onPacket(unpacked);
     } catch (err) {
-      return;
+      this.client.raven.captureException(err, {
+        extra: data,
+      });
     }
-    this.onPacket(unpacked);
   }
 
   onPacket(packet) {
@@ -136,14 +136,10 @@ class WebSocketConnection extends EventEmitter {
 
   connect(gateway = this.client.gateway) {
     const ws = this.ws = new WebSocket(`${gateway}/?v=6&encoding=etf&compress=zlib-stream`);
-    this.inflateBuffer = [];
-    const inflate = this.inflate = zlib.createInflate({
+    this.inflate = new zlib.Inflate({
       flush: zlib.Z_SYNC_FLUSH,
-      finishFlush: zlib.Z_SYNC_FLUSH,
       chunkSize: 65535,
     });
-    inflate.setMaxListeners(250);
-    inflate.on('data', (chunk) => this.inflateBuffer.push(chunk));
     ws.on('close', this.onClose.bind(this));
     ws.on('error', this.onError.bind(this));
     ws.on('message', this.onMessage.bind(this));

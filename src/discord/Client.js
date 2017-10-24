@@ -26,6 +26,8 @@ class Client extends EventEmitter {
     this.event_counter = new EventCounter();
 
     this.shard_statuses = [];
+
+    this.raven = require('../util/raven');
   }
 
   get unavailable() {
